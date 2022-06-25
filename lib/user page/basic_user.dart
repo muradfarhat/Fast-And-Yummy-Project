@@ -13,6 +13,7 @@ class _user_pageState extends State<user_page> {
   TextEditingController searchValue =
       new TextEditingController(); // variable to store text field value in it
   int selectedNavBarItem = 2;
+
   // ignore: slash_for_doc_comments
   /*************************************** Widget List For Pages ************************** */
   List<Widget> content = [
@@ -210,7 +211,7 @@ class _user_pageState extends State<user_page> {
 }
 
 // ignore: slash_for_doc_comments
-/********************************** Page Content ******************************** */
+/********************************** Home Page Content ******************************** */
 
 class pageContent extends StatefulWidget {
   pageContent({Key? key}) : super(key: key);
@@ -220,6 +221,79 @@ class pageContent extends StatefulWidget {
 }
 
 class _pageContentState extends State<pageContent> {
+  List<Map> categories = [
+    {"image": "images/food.jpg", "name": "Cate. Name"},
+    {"image": "images/food.jpg", "name": "Cate. Name"},
+    {"image": "images/food.jpg", "name": "Cate. Name"},
+    {"image": "images/food.jpg", "name": "Cate. Name"},
+    {"image": "images/food.jpg", "name": "Cate. Name"}
+  ];
+  List<Map> offers = [
+    {
+      "image": "images/burger.jpg",
+      "name": "Food Name",
+      "store": "Store Name",
+      "newPrice": "\$ 8.99",
+      "oldPrice": "\$ 10.00"
+    },
+    {
+      "image": "images/burger.jpg",
+      "name": "Food Name",
+      "store": "Store Name",
+      "newPrice": "\$ 8.99",
+      "oldPrice": "\$ 10.00"
+    },
+    {
+      "image": "images/burger.jpg",
+      "name": "Food Name",
+      "store": "Store Name",
+      "newPrice": "\$ 8.99",
+      "oldPrice": "\$ 10.00"
+    },
+    {
+      "image": "images/burger.jpg",
+      "name": "Food Name",
+      "store": "Store Name",
+      "newPrice": "\$ 8.99",
+      "oldPrice": "\$ 10.00"
+    }
+  ];
+  List<Map> sugg = [
+    {
+      "image": "images/pizza.jpg",
+      "name": "Food Name",
+      "store": "Store Name",
+      "price": "\$ 8.99",
+      "star1": 1,
+      "star2": 1,
+      "star3": 1,
+      "star4": 1,
+      "star5": 1
+    },
+    {
+      "image": "images/pizza.jpg",
+      "name": "Food Name",
+      "store": "Store Name",
+      "price": "\$ 8.99",
+      "star1": 1,
+      "star2": 1,
+      "star3": 1,
+      "star4": 1,
+      "star5": 0
+    },
+    {
+      "image": "images/pizza.jpg",
+      "name": "Food Name",
+      "store": "Store Name",
+      "price": "\$ 8.99",
+      "star1": 1,
+      "star2": 1,
+      "star3": 1,
+      "star4": 0,
+      "star5": 0
+    }
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -241,7 +315,7 @@ class _pageContentState extends State<pageContent> {
             height: 130,
             width: double.infinity,
             child: ListView.builder(
-                itemCount: 5,
+                itemCount: categories.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, i) {
                   return MaterialButton(
@@ -272,13 +346,14 @@ class _pageContentState extends State<pageContent> {
                               borderRadius: BorderRadius.circular(15),
                               image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: AssetImage("images/food.jpg"))),
+                                  image:
+                                      AssetImage("${categories[i]['image']}"))),
                           margin: EdgeInsets.only(bottom: 8),
                           width: 80,
                           height: 80,
                         ),
                         Text(
-                          "Cate. Name",
+                          "${categories[i]['name']}",
                           style: TextStyle(fontSize: 12),
                         )
                       ],
@@ -319,7 +394,7 @@ class _pageContentState extends State<pageContent> {
             height: 140,
             width: double.infinity,
             child: ListView.builder(
-                itemCount: 3,
+                itemCount: 4,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, i) {
                   return MaterialButton(
@@ -358,7 +433,8 @@ class _pageContentState extends State<pageContent> {
                                   borderRadius: BorderRadius.circular(15),
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: AssetImage("images/burger.jpg"))),
+                                      image:
+                                          AssetImage("${offers[i]['image']}"))),
                             ),
                             Container(
                               width: 120,
@@ -370,7 +446,7 @@ class _pageContentState extends State<pageContent> {
                                   Container(
                                     width: double.infinity,
                                     child: Text(
-                                      "Food Name",
+                                      "${offers[i]['name']}",
                                       overflow:
                                           TextOverflow.clip, // For text wraping
                                       style: TextStyle(
@@ -382,7 +458,7 @@ class _pageContentState extends State<pageContent> {
                                     margin: EdgeInsets.only(top: 5),
                                     width: double.infinity,
                                     child: Text(
-                                      "Store Name",
+                                      "${offers[i]['store']}",
                                       overflow:
                                           TextOverflow.clip, // For text wraping
                                       style: TextStyle(
@@ -397,7 +473,7 @@ class _pageContentState extends State<pageContent> {
                                     // ignore: prefer_const_literals_to_create_immutables
                                     children: [
                                       Text(
-                                        "\$ 8.99  ",
+                                        "${offers[i]['newPrice']}  ",
                                         style: TextStyle(
                                           color:
                                               Color.fromARGB(255, 93, 194, 158),
@@ -405,7 +481,7 @@ class _pageContentState extends State<pageContent> {
                                         ),
                                       ),
                                       Text(
-                                        "\$ 10.00",
+                                        "${offers[i]['oldPrice']}",
                                         style: TextStyle(
                                           decoration:
                                               TextDecoration.lineThrough,
@@ -496,7 +572,8 @@ class _pageContentState extends State<pageContent> {
                                   borderRadius: BorderRadius.circular(15),
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: AssetImage("images/pizza.jpg"))),
+                                      image:
+                                          AssetImage("${sugg[i]['image']}"))),
                             ),
                             Container(
                               width: 120,
@@ -508,7 +585,7 @@ class _pageContentState extends State<pageContent> {
                                   Container(
                                     width: double.infinity,
                                     child: Text(
-                                      "Food Name",
+                                      "${sugg[i]['name']}",
                                       overflow:
                                           TextOverflow.clip, // For text wraping
                                       style: TextStyle(
@@ -520,7 +597,7 @@ class _pageContentState extends State<pageContent> {
                                     margin: EdgeInsets.only(top: 5),
                                     width: double.infinity,
                                     child: Text(
-                                      "Store Name",
+                                      "${sugg[i]['store']}",
                                       overflow:
                                           TextOverflow.clip, // For text wraping
                                       style: TextStyle(
@@ -534,7 +611,7 @@ class _pageContentState extends State<pageContent> {
                                   Container(
                                     width: double.infinity,
                                     child: Text(
-                                      "\$ 8.99  ",
+                                      "${sugg[i]['price']}  ",
                                       style: TextStyle(
                                         color:
                                             Color.fromARGB(255, 93, 194, 158),
@@ -553,20 +630,38 @@ class _pageContentState extends State<pageContent> {
                                         Icon(
                                           Icons.star,
                                           size: 20,
-                                          color: Colors.amberAccent,
+                                          color: this.sugg[i]['star1'] == 1
+                                              ? Colors.amberAccent
+                                              : Colors.black,
                                         ),
-                                        Icon(Icons.star,
-                                            size: 20,
-                                            color: Colors.amberAccent),
-                                        Icon(Icons.star,
-                                            size: 20,
-                                            color: Colors.amberAccent),
-                                        Icon(Icons.star,
-                                            size: 20,
-                                            color: Colors.amberAccent),
-                                        Icon(Icons.star,
-                                            size: 20,
-                                            color: Colors.amberAccent),
+                                        Icon(
+                                          Icons.star,
+                                          size: 20,
+                                          color: this.sugg[i]['star2'] == 1
+                                              ? Colors.amberAccent
+                                              : Colors.black,
+                                        ),
+                                        Icon(
+                                          Icons.star,
+                                          size: 20,
+                                          color: this.sugg[i]['star3'] == 1
+                                              ? Colors.amberAccent
+                                              : Colors.black,
+                                        ),
+                                        Icon(
+                                          Icons.star,
+                                          size: 20,
+                                          color: this.sugg[i]['star4'] == 1
+                                              ? Colors.amberAccent
+                                              : Colors.black,
+                                        ),
+                                        Icon(
+                                          Icons.star,
+                                          size: 20,
+                                          color: this.sugg[i]['star5'] == 1
+                                              ? Colors.amberAccent
+                                              : Colors.black,
+                                        ),
                                       ],
                                     ),
                                   )
