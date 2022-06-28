@@ -64,25 +64,8 @@ class _user_pageState extends State<user_page> {
                   gapPadding: 10,
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide(color: Colors.white, width: 1)),
-              // border: OutlineInputBorder(
-              //   gapPadding: 10,
-              //   borderRadius: BorderRadius.circular(30),
-              // ),
             ),
           ),
-          // actions: [
-          //   IconButton(
-          //       onPressed: () {
-          //         showDialog(
-          //             context: context,
-          //             builder: (context) {
-          //               return AlertDialog(
-          //                 title: Text("Search Dialog"),
-          //               );
-          //             });
-          //       },
-          //       icon: Icon(Icons.search))
-          // ],
           backgroundColor: Color.fromARGB(255, 93, 194, 158),
         ),
         /********************************* End Appbar ******************************* */
@@ -105,6 +88,22 @@ class _user_pageState extends State<user_page> {
                   ),
                   accountName: Text("User Name"),
                   accountEmail: Text("User Email")),
+              ListTile(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text("Stores"),
+                        );
+                      });
+                },
+                title: Text("Stores"),
+                leading: Icon(
+                  Icons.store,
+                  color: Color.fromARGB(255, 93, 194, 158),
+                ),
+              ),
               ListTile(
                 onTap: () {
                   showDialog(
@@ -276,9 +275,9 @@ class _pageContentState extends State<pageContent> {
       "store": "Store Name",
       "price": "\$ 8.99",
       "star1": 1,
-      "star2": 1,
-      "star3": 1,
-      "star4": 1,
+      "star2": 0,
+      "star3": 0,
+      "star4": 0,
       "star5": 0
     },
     {
@@ -628,39 +627,44 @@ class _pageContentState extends State<pageContent> {
                                       // ignore: prefer_const_literals_to_create_immutables
                                       children: [
                                         Icon(
-                                          Icons.star,
+                                          this.sugg[i]['star1'] == 1
+                                              ? Icons.star
+                                              : Icons.star_border_outlined,
+                                          //Icons.star,
                                           size: 20,
-                                          color: this.sugg[i]['star1'] == 1
-                                              ? Colors.amberAccent
-                                              : Colors.black,
+                                          color: Colors.amberAccent,
                                         ),
                                         Icon(
-                                          Icons.star,
+                                          this.sugg[i]['star2'] == 1
+                                              ? Icons.star
+                                              : Icons.star_border_outlined,
+                                          //Icons.star,
                                           size: 20,
-                                          color: this.sugg[i]['star2'] == 1
-                                              ? Colors.amberAccent
-                                              : Colors.black,
+                                          color: Colors.amberAccent,
                                         ),
                                         Icon(
-                                          Icons.star,
+                                          this.sugg[i]['star3'] == 1
+                                              ? Icons.star
+                                              : Icons.star_border_outlined,
+                                          //Icons.star,
                                           size: 20,
-                                          color: this.sugg[i]['star3'] == 1
-                                              ? Colors.amberAccent
-                                              : Colors.black,
+                                          color: Colors.amberAccent,
                                         ),
                                         Icon(
-                                          Icons.star,
+                                          this.sugg[i]['star4'] == 1
+                                              ? Icons.star
+                                              : Icons.star_border_outlined,
+                                          //Icons.star,
                                           size: 20,
-                                          color: this.sugg[i]['star4'] == 1
-                                              ? Colors.amberAccent
-                                              : Colors.black,
+                                          color: Colors.amberAccent,
                                         ),
                                         Icon(
-                                          Icons.star,
+                                          this.sugg[i]['star5'] == 1
+                                              ? Icons.star
+                                              : Icons.star_border_outlined,
+                                          //Icons.star,
                                           size: 20,
-                                          color: this.sugg[i]['star5'] == 1
-                                              ? Colors.amberAccent
-                                              : Colors.black,
+                                          color: Colors.amberAccent,
                                         ),
                                       ],
                                     ),
