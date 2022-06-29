@@ -10,6 +10,12 @@ class profile extends StatefulWidget {
 }
 
 class _profileState extends State<profile> {
+  List<Map> favorite = [
+    {"name": "Sweet"},
+    {"name": "Meat"},
+    {"name": "Drinks"},
+    {"name": "Traditional"}
+  ];
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -34,7 +40,7 @@ class _profileState extends State<profile> {
                   // ignore: prefer_const_constructors
                   decoration: BoxDecoration(
                     // ignore: prefer_const_literals_to_create_immutables
-                    boxShadow: [BoxShadow(color: Colors.white, blurRadius: 4)],
+                    boxShadow: [BoxShadow(color: Colors.white, blurRadius: 10)],
                     image: DecorationImage(
                         fit: BoxFit.cover,
                         image: AssetImage("images/profile.jpg")),
@@ -104,8 +110,7 @@ class _profileState extends State<profile> {
                   splashColor: Colors.white,
                   alignment: Alignment.centerLeft,
                   color: Color.fromARGB(255, 37, 179, 136),
-                  iconSize: 20,
-                  icon: Icon(Icons.edit),
+                  icon: Icon(Icons.edit_note),
                   onPressed: () {},
                 ),
               ),
@@ -184,10 +189,48 @@ class _profileState extends State<profile> {
                   splashColor: Colors.white,
                   alignment: Alignment.centerLeft,
                   color: Color.fromARGB(255, 37, 179, 136),
-                  iconSize: 20,
-                  icon: Icon(Icons.edit),
+                  icon: Icon(Icons.edit_note),
                   onPressed: () {},
                 ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 15, bottom: 15),
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      // ignore: prefer_const_literals_to_create_immutables
+                      boxShadow: [
+                        BoxShadow(
+                            color: Color.fromARGB(255, 197, 197, 197),
+                            blurRadius: 4)
+                      ],
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    alignment: Alignment.center,
+                    width: 180,
+                    height: 40,
+                    child: Row(
+                      // ignore: prefer_const_literals_to_create_immutables
+                      children: [
+                        Expanded(child: Icon(Icons.food_bank)),
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            child: Text(
+                              "Sweet", // ${favorite[i]['name']}
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 17),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            child: IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.close),
+                                splashColor: Colors.white))
+                      ],
+                    )),
               ),
             ],
           ),
