@@ -66,7 +66,7 @@ class _user_pageState extends State<user_page> {
                   borderSide: BorderSide(color: Colors.white, width: 1)),
             ),
           ),
-          backgroundColor: Color.fromARGB(255, 93, 194, 158),
+          backgroundColor: Color.fromARGB(255, 37, 179, 136),
         ),
         /********************************* End Appbar ******************************* */
         /******************************* Start Drawer ******************************* */
@@ -76,14 +76,14 @@ class _user_pageState extends State<user_page> {
             children: [
               UserAccountsDrawerHeader(
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 93, 194, 158),
+                    color: Color.fromARGB(255, 37, 179, 136),
                   ),
                   currentAccountPicture: CircleAvatar(
                     backgroundColor: Colors.white,
                     child: Text(
                       "UN",
                       style:
-                          TextStyle(color: Color.fromARGB(255, 93, 194, 158)),
+                          TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
                     ),
                   ),
                   accountName: Text("User Name"),
@@ -101,7 +101,7 @@ class _user_pageState extends State<user_page> {
                 title: Text("Stores"),
                 leading: Icon(
                   Icons.store,
-                  color: Color.fromARGB(255, 93, 194, 158),
+                  color: Color.fromARGB(255, 37, 179, 136),
                 ),
               ),
               ListTile(
@@ -117,14 +117,14 @@ class _user_pageState extends State<user_page> {
                 title: Text("About"),
                 leading: Icon(
                   Icons.info,
-                  color: Color.fromARGB(255, 93, 194, 158),
+                  color: Color.fromARGB(255, 37, 179, 136),
                 ),
               ),
               ListTile(
                 title: Text("Support"),
                 leading: Icon(
                   Icons.support,
-                  color: Color.fromARGB(255, 93, 194, 158),
+                  color: Color.fromARGB(255, 37, 179, 136),
                 ),
                 onTap: () {
                   showDialog(
@@ -140,7 +140,7 @@ class _user_pageState extends State<user_page> {
                 title: Text("Log out"),
                 leading: Icon(
                   Icons.exit_to_app,
-                  color: Color.fromARGB(255, 93, 194, 158),
+                  color: Color.fromARGB(255, 37, 179, 136),
                 ),
                 onTap: () {
                   showDialog(
@@ -167,8 +167,8 @@ class _user_pageState extends State<user_page> {
             currentIndex: selectedNavBarItem,
             type: BottomNavigationBarType.fixed,
             selectedIconTheme: IconThemeData(
-                color: Color.fromARGB(255, 93, 194, 158), size: 45),
-            selectedItemColor: Color.fromARGB(255, 93, 194, 158),
+                color: Color.fromARGB(255, 37, 179, 136), size: 45),
+            selectedItemColor: Color.fromARGB(255, 37, 179, 136),
             unselectedItemColor: Color.fromARGB(255, 157, 157, 157),
             iconSize: 30,
             // ignore: prefer_const_literals_to_create_immutables
@@ -176,31 +176,31 @@ class _user_pageState extends State<user_page> {
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.person_outline,
-                    //color: Color.fromARGB(255, 93, 194, 158),
+                    //color: Color.fromARGB(255, 37, 179, 136),
                   ),
                   label: "Profile"),
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.favorite_outline,
-                    //color: Color.fromARGB(255, 93, 194, 158),
+                    //color: Color.fromARGB(255, 37, 179, 136),
                   ),
                   label: "Favorite"),
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.home_outlined,
-                    //color: Color.fromARGB(255, 93, 194, 158),
+                    //color: Color.fromARGB(255, 37, 179, 136),
                   ),
                   label: "Home"),
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.map_outlined,
-                    //color: Color.fromARGB(255, 93, 194, 158),
+                    //color: Color.fromARGB(255, 37, 179, 136),
                   ),
                   label: "My Orders"),
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.shopping_cart_outlined,
-                    //color: Color.fromARGB(255, 93, 194, 158),
+                    //color: Color.fromARGB(255, 37, 179, 136),
                   ),
                   label: "Cart"),
             ]),
@@ -340,7 +340,7 @@ class _pageContentState extends State<pageContent> {
                                     blurRadius: 4)
                               ],
                               border: Border.all(
-                                  color: Color.fromARGB(255, 93, 194, 158),
+                                  color: Color.fromARGB(255, 37, 179, 136),
                                   width: 1),
                               borderRadius: BorderRadius.circular(15),
                               image: DecorationImage(
@@ -384,7 +384,7 @@ class _pageContentState extends State<pageContent> {
                 child: Text(
                   "View All",
                   style: TextStyle(
-                      color: Color.fromARGB(255, 93, 194, 158), fontSize: 12),
+                      color: Color.fromARGB(255, 37, 179, 136), fontSize: 12),
                 )),
           ),
           Container(
@@ -475,7 +475,7 @@ class _pageContentState extends State<pageContent> {
                                         "${offers[i]['newPrice']}  ",
                                         style: TextStyle(
                                           color:
-                                              Color.fromARGB(255, 93, 194, 158),
+                                              Color.fromARGB(255, 37, 179, 136),
                                           fontSize: 18,
                                         ),
                                       ),
@@ -485,7 +485,7 @@ class _pageContentState extends State<pageContent> {
                                           decoration:
                                               TextDecoration.lineThrough,
                                           color:
-                                              Color.fromARGB(255, 93, 194, 158),
+                                              Color.fromARGB(255, 37, 179, 136),
                                           fontSize: 10,
                                         ),
                                       )
@@ -523,7 +523,7 @@ class _pageContentState extends State<pageContent> {
                 child: Text(
                   "View All",
                   style: TextStyle(
-                      color: Color.fromARGB(255, 93, 194, 158), fontSize: 12),
+                      color: Color.fromARGB(255, 37, 179, 136), fontSize: 12),
                 )),
           ),
           Container(
@@ -613,7 +613,7 @@ class _pageContentState extends State<pageContent> {
                                       "${sugg[i]['price']}  ",
                                       style: TextStyle(
                                         color:
-                                            Color.fromARGB(255, 93, 194, 158),
+                                            Color.fromARGB(255, 37, 179, 136),
                                         fontSize: 20,
                                       ),
                                     ),
