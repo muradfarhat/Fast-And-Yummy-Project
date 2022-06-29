@@ -12,7 +12,7 @@ class Splash extends StatelessWidget {
     return AnimatedSplashScreen(
       splashIconSize: 120,
       splash: const RiveAnimation.asset("assets/raeds.riv"),
-      nextScreen: user_page(),
+      nextScreen: UserPage(),
       duration: 3500,
       backgroundColor: Colors.white,
     );
