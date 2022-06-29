@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:fast_and_yummy/user%20page/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:fast_and_yummy/user%20page/profile.dart';
 
 class user_page extends StatefulWidget {
   user_page({Key? key}) : super(key: key);
@@ -10,6 +12,60 @@ class user_page extends StatefulWidget {
 }
 
 class _user_pageState extends State<user_page> {
+  bool showAppBar = true;
+/********************************* Start Appbar ******************************* */
+  appBarDesign() {
+    if (showAppBar) {
+      return AppBar(
+        toolbarHeight: 65,
+        title: TextFormField(
+          onEditingComplete: () {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text(searchValue.text),
+                  );
+                });
+          },
+
+          controller:
+              searchValue, // take text value and store it in searchValue variable
+          textInputAction: TextInputAction.go,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(vertical: 1),
+            prefixIcon: Icon(
+              Icons.search,
+              color: Colors.grey,
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            hintText: "Search",
+            focusedBorder: OutlineInputBorder(
+                gapPadding: 10,
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide(color: Colors.white, width: 1)),
+            enabledBorder: OutlineInputBorder(
+                gapPadding: 10,
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide(color: Colors.white, width: 1)),
+            disabledBorder: OutlineInputBorder(
+                gapPadding: 10,
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide(color: Colors.white, width: 1)),
+          ),
+        ),
+        backgroundColor: Color.fromARGB(255, 37, 179, 136),
+      );
+    } else {
+      return AppBar(
+        toolbarHeight: 0,
+        backgroundColor: Color.fromARGB(255, 37, 179, 136),
+      );
+    }
+  }
+  /********************************* End Appbar ******************************* */
+
   TextEditingController searchValue =
       new TextEditingController(); // variable to store text field value in it
   int selectedNavBarItem = 2;
@@ -17,7 +73,7 @@ class _user_pageState extends State<user_page> {
   // ignore: slash_for_doc_comments
   /*************************************** Widget List For Pages ************************** */
   List<Widget> content = [
-    Text("Profile"),
+    profile(),
     Text("Favorite"),
     pageContent(),
     Text("My Orders"),
@@ -27,47 +83,7 @@ class _user_pageState extends State<user_page> {
   Widget build(BuildContext context) {
     return Scaffold(
         /********************************* Start Appbar ******************************* */
-        appBar: AppBar(
-          toolbarHeight: 65,
-          title: TextFormField(
-            onEditingComplete: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text(searchValue.text),
-                    );
-                  });
-            },
-
-            controller:
-                searchValue, // take text value and store it in searchValue variable
-            textInputAction: TextInputAction.go,
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: 1),
-              prefixIcon: Icon(
-                Icons.search,
-                color: Colors.grey,
-              ),
-              filled: true,
-              fillColor: Colors.white,
-              hintText: "Search",
-              focusedBorder: OutlineInputBorder(
-                  gapPadding: 10,
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide(color: Colors.white, width: 1)),
-              enabledBorder: OutlineInputBorder(
-                  gapPadding: 10,
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide(color: Colors.white, width: 1)),
-              disabledBorder: OutlineInputBorder(
-                  gapPadding: 10,
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide(color: Colors.white, width: 1)),
-            ),
-          ),
-          backgroundColor: Color.fromARGB(255, 37, 179, 136),
-        ),
+        appBar: appBarDesign(),
         /********************************* End Appbar ******************************* */
         /******************************* Start Drawer ******************************* */
         drawer: Drawer(
@@ -163,6 +179,15 @@ class _user_pageState extends State<user_page> {
               setState(() {
                 selectedNavBarItem = index;
               });
+              if (index == 0) {
+                setState(() {
+                  showAppBar = false;
+                });
+              } else {
+                setState(() {
+                  showAppBar = true;
+                });
+              }
             },
             currentIndex: selectedNavBarItem,
             type: BottomNavigationBarType.fixed,
@@ -297,8 +322,6 @@ class _pageContentState extends State<pageContent> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
-      // color: Colors
-      //     .white, // Color.fromARGB(255, 243, 242, 242), // All page background color
       child: Column(
         // ignore: prefer_const_literals_to_create_immutables
         children: [
