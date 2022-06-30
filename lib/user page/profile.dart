@@ -2,6 +2,7 @@
 
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -13,14 +14,18 @@ class profile extends StatefulWidget {
 }
 
 class _profileState extends State<profile> {
+  bool hidePass = true;
+  bool hidePass2 = true;
+
   List<Map> favorite = [
     {"name": "Sweet"},
     {"name": "Meat"},
     {"name": "Drinks"},
+    {"name": "Traditional"},
     {"name": "Traditional"}
   ];
   List<Map> bankCardInfo = [
-    {"cardNumber": 5555555555555555},
+    {"cardNumber": "5555 XXXX XXXX XXXX"},
     {"name": "Person Name"},
     {"expDate": '10/23'},
     {"cvv": 999}
@@ -111,7 +116,7 @@ class _profileState extends State<profile> {
           child: Column(
             // ignore: prefer_const_literals_to_create_immutables
             children: [
-              listTileInfo('Personal Information'),
+              listTileInfo('Personal Information', 0),
               Container(
                 margin: EdgeInsets.only(left: 15, bottom: 15),
                 child: Column(
@@ -174,11 +179,12 @@ class _profileState extends State<profile> {
           ),
         ),
         /*************************************** End Personal Information ********************************** */
+
         /*************************************** Start Favorite Information ********************************** */
         Card(
           child: Column(
             children: [
-              listTileInfo('Favorite Information'),
+              listTileInfo('Favorite Information', 1),
               Container(
                 //margin: EdgeInsets.only(left: 15, bottom: 15),
                 child: wrapFavoriteContent(), // Wrap Function
@@ -187,15 +193,16 @@ class _profileState extends State<profile> {
           ),
         ),
         /*************************************** End Favorite Information ********************************** */
+
         /*************************************** Satrt Visa Card Information ********************************** */
         Card(
           child: Column(children: [
-            listTileInfo('Credit Card Information'),
+            listTileInfo('Credit Card Information', 2),
             Container(
               margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
               width: double.infinity,
               decoration: BoxDecoration(
-                  color: Colors.blue[600],
+                  color: Colors.blue[700],
                   borderRadius: BorderRadius.circular(15)),
               // ignore: prefer_const_literals_to_create_immutables
               child: Column(children: [
@@ -277,7 +284,7 @@ class _profileState extends State<profile> {
   }
 
 /************************************************ Start Functions *********************************** */
-  wrapFavoriteContent() {
+  Wrap wrapFavoriteContent() {
     return Wrap(
       direction: Axis.horizontal,
       children: listGenerate(),
@@ -325,7 +332,7 @@ class _profileState extends State<profile> {
     });
   }
 
-  ListTile listTileInfo(String tileTitle) {
+  ListTile listTileInfo(String tileTitle, int whichInfo) {
     return ListTile(
       title: Text(
         tileTitle,
@@ -336,7 +343,15 @@ class _profileState extends State<profile> {
         alignment: Alignment.centerLeft,
         color: Color.fromARGB(255, 37, 179, 136),
         icon: Icon(Icons.edit_note),
-        onPressed: () {},
+        onPressed: () {
+          if (whichInfo == 0) {
+            editPersonalInfo();
+          } else if (whichInfo == 1) {
+            editFavoreiteInfo();
+          } else if (whichInfo == 2) {
+            editCreditCardInfo();
+          }
+        },
       ),
     );
   }
@@ -354,6 +369,177 @@ class _profileState extends State<profile> {
             fontWeight: FontWeight.bold),
       ),
     );
+  }
+
+  editPersonalInfo() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Edit Personal Information"),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(
+                        enabled: false,
+                        labelText: "Email",
+                        labelStyle:
+                            TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
+                        disabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 37, 179, 136)))),
+                  ),
+                  TextFormField(
+                    obscureText: hidePass,
+                    cursorColor: Color.fromARGB(255, 37, 179, 136),
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                if (hidePass) {
+                                  hidePass = false;
+                                } else {
+                                  hidePass = true;
+                                }
+                              });
+                            },
+                            icon: Icon(
+                              hidePass
+                                  ? Icons.visibility_sharp
+                                  : Icons.visibility_off_sharp,
+                              color: Color.fromARGB(255, 37, 179, 136),
+                            )),
+                        labelText: "Password",
+                        labelStyle:
+                            TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
+                        border: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 37, 179, 136)))),
+                  ),
+                  TextFormField(
+                    obscureText: hidePass2,
+                    cursorColor: Color.fromARGB(255, 37, 179, 136),
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                if (hidePass2) {
+                                  hidePass2 = false;
+                                } else {
+                                  hidePass2 = true;
+                                }
+                              });
+                            },
+                            icon: Icon(
+                              hidePass2
+                                  ? Icons.visibility_sharp
+                                  : Icons.visibility_off_sharp,
+                              color: Color.fromARGB(255, 37, 179, 136),
+                            )),
+                        labelText: "Confirm Password",
+                        labelStyle:
+                            TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
+                        border: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 37, 179, 136)))),
+                  )
+                ],
+              ),
+            ),
+            actions: [
+              MaterialButton(
+                color: Color.fromARGB(255, 37, 179, 136),
+                onPressed: () {},
+                child: Text(
+                  "Save",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              TextButton(
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  editFavoreiteInfo() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Edit Favorite Information"),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextFormField(),
+                ],
+              ),
+            ),
+            actions: [
+              MaterialButton(
+                color: Color.fromARGB(255, 37, 179, 136),
+                onPressed: () {},
+                child: Text(
+                  "Save",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              TextButton(
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  editCreditCardInfo() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Edit Credit Card Information"),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextFormField(),
+                ],
+              ),
+            ),
+            actions: [
+              MaterialButton(
+                color: Color.fromARGB(255, 37, 179, 136),
+                onPressed: () {},
+                child: Text(
+                  "Save",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              TextButton(
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
   }
 
 /************************************************ End Functions *********************************** */
