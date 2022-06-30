@@ -2,6 +2,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:fast_and_yummy/HomePage/homepage.dart';
+import 'package:fast_and_yummy/detialscreen.dart';
 import 'package:fast_and_yummy/splash.dart';
 import 'package:fast_and_yummy/user%20page/basic_user.dart';
 import 'package:flutter/material.dart';
