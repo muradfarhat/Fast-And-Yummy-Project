@@ -56,7 +56,7 @@ class HomePage extends StatelessWidget {
           elevation: 0,
           child: Container(
             alignment: Alignment.bottomLeft,
-            height: 250,
+            height: 200,
             child: Image(
               image: AssetImage("images/colors.png"),
             ),

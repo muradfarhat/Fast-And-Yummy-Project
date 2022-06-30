@@ -57,19 +57,20 @@ class _profileState extends State<profile> {
                   ),
                 ),
                 Positioned(
-                    bottom: 15,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(100)),
-                      child: IconButton(
-                        splashColor: Colors.white,
-                        color: Color.fromARGB(255, 37, 179, 136),
-                        iconSize: 20,
-                        icon: Icon(Icons.camera_enhance),
-                        onPressed: () {},
-                      ),
-                    ))
+                  bottom: 15,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(100)),
+                    child: IconButton(
+                      splashColor: Colors.white,
+                      color: Color.fromARGB(255, 37, 179, 136),
+                      iconSize: 20,
+                      icon: Icon(Icons.camera_enhance),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
               ],
             ),
             Row(
