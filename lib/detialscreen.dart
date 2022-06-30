@@ -132,8 +132,8 @@ class _DetialscreenState extends State<Detialscreen> {
             ),
             Container(
               margin: EdgeInsets.only(
-                left: 20,
-                right: 20,
+                left: 10,
+                right: 10,
                 top: 10,
               ),
               child: Column(
