@@ -52,6 +52,16 @@ class HomePage extends StatelessWidget {
             ),
           ],
         ),
+        bottomNavigationBar: BottomAppBar(
+          elevation: 0,
+          child: Container(
+            alignment: Alignment.bottomLeft,
+            height: 250,
+            child: Image(
+              image: AssetImage("images/colors.png"),
+            ),
+          ),
+        ),
       ),
     );
   }

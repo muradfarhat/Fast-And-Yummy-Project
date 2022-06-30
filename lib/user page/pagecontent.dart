@@ -51,7 +51,7 @@ class _PageContentState extends State<PageContent> {
   ];
   List<Map> sugg = [
     {
-      "image": "images/makloba.jpg",
+      "image": "images/pizza.jpg",
       "name": "Food Name",
       "store": "Store Name",
       "price": "\$ 8.99",
@@ -62,7 +62,7 @@ class _PageContentState extends State<PageContent> {
       "star5": 1
     },
     {
-      "image": "images/pizza.jpg",
+      "image": "images/makloba.jpg",
       "name": "Food Name",
       "store": "Store Name",
       "price": "\$ 8.99",
@@ -110,10 +110,14 @@ class _PageContentState extends State<PageContent> {
                   return MaterialButton(
                     padding: EdgeInsets.all(8),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => detialscreen()),
-                      );
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text("Test text"),
+                              actions: [Text("data")],
+                            );
+                          });
                     },
                     child: Column(
                       children: [
@@ -324,14 +328,10 @@ class _PageContentState extends State<PageContent> {
                   return MaterialButton(
                     padding: EdgeInsets.all(8),
                     onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text("Test text"),
-                              actions: [Text("data")],
-                            );
-                          });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Detialscreen()),
+                      );
                     },
                     child: Container(
                         padding: EdgeInsets.all(5),
@@ -412,46 +412,11 @@ class _PageContentState extends State<PageContent> {
                                     child: Row(
                                       // ignore: prefer_const_literals_to_create_immutables
                                       children: [
-                                        Icon(
-                                          sugg[i]['star1'] == 1
-                                              ? Icons.star
-                                              : Icons.star_border_outlined,
-                                          //Icons.star,
-                                          size: 20,
-                                          color: Colors.amberAccent,
-                                        ),
-                                        Icon(
-                                          sugg[i]['star2'] == 1
-                                              ? Icons.star
-                                              : Icons.star_border_outlined,
-                                          //Icons.star,
-                                          size: 20,
-                                          color: Colors.amberAccent,
-                                        ),
-                                        Icon(
-                                          sugg[i]['star3'] == 1
-                                              ? Icons.star
-                                              : Icons.star_border_outlined,
-                                          //Icons.star,
-                                          size: 20,
-                                          color: Colors.amberAccent,
-                                        ),
-                                        Icon(
-                                          sugg[i]['star4'] == 1
-                                              ? Icons.star
-                                              : Icons.star_border_outlined,
-                                          //Icons.star,
-                                          size: 20,
-                                          color: Colors.amberAccent,
-                                        ),
-                                        Icon(
-                                          sugg[i]['star5'] == 1
-                                              ? Icons.star
-                                              : Icons.star_border_outlined,
-                                          //Icons.star,
-                                          size: 20,
-                                          color: Colors.amberAccent,
-                                        ),
+                                        iconStar(i, "star1"),
+                                        iconStar(i, "star2"),
+                                        iconStar(i, "star3"),
+                                        iconStar(i, "star4"),
+                                        iconStar(i, "star5"),
                                       ],
                                     ),
                                   )
@@ -466,6 +431,15 @@ class _PageContentState extends State<PageContent> {
           /************************************* End Suggestions Section **************************** */
         ],
       ),
+    );
+  }
+
+  Icon iconStar(int index, String star) {
+    return Icon(
+      sugg[index][star] == 1 ? Icons.star : Icons.star_border_outlined,
+      //Icons.star,
+      size: 20,
+      color: Colors.amberAccent,
     );
   }
 }

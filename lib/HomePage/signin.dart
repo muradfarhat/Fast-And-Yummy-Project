@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last, must_be_immutable
 import 'package:flutter/material.dart';
 
+import '../user page/basic_user.dart';
+
 class SignIn extends StatefulWidget {
   SignIn({Key? key}) : super(key: key);
   bool bol = true;
@@ -67,7 +69,12 @@ class _SignInState extends State<SignIn> {
           child: Center(
             child: ElevatedButton(
               onPressed: () {
-                setState(() {});
+                setState(() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => UserPage()),
+                  );
+                });
               },
               child: Text(
                 "Sign in",
@@ -85,9 +92,6 @@ class _SignInState extends State<SignIn> {
               ),
             ),
           ),
-        ),
-        Image(
-          image: AssetImage("images/colors.png"),
         ),
       ],
     );

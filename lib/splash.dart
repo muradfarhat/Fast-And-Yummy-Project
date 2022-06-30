@@ -1,5 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:fast_and_yummy/HomePage/homepage.dart';
+import 'package:fast_and_yummy/HomePage/signin.dart';
 import 'package:fast_and_yummy/user%20page/basic_user.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
@@ -12,7 +13,7 @@ class Splash extends StatelessWidget {
     return AnimatedSplashScreen(
       splashIconSize: 120,
       splash: const RiveAnimation.asset("assets/raeds.riv"),
-      nextScreen: UserPage(),
+      nextScreen: HomePage(),
       duration: 3500,
       backgroundColor: Colors.white,
     );

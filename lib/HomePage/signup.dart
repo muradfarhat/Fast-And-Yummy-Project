@@ -90,9 +90,6 @@ class _SignUpState extends State<SignUp> {
             ),
           ),
         ),
-        Image(
-          image: AssetImage("images/colors.png"),
-        ),
       ],
     );
   }
