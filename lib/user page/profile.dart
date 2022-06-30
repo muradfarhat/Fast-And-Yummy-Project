@@ -14,6 +14,17 @@ class profile extends StatefulWidget {
 class _profileState extends State<profile> {
   bool hidePass = true;
   bool hidePass2 = true;
+  bool notEnable = false;
+  bool showSaveInfo = false;
+
+  List<Map> personalInfo = [
+    {"name": "Customer Name"},
+    {"email": "customer@email.com"},
+    {"password": "12345678"},
+    {"phone": "+970 598 418 464"},
+    {"address": "Bieta, Nablus"},
+    {"image": "images/profile.jpg"}
+  ];
 
   List<Map> favorite = [
     {"name": "Sweet"},
@@ -55,7 +66,7 @@ class _profileState extends State<profile> {
                     boxShadow: [BoxShadow(color: Colors.white, blurRadius: 10)],
                     image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: AssetImage("images/profile.jpg")),
+                        image: AssetImage("${personalInfo[5]['image']}")),
                     borderRadius: BorderRadius.circular(100),
                   ),
                 ),
@@ -83,7 +94,7 @@ class _profileState extends State<profile> {
                 Expanded(
                   flex: 3,
                   child: Container(
-                    child: Text("Customer Name",
+                    child: Text("${personalInfo[0]['name']}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Colors.white,
@@ -99,7 +110,9 @@ class _profileState extends State<profile> {
                       color: Colors.white,
                       iconSize: 20,
                       icon: Icon(Icons.edit),
-                      onPressed: () {},
+                      onPressed: () {
+                        editName();
+                      },
                     ),
                   ),
                 )
@@ -116,59 +129,143 @@ class _profileState extends State<profile> {
             children: [
               listTileInfo('Personal Information', 0),
               Container(
-                margin: EdgeInsets.only(left: 15, bottom: 15),
+                margin: EdgeInsets.only(left: 15, bottom: 15, right: 15),
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        Icon(Icons.email,
+                    TextFormField(
+                      initialValue: "${personalInfo[1]['email']}",
+                      enabled: false,
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.email,
                             color: Color.fromARGB(255, 37, 179, 136)),
-                        Container(
-                          margin: EdgeInsets.only(left: 10),
-                          child: Text("customer@email.com"),
-                        )
-                      ],
+                      ),
                     ),
                     Divider(
                       color: Colors.white,
                     ),
-                    Row(
-                      children: [
-                        Icon(Icons.password,
+                    TextFormField(
+                      initialValue: "${personalInfo[2]['password']}",
+                      enabled: notEnable,
+                      obscureText: hidePass,
+                      decoration: InputDecoration(
+                        suffixIcon: Visibility(
+                          visible: showSaveInfo,
+                          child: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  if (hidePass) {
+                                    hidePass = false;
+                                  } else {
+                                    hidePass = true;
+                                  }
+                                });
+                              },
+                              icon: Icon(
+                                hidePass
+                                    ? Icons.visibility_sharp
+                                    : Icons.visibility_off_sharp,
+                                color: Color.fromARGB(255, 37, 179, 136),
+                              )),
+                        ),
+                        icon: Icon(Icons.password,
                             color: Color.fromARGB(255, 37, 179, 136)),
-                        Container(
-                          margin: EdgeInsets.only(left: 10),
-                          child: Text(
-                            "**********",
-                            style: TextStyle(letterSpacing: 5),
+                      ),
+                    ),
+                    Visibility(
+                      visible: showSaveInfo,
+                      child: Container(
+                        child: Column(
+                          children: [
+                            Divider(
+                              color: Colors.white,
+                            ),
+                            TextFormField(
+                              //initialValue: "${personalInfo[2]['password']}",
+                              enabled: notEnable,
+                              obscureText: hidePass2,
+                              decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        if (hidePass2) {
+                                          hidePass2 = false;
+                                        } else {
+                                          hidePass2 = true;
+                                        }
+                                      });
+                                    },
+                                    icon: Icon(
+                                      hidePass2
+                                          ? Icons.visibility_sharp
+                                          : Icons.visibility_off_sharp,
+                                      color: Color.fromARGB(255, 37, 179, 136),
+                                    )),
+                                hintText: "Confirm Password",
+                                icon: Icon(Icons.password,
+                                    color: Color.fromARGB(255, 37, 179, 136)),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Divider(
+                      color: Colors.white,
+                    ),
+                    TextFormField(
+                      initialValue: "${personalInfo[3]['phone']}",
+                      keyboardType: TextInputType.number,
+                      enabled: notEnable,
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.phone,
+                            color: Color.fromARGB(255, 37, 179, 136)),
+                      ),
+                    ),
+                    Divider(
+                      color: Colors.white,
+                    ),
+                    TextFormField(
+                      initialValue: "${personalInfo[4]['address']}",
+                      enabled: notEnable,
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.edit_location,
+                            color: Color.fromARGB(255, 37, 179, 136)),
+                      ),
+                    ),
+                    Divider(
+                      color: Colors.white,
+                    ),
+                    Visibility(
+                      visible: showSaveInfo,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: MaterialButton(
+                              color: Color.fromARGB(255, 37, 179, 136),
+                              onPressed: () {},
+                              child: Text(
+                                "Save",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
                           ),
-                        )
-                      ],
-                    ),
-                    Divider(
-                      color: Colors.white,
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.phone,
-                            color: Color.fromARGB(255, 37, 179, 136)),
-                        Container(
-                            margin: EdgeInsets.only(left: 10),
-                            child: Text("+970-598-418-464"))
-                      ],
-                    ),
-                    Divider(
-                      color: Colors.white,
-                    ),
-                    Row(
-                      // ignore: prefer_const_literals_to_create_immutables
-                      children: [
-                        Icon(Icons.location_city,
-                            color: Color.fromARGB(255, 37, 179, 136)),
-                        Container(
-                            margin: EdgeInsets.only(left: 10),
-                            child: Text("Beita, Nablus"))
-                      ],
+                          Expanded(
+                            child: TextButton(
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 37, 179, 136)),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  notEnable = false;
+                                  showSaveInfo = false;
+                                });
+                              },
+                            ),
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),
@@ -343,7 +440,10 @@ class _profileState extends State<profile> {
         icon: Icon(Icons.edit_note),
         onPressed: () {
           if (whichInfo == 0) {
-            editPersonalInfo();
+            setState(() {
+              notEnable = true;
+              showSaveInfo = true;
+            });
           } else if (whichInfo == 1) {
             editFavoreiteInfo();
           } else if (whichInfo == 2) {
@@ -369,102 +469,50 @@ class _profileState extends State<profile> {
     );
   }
 
-  editPersonalInfo() {
+  editName() {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Edit Personal Information"),
-            content: SingleChildScrollView(
-              child: Column(
+              title: Row(
                 children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                        enabled: false,
-                        labelText: "Email",
-                        labelStyle:
-                            TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
-                        disabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 37, 179, 136)))),
-                  ),
-                  TextFormField(
-                    obscureText: hidePass,
-                    cursorColor: Color.fromARGB(255, 37, 179, 136),
-                    decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                if (hidePass) {
-                                  hidePass = false;
-                                } else {
-                                  hidePass = true;
-                                }
-                              });
-                            },
-                            icon: Icon(
-                              hidePass
-                                  ? Icons.visibility_sharp
-                                  : Icons.visibility_off_sharp,
-                              color: Color.fromARGB(255, 37, 179, 136),
-                            )),
-                        labelText: "Password",
-                        labelStyle:
-                            TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
-                        border: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 37, 179, 136)))),
-                  ),
-                  TextFormField(
-                    obscureText: hidePass2,
-                    cursorColor: Color.fromARGB(255, 37, 179, 136),
-                    decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                if (hidePass2) {
-                                  hidePass2 = false;
-                                } else {
-                                  hidePass2 = true;
-                                }
-                              });
-                            },
-                            icon: Icon(
-                              hidePass2
-                                  ? Icons.visibility_sharp
-                                  : Icons.visibility_off_sharp,
-                              color: Color.fromARGB(255, 37, 179, 136),
-                            )),
-                        labelText: "Confirm Password",
-                        labelStyle:
-                            TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
-                        border: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color.fromARGB(255, 37, 179, 136)))),
-                  )
+                  Container(
+                      margin: EdgeInsets.only(right: 5),
+                      child: Icon(
+                        Icons.edit_note,
+                        color: Color.fromARGB(255, 37, 179, 136),
+                      )),
+                  Text("Edit Name")
                 ],
               ),
-            ),
-            actions: [
-              MaterialButton(
-                color: Color.fromARGB(255, 37, 179, 136),
-                onPressed: () {},
-                child: Text(
-                  "Save",
-                  style: TextStyle(color: Colors.white),
-                ),
+              content: TextFormField(
+                keyboardType: TextInputType.name,
+                cursorColor: Color.fromARGB(255, 37, 179, 136),
+                decoration: InputDecoration(
+                    hintText: "New Name",
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 37, 179, 136)))),
               ),
-              TextButton(
-                child: Text(
-                  "Cancel",
-                  style: TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
+              actions: [
+                MaterialButton(
+                  color: Color.fromARGB(255, 37, 179, 136),
+                  onPressed: () {},
+                  child: Text(
+                    "Save",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          );
+                TextButton(
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ]);
         });
   }
 
