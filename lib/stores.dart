@@ -194,8 +194,11 @@ class _StoresState extends State<Stores> {
   appBarDesign() {
     if (showAppBar) {
       return AppBar(
-        leading: Icon(
-          Icons.arrow_back,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back),
         ),
         toolbarHeight: 65,
         title: TextFormField(

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_new, slash_for_doc_comments, duplicate_ignore
 
+import 'package:fast_and_yummy/stores.dart';
 import 'package:fast_and_yummy/user%20page/pagecontent.dart';
 import 'package:fast_and_yummy/user%20page/profile.dart';
 import 'package:flutter/material.dart';
@@ -142,13 +143,10 @@ class _UserPageState extends State<UserPage> {
   ListTile listTileDesgin(String name, IconData ic) {
     return ListTile(
       onTap: () {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text(name),
-              );
-            });
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Stores()),
+        );
       },
       title: Text(name),
       leading: Icon(
