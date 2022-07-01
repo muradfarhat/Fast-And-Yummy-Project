@@ -16,33 +16,39 @@ class _StoresState extends State<Stores> {
       TextEditingController(); // variable to store text field value in it
   int selectedNavBarItem = 2;
   bool showAppBar = true;
-  Icon icone = Icon(Icons.favorite_border_outlined);
-  bool love = false;
   Color color = Colors.black;
   List<Map> stores = [
     {
       "image": "images/90.jpg",
       "store": "90-s Burgar",
       "product": "19 Product",
-      "feedback": "58 Feed Back"
+      "feedback": "58 Feed Back",
+      "fav": false,
+      "icon": Icon(Icons.favorite_border_outlined),
     },
     {
       "image": "images/kfc.png",
       "store": "KFC",
       "product": "22 Product",
-      "feedback": "130 Feed Back"
+      "feedback": "130 Feed Back",
+      "fav": false,
+      "icon": Icon(Icons.favorite_border_outlined),
     },
     {
       "image": "images/macdonald.png",
       "store": "Macdonald",
       "product": "29 Product",
-      "feedback": "105 Feed Back"
+      "feedback": "105 Feed Back",
+      "fav": false,
+      "icon": Icon(Icons.favorite_border_outlined),
     },
     {
       "image": "images/Starbucks.jpg",
       "store": "Starbucks",
       "product": "15 Product",
-      "feedback": "97 Feed Back"
+      "feedback": "97 Feed Back",
+      "fav": false,
+      "icon": Icon(Icons.favorite_border_outlined),
     }
   ];
   @override
@@ -106,20 +112,20 @@ class _StoresState extends State<Stores> {
                               ],
                             ),
                             child: IconButton(
-                              color: color,
+                              color: stores[i]["fav"] == false
+                                  ? Colors.black
+                                  : Colors.red,
                               iconSize: 40,
-                              icon: icone,
+                              icon: stores[i]["icon"],
                               onPressed: () {
                                 setState(() {
-                                  if (love == false) {
-                                    love = true;
-                                    icone = Icon(Icons.favorite);
-                                    color = Colors.red;
+                                  if (stores[i]["fav"] == false) {
+                                    stores[i]["fav"] = true;
+                                    stores[i]["icon"] = Icon(Icons.favorite);
                                   } else {
-                                    love = false;
-                                    icone =
+                                    stores[i]["fav"] = false;
+                                    stores[i]["icon"] =
                                         Icon(Icons.favorite_border_outlined);
-                                    color = Colors.black;
                                   }
                                 });
                               },
