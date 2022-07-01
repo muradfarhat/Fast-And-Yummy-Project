@@ -73,7 +73,6 @@ class _StoresState extends State<Stores> {
                     });
               },
               child: Container(
-                padding: EdgeInsets.all(8),
                 margin: EdgeInsets.all(10),
                 width: size.width,
                 decoration: BoxDecoration(
@@ -88,51 +87,62 @@ class _StoresState extends State<Stores> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Stack(
-                      children: [
-                        Container(
-                          height: 200,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              image: DecorationImage(
-                                  image: AssetImage("${stores[i]['image']}"),
-                                  fit: BoxFit.cover)),
-                        ),
-                        Positioned(
-                          bottom: 5,
-                          right: 5,
-                          child: Container(
+                    Container(
+                      padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 37, 179, 136),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15)),
+                      ),
+                      child: Stack(
+                        children: [
+                          Container(
+                            height: 200,
                             decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(100),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Color.fromARGB(255, 133, 133, 133),
-                                    blurRadius: 4)
-                              ],
-                            ),
-                            child: IconButton(
-                              color: stores[i]["fav"] == false
-                                  ? Colors.black
-                                  : Colors.red,
-                              iconSize: 40,
-                              icon: stores[i]["icon"],
-                              onPressed: () {
-                                setState(() {
-                                  if (stores[i]["fav"] == false) {
-                                    stores[i]["fav"] = true;
-                                    stores[i]["icon"] = Icon(Icons.favorite);
-                                  } else {
-                                    stores[i]["fav"] = false;
-                                    stores[i]["icon"] =
-                                        Icon(Icons.favorite_border_outlined);
-                                  }
-                                });
-                              },
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15),
+                                    topRight: Radius.circular(15)),
+                                image: DecorationImage(
+                                    image: AssetImage("${stores[i]['image']}"),
+                                    fit: BoxFit.cover)),
+                          ),
+                          Positioned(
+                            bottom: 5,
+                            right: 5,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(100),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Color.fromARGB(255, 133, 133, 133),
+                                      blurRadius: 4)
+                                ],
+                              ),
+                              child: IconButton(
+                                color: stores[i]["fav"] == false
+                                    ? Colors.black
+                                    : Colors.red,
+                                iconSize: 40,
+                                icon: stores[i]["icon"],
+                                onPressed: () {
+                                  setState(() {
+                                    if (stores[i]["fav"] == false) {
+                                      stores[i]["fav"] = true;
+                                      stores[i]["icon"] = Icon(Icons.favorite);
+                                    } else {
+                                      stores[i]["fav"] = false;
+                                      stores[i]["icon"] =
+                                          Icon(Icons.favorite_border_outlined);
+                                    }
+                                  });
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     Container(
                       padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
