@@ -16,23 +16,42 @@ class _profileState extends State<profile> {
   bool hidePass2 = true;
   bool notEnable = false;
   bool showSaveInfo = false;
+  bool showFavEdit = false;
+
+  String? name;
+  String? pass;
+  String? confirmValue;
+  String? phone;
+  String? city;
+  String? town;
+  String? street;
 
   List<Map> personalInfo = [
     {"name": "Customer Name"},
     {"email": "customer@email.com"},
     {"password": "12345678"},
-    {"phone": "+970 598 418 464"},
-    {"address": "Bieta, Nablus"},
+    {"phone": "598418464"},
+    {"city": "Nablus"},
+    {"town": "Beita"},
+    {"street": "50 Street"},
     {"image": "images/profile.jpg"}
   ];
 
-  List<Map> favorite = [
+  List<Map> favoriteCkeckBox = [
+    // favorite items that will check from it :: fixed list edit just from admin
     {"name": "Sweet"},
     {"name": "Meat"},
     {"name": "Drinks"},
     {"name": "Traditional"},
     {"name": "Traditional"}
   ];
+
+  List<Map> favorite = [
+    {"name": "Sweet"},
+    {"name": "Meat"},
+    {"name": "Traditional"},
+  ];
+
   List<Map> bankCardInfo = [
     {"cardNumber": "5555 XXXX XXXX XXXX"},
     {"name": "Person Name"},
@@ -41,7 +60,34 @@ class _profileState extends State<profile> {
   ];
   @override
   Widget build(BuildContext context) {
+    GlobalKey<FormState> formStateForPersonal =
+        new GlobalKey<FormState>(); // For Text Filed in Personal Info
+    GlobalKey<ScaffoldState> scaffoldKey =
+        new GlobalKey<ScaffoldState>(); // For snackBar
+
+    GlobalKey<FormState> formStateForFavorite =
+        new GlobalKey<FormState>(); // For Text Filed in Favorite
+
+    bool EditPersonalData() {
+      var formData = formStateForPersonal.currentState;
+
+      if (formData!.validate()) {
+        formData.save();
+
+        personalInfo[2]['password'] = pass;
+        personalInfo[3]['phone'] = phone;
+        personalInfo[4]['city'] = city;
+        personalInfo[5]['town'] = town;
+        personalInfo[6]['street'] = street;
+
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     return SingleChildScrollView(
+      key: scaffoldKey,
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         /*************************************** Start header => User image and name *************************** */
         Container(
@@ -66,7 +112,7 @@ class _profileState extends State<profile> {
                     boxShadow: [BoxShadow(color: Colors.white, blurRadius: 10)],
                     image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: AssetImage("${personalInfo[5]['image']}")),
+                        image: AssetImage("${personalInfo[7]['image']}")),
                     borderRadius: BorderRadius.circular(100),
                   ),
                 ),
@@ -123,168 +169,342 @@ class _profileState extends State<profile> {
         /*************************************** End header => User image and name *************************** */
 
         /*************************************** Start Personal Information ********************************** */
-        Card(
-          child: Column(
-            // ignore: prefer_const_literals_to_create_immutables
-            children: [
-              listTileInfo('Personal Information', 0),
-              Container(
-                margin: EdgeInsets.only(left: 15, bottom: 15, right: 15),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      initialValue: "${personalInfo[1]['email']}",
-                      enabled: false,
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.email,
-                            color: Color.fromARGB(255, 37, 179, 136)),
-                      ),
-                    ),
-                    Divider(
-                      color: Colors.white,
-                    ),
-                    TextFormField(
-                      initialValue: "${personalInfo[2]['password']}",
-                      enabled: notEnable,
-                      obscureText: hidePass,
-                      decoration: InputDecoration(
-                        suffixIcon: Visibility(
-                          visible: showSaveInfo,
-                          child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  if (hidePass) {
-                                    hidePass = false;
-                                  } else {
-                                    hidePass = true;
-                                  }
-                                });
-                              },
-                              icon: Icon(
-                                hidePass
-                                    ? Icons.visibility_sharp
-                                    : Icons.visibility_off_sharp,
-                                color: Color.fromARGB(255, 37, 179, 136),
-                              )),
+        Form(
+          key: formStateForPersonal,
+          child: Card(
+            child: Column(
+              // ignore: prefer_const_literals_to_create_immutables
+              children: [
+                listTileInfo('Personal Information', 0),
+                Container(
+                  margin: EdgeInsets.only(left: 15, bottom: 15, right: 15),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        initialValue: "${personalInfo[1]['email']}",
+                        enabled: false,
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.email,
+                              color: Color.fromARGB(255, 37, 179, 136)),
                         ),
-                        icon: Icon(Icons.password,
-                            color: Color.fromARGB(255, 37, 179, 136)),
                       ),
-                    ),
-                    Visibility(
-                      visible: showSaveInfo,
-                      child: Container(
-                        child: Column(
+                      Divider(
+                        color: Colors.white,
+                      ),
+                      TextFormField(
+                        autovalidateMode: AutovalidateMode.always,
+                        validator: (pass) {
+                          if (pass!.length < 8) {
+                            return "It must be 8 or more characters";
+                          } else {
+                            return null;
+                          }
+                        },
+                        onSaved: (text) {
+                          pass = text;
+                        },
+                        onChanged: (confirm) {
+                          confirmValue = confirm;
+                        },
+                        initialValue: "${personalInfo[2]['password']}",
+                        enabled: notEnable,
+                        obscureText: hidePass,
+                        decoration: InputDecoration(
+                          hintText: "Password",
+                          suffixIcon: Visibility(
+                            visible: showSaveInfo,
+                            child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (hidePass) {
+                                      hidePass = false;
+                                    } else {
+                                      hidePass = true;
+                                    }
+                                  });
+                                },
+                                icon: Icon(
+                                  hidePass
+                                      ? Icons.visibility_sharp
+                                      : Icons.visibility_off_sharp,
+                                  color: Color.fromARGB(255, 37, 179, 136),
+                                )),
+                          ),
+                          icon: Icon(Icons.password,
+                              color: Color.fromARGB(255, 37, 179, 136)),
+                        ),
+                      ),
+                      Visibility(
+                        visible: showSaveInfo,
+                        child: Container(
+                          child: Column(
+                            children: [
+                              Divider(
+                                color: Colors.white,
+                              ),
+                              TextFormField(
+                                autovalidateMode: AutovalidateMode.always,
+                                validator: (text) {
+                                  if (confirmValue == null) {
+                                    return null;
+                                  } else if (text != confirmValue) {
+                                    return "Passwords are not the same";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                enabled: notEnable,
+                                obscureText: hidePass2,
+                                decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          if (hidePass2) {
+                                            hidePass2 = false;
+                                          } else {
+                                            hidePass2 = true;
+                                          }
+                                        });
+                                      },
+                                      icon: Icon(
+                                        hidePass2
+                                            ? Icons.visibility_sharp
+                                            : Icons.visibility_off_sharp,
+                                        color:
+                                            Color.fromARGB(255, 37, 179, 136),
+                                      )),
+                                  hintText: "Confirm Password",
+                                  icon: Icon(Icons.password,
+                                      color: Color.fromARGB(255, 37, 179, 136)),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.white,
+                      ),
+                      TextFormField(
+                        autovalidateMode: AutovalidateMode.always,
+                        validator: (phone) {
+                          if (phone!.length < 9 || phone.length > 12) {
+                            return "The phone number must be 10 digits";
+                          } else {
+                            return null;
+                          }
+                        },
+                        onSaved: (text) {
+                          if (text!.startsWith("0")) {
+                            text = text.substring(1);
+                            phone = text;
+                          } else {
+                            phone = text;
+                          }
+                        },
+                        initialValue: "${personalInfo[3]['phone']}",
+                        keyboardType: TextInputType.number,
+                        enabled: notEnable,
+                        decoration: InputDecoration(
+                          hintText: "Phone Number",
+                          prefix: Text(
+                            "+970 ",
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                          icon: Icon(Icons.phone,
+                              color: Color.fromARGB(255, 37, 179, 136)),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.white,
+                      ),
+                      TextFormField(
+                        autovalidateMode: AutovalidateMode.always,
+                        validator: (city) {
+                          if (city!.length > 20 || city.length < 3) {
+                            return "Invalid input";
+                          } else {
+                            return null;
+                          }
+                        },
+                        onSaved: (text) {
+                          city = text;
+                        },
+                        initialValue: "${personalInfo[4]['city']}",
+                        enabled: notEnable,
+                        decoration: InputDecoration(
+                          hintText: "City",
+                          icon: Icon(Icons.map,
+                              color: Color.fromARGB(255, 37, 179, 136)),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.white,
+                      ),
+                      TextFormField(
+                        autovalidateMode: AutovalidateMode.always,
+                        validator: (city) {
+                          if (city!.length > 20 || city.length < 3) {
+                            return "Invalid input";
+                          } else {
+                            return null;
+                          }
+                        },
+                        onSaved: (text) {
+                          town = text;
+                        },
+                        initialValue: "${personalInfo[5]['town']}",
+                        enabled: notEnable,
+                        decoration: InputDecoration(
+                          hintText: "Town",
+                          icon: Icon(Icons.location_city,
+                              color: Color.fromARGB(255, 37, 179, 136)),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.white,
+                      ),
+                      TextFormField(
+                        autovalidateMode: AutovalidateMode.always,
+                        validator: (city) {
+                          if (city!.length > 20 || city.length < 3) {
+                            return "Invalid input";
+                          } else {
+                            return null;
+                          }
+                        },
+                        onSaved: (text) {
+                          street = text;
+                        },
+                        initialValue: "${personalInfo[6]['street']}",
+                        enabled: notEnable,
+                        decoration: InputDecoration(
+                          hintText: "Street",
+                          icon: Icon(Icons.edit_location,
+                              color: Color.fromARGB(255, 37, 179, 136)),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.white,
+                      ),
+                      Visibility(
+                        visible: showSaveInfo,
+                        child: Row(
                           children: [
-                            Divider(
-                              color: Colors.white,
+                            Expanded(
+                              child: MaterialButton(
+                                color: Color.fromARGB(255, 37, 179, 136),
+                                onPressed: () {
+                                  if (EditPersonalData()) {
+                                    setState(() {
+                                      notEnable = false;
+                                      showSaveInfo = false;
+                                      confirmValue = null;
+                                    });
+                                    showSuccessSnackBarMSG(); // a Function in Functions Section
+                                  } else {
+                                    showFaildSnackBarMSG(); // a Function in Functions Section
+                                  }
+                                },
+                                child: Text(
+                                  "Save",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
                             ),
-                            TextFormField(
-                              //initialValue: "${personalInfo[2]['password']}",
-                              enabled: notEnable,
-                              obscureText: hidePass2,
-                              decoration: InputDecoration(
-                                suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        if (hidePass2) {
-                                          hidePass2 = false;
-                                        } else {
-                                          hidePass2 = true;
-                                        }
-                                      });
-                                    },
-                                    icon: Icon(
-                                      hidePass2
-                                          ? Icons.visibility_sharp
-                                          : Icons.visibility_off_sharp,
-                                      color: Color.fromARGB(255, 37, 179, 136),
-                                    )),
-                                hintText: "Confirm Password",
-                                icon: Icon(Icons.password,
-                                    color: Color.fromARGB(255, 37, 179, 136)),
+                            Expanded(
+                              child: TextButton(
+                                child: Text(
+                                  "Cancel",
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 37, 179, 136)),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    notEnable = false;
+                                    showSaveInfo = false;
+                                    confirmValue = null;
+                                  });
+                                },
                               ),
                             )
                           ],
                         ),
-                      ),
-                    ),
-                    Divider(
-                      color: Colors.white,
-                    ),
-                    TextFormField(
-                      initialValue: "${personalInfo[3]['phone']}",
-                      keyboardType: TextInputType.number,
-                      enabled: notEnable,
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.phone,
-                            color: Color.fromARGB(255, 37, 179, 136)),
-                      ),
-                    ),
-                    Divider(
-                      color: Colors.white,
-                    ),
-                    TextFormField(
-                      initialValue: "${personalInfo[4]['address']}",
-                      enabled: notEnable,
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.edit_location,
-                            color: Color.fromARGB(255, 37, 179, 136)),
-                      ),
-                    ),
-                    Divider(
-                      color: Colors.white,
-                    ),
-                    Visibility(
-                      visible: showSaveInfo,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: MaterialButton(
-                              color: Color.fromARGB(255, 37, 179, 136),
-                              onPressed: () {},
-                              child: Text(
-                                "Save",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: TextButton(
-                              child: Text(
-                                "Cancel",
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 37, 179, 136)),
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  notEnable = false;
-                                  showSaveInfo = false;
-                                });
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         /*************************************** End Personal Information ********************************** */
 
         /*************************************** Start Favorite Information ********************************** */
-        Card(
-          child: Column(
-            children: [
-              listTileInfo('Favorite Information', 1),
-              Container(
-                //margin: EdgeInsets.only(left: 15, bottom: 15),
-                child: wrapFavoriteContent(), // Wrap Function
-              ),
-            ],
+        Form(
+          key: formStateForFavorite,
+          child: Card(
+            child: Column(
+              children: [
+                listTileInfo('Favorite Information',
+                    1), // a Function in Functions Section
+                Container(
+                  child:
+                      wrapFavoriteContent(), // Wrap Function a Function in Functions Section
+                ),
+                Visibility(
+                    visible: showFavEdit,
+                    child: Column(
+                      children: [
+                        Divider(),
+                        ListTile(
+                          title: Text(
+                            "Choose your favorite",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Container(
+                          child:
+                              wrapFavoriteContentCheckBox(), // Wrap Function a Function in Functions Section
+                        ),
+                        Container(
+                          margin:
+                              EdgeInsets.only(right: 15, bottom: 15, left: 15),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: MaterialButton(
+                                  color: Color.fromARGB(255, 37, 179, 136),
+                                  onPressed: () {},
+                                  child: Text(
+                                    "Save",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: TextButton(
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 37, 179, 136)),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      showFavEdit = false;
+                                    });
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ))
+              ],
+            ),
           ),
         ),
         /*************************************** End Favorite Information ********************************** */
@@ -378,7 +598,7 @@ class _profileState extends State<profile> {
     );
   }
 
-/************************************************ Start Functions *********************************** */
+/************************************************ Start Functions Section *********************************** */
   Wrap wrapFavoriteContent() {
     return Wrap(
       direction: Axis.horizontal,
@@ -419,9 +639,56 @@ class _profileState extends State<profile> {
               ),
               Expanded(
                   child: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          favorite.removeAt(index);
+                        });
+                      },
                       icon: Icon(Icons.close),
                       splashColor: Colors.white))
+            ],
+          ));
+    });
+  }
+
+  Wrap wrapFavoriteContentCheckBox() {
+    return Wrap(
+      direction: Axis.horizontal,
+      children: listGenerateCheckBox(),
+    );
+  }
+
+  listGenerateCheckBox() {
+    return List.generate(favoriteCkeckBox.length, (index) {
+      return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            // ignore: prefer_const_literals_to_create_immutables
+            boxShadow: [
+              BoxShadow(
+                  color: Color.fromARGB(255, 197, 197, 197), blurRadius: 4)
+            ],
+            borderRadius: BorderRadius.circular(30),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          margin: EdgeInsets.only(left: 5, bottom: 15, right: 5),
+          alignment: Alignment.center,
+          width: 180,
+          height: 40,
+          child: Row(
+            // ignore: prefer_const_literals_to_create_immutables
+            children: [
+              Expanded(child: Icon(Icons.food_bank)),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  child: Text(
+                    "${favoriteCkeckBox[index]['name']}", // ${favorite[index]['name']}
+                    textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 17),
+                  ),
+                ),
+              )
             ],
           ));
     });
@@ -434,7 +701,7 @@ class _profileState extends State<profile> {
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
       ),
       trailing: IconButton(
-        splashColor: Colors.white,
+        splashColor: Color.fromARGB(255, 37, 179, 136),
         alignment: Alignment.centerLeft,
         color: Color.fromARGB(255, 37, 179, 136),
         icon: Icon(Icons.edit_note),
@@ -445,7 +712,9 @@ class _profileState extends State<profile> {
               showSaveInfo = true;
             });
           } else if (whichInfo == 1) {
-            editFavoreiteInfo();
+            setState(() {
+              showFavEdit = true;
+            });
           } else if (whichInfo == 2) {
             editCreditCardInfo();
           }
@@ -516,42 +785,6 @@ class _profileState extends State<profile> {
         });
   }
 
-  editFavoreiteInfo() {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Edit Favorite Information"),
-            content: SingleChildScrollView(
-              child: Column(
-                children: [
-                  TextFormField(),
-                ],
-              ),
-            ),
-            actions: [
-              MaterialButton(
-                color: Color.fromARGB(255, 37, 179, 136),
-                onPressed: () {},
-                child: Text(
-                  "Save",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              TextButton(
-                child: Text(
-                  "Cancel",
-                  style: TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          );
-        });
-  }
-
   editCreditCardInfo() {
     return showDialog(
         context: context,
@@ -588,6 +821,58 @@ class _profileState extends State<profile> {
         });
   }
 
-/************************************************ End Functions *********************************** */
+  showSuccessSnackBarMSG() {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Color.fromARGB(255, 37, 179, 136).withOpacity(0.7),
+      content: Row(
+        // ignore: prefer_const_literals_to_create_immutables
+        children: [
+          Container(
+            margin: EdgeInsets.only(right: 15),
+            child: Icon(
+              Icons.check_circle_rounded,
+              color: Colors.white,
+              size: 35,
+            ),
+          ),
+          Text(
+            "Saved",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+      duration: Duration(seconds: 2),
+      margin: EdgeInsets.all(20),
+    ));
+  }
+
+  showFaildSnackBarMSG() {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.red.withOpacity(0.7),
+      content: Row(
+        // ignore: prefer_const_literals_to_create_immutables
+        children: [
+          Container(
+            margin: EdgeInsets.only(right: 15),
+            child: Icon(
+              Icons.close,
+              color: Colors.white,
+              size: 35,
+            ),
+          ),
+          Text(
+            "Save Faild",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+      duration: Duration(seconds: 2),
+      margin: EdgeInsets.all(20),
+    ));
+  }
+
+/************************************************ End Functions Section *********************************** */
 
 }
