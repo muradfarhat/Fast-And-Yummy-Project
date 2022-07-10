@@ -17,12 +17,15 @@ class _profileState extends State<profile> {
   GlobalKey<FormState> formStateForName =
       new GlobalKey<FormState>(); // For Text Filed in Customer Name
 
+// variables for show and hidden the fields
   bool hidePass = true;
   bool hidePass2 = true;
   bool notEnable = false;
   bool showSaveInfo = false;
   bool showFavEdit = false;
+  bool showCardEdit = false;
 
+// variables for personal information
   String? firstName;
   String? lastName;
   String? pass;
@@ -31,6 +34,11 @@ class _profileState extends State<profile> {
   String? city;
   String? town;
   String? street;
+// variables for credit card
+  String? cardName;
+  String? cardNum;
+  String? cardDate;
+  int? cardCVV;
 
   List<Map> personalInfo = [
     {"firstName": "Customer"},
@@ -60,7 +68,7 @@ class _profileState extends State<profile> {
   ];
 
   List<Map> bankCardInfo = [
-    {"cardNumber": "5555 XXXX XXXX XXXX"},
+    {"cardNumber": "5555555555555555"},
     {"name": "Person Name"},
     {"expDate": '10/23'},
     {"cvv": 999}
@@ -103,6 +111,13 @@ class _profileState extends State<profile> {
 
       if (formCardData!.validate()) {
         formCardData.save();
+
+        if (!cardNum!.isEmpty) {
+          bankCardInfo[0]['cardNumber'] = cardNum;
+        }
+        bankCardInfo[1]['name'] = cardName;
+        bankCardInfo[2]['expDate'] = cardDate;
+        bankCardInfo[3]['cvv'] = cardCVV;
 
         return true;
       } else {
@@ -210,6 +225,7 @@ class _profileState extends State<profile> {
                         initialValue: "${personalInfo[2]['email']}",
                         enabled: false,
                         decoration: InputDecoration(
+                          suffixText: "Fixed",
                           labelText: "Email",
                           labelStyle: TextStyle(
                               color: Color.fromARGB(255, 37, 179, 136)),
@@ -440,6 +456,8 @@ class _profileState extends State<profile> {
                                     setState(() {
                                       notEnable = false;
                                       showSaveInfo = false;
+                                      hidePass = true;
+                                      hidePass2 = true;
                                       confirmValue = null;
                                     });
                                     showSuccessSnackBarMSG(); // a Function in Functions Section
@@ -464,6 +482,8 @@ class _profileState extends State<profile> {
                                   setState(() {
                                     notEnable = false;
                                     showSaveInfo = false;
+                                    hidePass = true;
+                                    hidePass2 = true;
                                     confirmValue = null;
                                   });
                                 },
@@ -631,7 +651,158 @@ class _profileState extends State<profile> {
                   ),
                 )
               ]),
-            )
+            ),
+            Visibility(
+                visible: showCardEdit, // showCardEdit
+                child: Form(
+                    key: formStateForCardInfo,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 15, bottom: 15, right: 15),
+                      child: Column(children: [
+                        TextFormField(
+                          validator: (value) {
+                            if (value!.length < 5) {
+                              return "Invalid input";
+                            } else {
+                              return null;
+                            }
+                          },
+                          onSaved: (text) {
+                            cardName = text;
+                          },
+                          initialValue: bankCardInfo[1]['name'],
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                              icon: Icon(
+                                Icons.person,
+                                color: Color.fromARGB(255, 37, 179, 136),
+                              ),
+                              labelText: "Person Name",
+                              labelStyle: TextStyle(
+                                  color: Color.fromARGB(255, 37, 179, 136))),
+                        ),
+                        TextFormField(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return null;
+                            } else if (value.length < 16) {
+                              return "The card number must be just 16";
+                            } else {
+                              return null;
+                            }
+                          },
+                          onSaved: (text) {
+                            cardNum = text;
+                          },
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                              icon: Icon(
+                                Icons.credit_card_outlined,
+                                color: Color.fromARGB(255, 37, 179, 136),
+                              ),
+                              labelText: "Card Number",
+                              labelStyle: TextStyle(
+                                  color: Color.fromARGB(255, 37, 179, 136))),
+                          maxLength: 16,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value!.length < 4) {
+                                    return "Wrong Exp. Date";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                onSaved: (text) {
+                                  cardDate = text;
+                                },
+                                initialValue: bankCardInfo[2]['expDate'],
+                                keyboardType: TextInputType.datetime,
+                                decoration: InputDecoration(
+                                    icon: Icon(
+                                      Icons.date_range,
+                                      color: Color.fromARGB(255, 37, 179, 136),
+                                    ),
+                                    labelText: "Exp. Date",
+                                    labelStyle: TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 37, 179, 136))),
+                                maxLength: 5,
+                              ),
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value!.length < 3) {
+                                    return "must be 3 numbers";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                onSaved: (text) {
+                                  cardCVV = int.parse(text!);
+                                },
+                                initialValue: bankCardInfo[3]['cvv'].toString(),
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                    icon: Icon(
+                                      Icons.password,
+                                      color: Color.fromARGB(255, 37, 179, 136),
+                                    ),
+                                    labelText: "CVV",
+                                    labelStyle: TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 37, 179, 136))),
+                                maxLength: 3,
+                              ),
+                            )
+                          ],
+                        ),
+                        Divider(
+                          color: Colors.white,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: MaterialButton(
+                                color: Color.fromARGB(255, 37, 179, 136),
+                                onPressed: () {
+                                  if (EditCardData()) {
+                                    setState(() {
+                                      showCardEdit = false;
+                                    });
+                                    showSuccessSnackBarMSG();
+                                  } else {
+                                    showFaildSnackBarMSG();
+                                  }
+                                },
+                                child: Text(
+                                  "Save",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: TextButton(
+                                child: Text(
+                                  "Cancel",
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 37, 179, 136)),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    showCardEdit = false;
+                                  });
+                                },
+                              ),
+                            )
+                          ],
+                        )
+                      ]),
+                    )))
           ]),
         ),
         /*************************************** End Visa Card Information ********************************** */
@@ -757,11 +928,23 @@ class _profileState extends State<profile> {
               showFavEdit = true;
             });
           } else if (whichInfo == 2) {
-            editCreditCardInfo();
+            setState(() {
+              showCardEdit = true;
+            });
           }
         },
       ),
     );
+  }
+
+  String convertString(String convert) {
+    List<String> convertString = convert.split("");
+    String finalConvert = "";
+    for (int i = 0; i < 4; i++) {
+      finalConvert += convertString[i];
+    }
+    finalConvert += " XXXX XXXX XXXX";
+    return finalConvert;
   }
 
   Container cardInfo(String infoType, int infoNum, double fontSize) {
@@ -770,7 +953,9 @@ class _profileState extends State<profile> {
       width: double.infinity,
       margin: EdgeInsets.only(bottom: 15),
       child: Text(
-        "${bankCardInfo[infoNum][infoType]}",
+        infoNum == 0
+            ? convertString("${bankCardInfo[infoNum][infoType]}")
+            : "${bankCardInfo[infoNum][infoType]}",
         style: TextStyle(
             color: Colors.white,
             fontSize: fontSize,
@@ -897,42 +1082,6 @@ class _profileState extends State<profile> {
                     },
                   )
                 ]),
-          );
-        });
-  }
-
-  editCreditCardInfo() {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Edit Credit Card Information"),
-            content: SingleChildScrollView(
-              child: Column(
-                children: [
-                  TextFormField(),
-                ],
-              ),
-            ),
-            actions: [
-              MaterialButton(
-                color: Color.fromARGB(255, 37, 179, 136),
-                onPressed: () {},
-                child: Text(
-                  "Save",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              TextButton(
-                child: Text(
-                  "Cancel",
-                  style: TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
           );
         });
   }
