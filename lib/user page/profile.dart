@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
@@ -12,13 +14,17 @@ class profile extends StatefulWidget {
 }
 
 class _profileState extends State<profile> {
+  GlobalKey<FormState> formStateForName =
+      new GlobalKey<FormState>(); // For Text Filed in Customer Name
+
   bool hidePass = true;
   bool hidePass2 = true;
   bool notEnable = false;
   bool showSaveInfo = false;
   bool showFavEdit = false;
 
-  String? name;
+  String? firstName;
+  String? lastName;
   String? pass;
   String? confirmValue;
   String? phone;
@@ -27,7 +33,8 @@ class _profileState extends State<profile> {
   String? street;
 
   List<Map> personalInfo = [
-    {"name": "Customer Name"},
+    {"firstName": "Customer"},
+    {"lastName": "Name"},
     {"email": "customer@email.com"},
     {"password": "12345678"},
     {"phone": "598418464"},
@@ -62,29 +69,47 @@ class _profileState extends State<profile> {
   Widget build(BuildContext context) {
     GlobalKey<FormState> formStateForPersonal =
         new GlobalKey<FormState>(); // For Text Filed in Personal Info
-    GlobalKey<ScaffoldState> scaffoldKey =
-        new GlobalKey<ScaffoldState>(); // For snackBar
 
     GlobalKey<FormState> formStateForFavorite =
         new GlobalKey<FormState>(); // For Text Filed in Favorite
 
+    GlobalKey<FormState> formStateForCardInfo =
+        new GlobalKey<FormState>(); // For Text Filed in Favorite
+
+    GlobalKey<ScaffoldState> scaffoldKey =
+        new GlobalKey<ScaffoldState>(); // For snackBar
+
+/********** Start Function for edit personal information & Favorite & Card Information validation ************** */
     bool EditPersonalData() {
       var formData = formStateForPersonal.currentState;
 
       if (formData!.validate()) {
         formData.save();
 
-        personalInfo[2]['password'] = pass;
-        personalInfo[3]['phone'] = phone;
-        personalInfo[4]['city'] = city;
-        personalInfo[5]['town'] = town;
-        personalInfo[6]['street'] = street;
+        personalInfo[3]['password'] = pass;
+        personalInfo[4]['phone'] = phone;
+        personalInfo[5]['city'] = city;
+        personalInfo[6]['town'] = town;
+        personalInfo[7]['street'] = street;
 
         return true;
       } else {
         return false;
       }
     }
+
+    bool EditCardData() {
+      var formCardData = formStateForCardInfo.currentState;
+
+      if (formCardData!.validate()) {
+        formCardData.save();
+
+        return true;
+      } else {
+        return false;
+      }
+    }
+/********** End Function for edit personal information & Favorite & Card Information validation ************** */
 
     return SingleChildScrollView(
       key: scaffoldKey,
@@ -112,7 +137,7 @@ class _profileState extends State<profile> {
                     boxShadow: [BoxShadow(color: Colors.white, blurRadius: 10)],
                     image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: AssetImage("${personalInfo[7]['image']}")),
+                        image: AssetImage("${personalInfo[8]['image']}")),
                     borderRadius: BorderRadius.circular(100),
                   ),
                 ),
@@ -140,7 +165,8 @@ class _profileState extends State<profile> {
                 Expanded(
                   flex: 3,
                   child: Container(
-                    child: Text("${personalInfo[0]['name']}",
+                    child: Text(
+                        "${personalInfo[0]['firstName']} ${personalInfo[1]['lastName']}",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Colors.white,
@@ -181,9 +207,12 @@ class _profileState extends State<profile> {
                   child: Column(
                     children: [
                       TextFormField(
-                        initialValue: "${personalInfo[1]['email']}",
+                        initialValue: "${personalInfo[2]['email']}",
                         enabled: false,
                         decoration: InputDecoration(
+                          labelText: "Email",
+                          labelStyle: TextStyle(
+                              color: Color.fromARGB(255, 37, 179, 136)),
                           icon: Icon(Icons.email,
                               color: Color.fromARGB(255, 37, 179, 136)),
                         ),
@@ -206,11 +235,13 @@ class _profileState extends State<profile> {
                         onChanged: (confirm) {
                           confirmValue = confirm;
                         },
-                        initialValue: "${personalInfo[2]['password']}",
+                        initialValue: "${personalInfo[3]['password']}",
                         enabled: notEnable,
                         obscureText: hidePass,
                         decoration: InputDecoration(
-                          hintText: "Password",
+                          labelText: "Password",
+                          labelStyle: TextStyle(
+                              color: Color.fromARGB(255, 37, 179, 136)),
                           suffixIcon: Visibility(
                             visible: showSaveInfo,
                             child: IconButton(
@@ -273,7 +304,9 @@ class _profileState extends State<profile> {
                                         color:
                                             Color.fromARGB(255, 37, 179, 136),
                                       )),
-                                  hintText: "Confirm Password",
+                                  labelText: "Confirm Password",
+                                  labelStyle: TextStyle(
+                                      color: Color.fromARGB(255, 37, 179, 136)),
                                   icon: Icon(Icons.password,
                                       color: Color.fromARGB(255, 37, 179, 136)),
                                 ),
@@ -302,11 +335,13 @@ class _profileState extends State<profile> {
                             phone = text;
                           }
                         },
-                        initialValue: "${personalInfo[3]['phone']}",
+                        initialValue: "${personalInfo[4]['phone']}",
                         keyboardType: TextInputType.number,
                         enabled: notEnable,
                         decoration: InputDecoration(
-                          hintText: "Phone Number",
+                          labelText: "Phone Number",
+                          labelStyle: TextStyle(
+                              color: Color.fromARGB(255, 37, 179, 136)),
                           prefix: Text(
                             "+970 ",
                             style: TextStyle(color: Colors.grey),
@@ -330,10 +365,12 @@ class _profileState extends State<profile> {
                         onSaved: (text) {
                           city = text;
                         },
-                        initialValue: "${personalInfo[4]['city']}",
+                        initialValue: "${personalInfo[5]['city']}",
                         enabled: notEnable,
                         decoration: InputDecoration(
-                          hintText: "City",
+                          labelText: "City",
+                          labelStyle: TextStyle(
+                              color: Color.fromARGB(255, 37, 179, 136)),
                           icon: Icon(Icons.map,
                               color: Color.fromARGB(255, 37, 179, 136)),
                         ),
@@ -353,10 +390,12 @@ class _profileState extends State<profile> {
                         onSaved: (text) {
                           town = text;
                         },
-                        initialValue: "${personalInfo[5]['town']}",
+                        initialValue: "${personalInfo[6]['town']}",
                         enabled: notEnable,
                         decoration: InputDecoration(
-                          hintText: "Town",
+                          labelText: "Town",
+                          labelStyle: TextStyle(
+                              color: Color.fromARGB(255, 37, 179, 136)),
                           icon: Icon(Icons.location_city,
                               color: Color.fromARGB(255, 37, 179, 136)),
                         ),
@@ -376,10 +415,12 @@ class _profileState extends State<profile> {
                         onSaved: (text) {
                           street = text;
                         },
-                        initialValue: "${personalInfo[6]['street']}",
+                        initialValue: "${personalInfo[7]['street']}",
                         enabled: notEnable,
                         decoration: InputDecoration(
-                          hintText: "Street",
+                          labelText: "Street",
+                          labelStyle: TextStyle(
+                              color: Color.fromARGB(255, 37, 179, 136)),
                           icon: Icon(Icons.edit_location,
                               color: Color.fromARGB(255, 37, 179, 136)),
                         ),
@@ -654,11 +695,11 @@ class _profileState extends State<profile> {
   Wrap wrapFavoriteContentCheckBox() {
     return Wrap(
       direction: Axis.horizontal,
-      children: listGenerateCheckBox(),
+      children: CheckBoxGenerate(),
     );
   }
 
-  listGenerateCheckBox() {
+  CheckBoxGenerate() {
     return List.generate(favoriteCkeckBox.length, (index) {
       return Container(
           decoration: BoxDecoration(
@@ -738,50 +779,125 @@ class _profileState extends State<profile> {
     );
   }
 
+  bool EditName() {
+    // Start Function for edit name validation
+    var formNameData = formStateForName.currentState;
+
+    if (formNameData!.validate()) {
+      formNameData.save();
+
+      personalInfo[0]['firstName'] = firstName;
+      personalInfo[1]['lastName'] = lastName;
+
+      return true;
+    } else {
+      return false;
+    }
+    // End Function for edit name validation
+  }
+
   editName() {
     return showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-              title: Row(
-                children: [
-                  Container(
-                      margin: EdgeInsets.only(right: 5),
-                      child: Icon(
-                        Icons.edit_note,
-                        color: Color.fromARGB(255, 37, 179, 136),
-                      )),
-                  Text("Edit Name")
-                ],
-              ),
-              content: TextFormField(
-                keyboardType: TextInputType.name,
-                cursorColor: Color.fromARGB(255, 37, 179, 136),
-                decoration: InputDecoration(
-                    hintText: "New Name",
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 37, 179, 136)))),
-              ),
-              actions: [
-                MaterialButton(
-                  color: Color.fromARGB(255, 37, 179, 136),
-                  onPressed: () {},
-                  child: Text(
-                    "Save",
-                    style: TextStyle(color: Colors.white),
-                  ),
+          return Form(
+            key: formStateForName,
+            child: AlertDialog(
+                title: Row(
+                  children: [
+                    Container(
+                        margin: EdgeInsets.only(right: 5),
+                        child: Icon(
+                          Icons.edit_note,
+                          color: Color.fromARGB(255, 37, 179, 136),
+                        )),
+                    Text("Edit Name")
+                  ],
                 ),
-                TextButton(
-                  child: Text(
-                    "Cancel",
-                    style: TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      initialValue: personalInfo[0]['firstName'],
+                      autovalidateMode: AutovalidateMode.always,
+                      validator: (value) {
+                        if (value!.length < 2) {
+                          return "Invalid input";
+                        } else {
+                          return null;
+                        }
+                      },
+                      onSaved: (first) {
+                        firstName = first;
+                      },
+                      maxLength: 15,
+                      keyboardType: TextInputType.name,
+                      cursorColor: Color.fromARGB(255, 37, 179, 136),
+                      decoration: InputDecoration(
+                          labelText: "First Name",
+                          labelStyle: TextStyle(
+                              color: Color.fromARGB(255, 37, 179, 136)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 37, 179, 136)))),
+                    ),
+                    TextFormField(
+                      initialValue: personalInfo[1]['lastName'],
+                      autovalidateMode: AutovalidateMode.always,
+                      validator: (value) {
+                        if (value!.length < 2) {
+                          return "Invalid input";
+                        } else {
+                          return null;
+                        }
+                      },
+                      onSaved: (last) {
+                        lastName = last;
+                      },
+                      maxLength: 15,
+                      keyboardType: TextInputType.name,
+                      cursorColor: Color.fromARGB(255, 37, 179, 136),
+                      decoration: InputDecoration(
+                          labelText: "Last Name",
+                          labelStyle: TextStyle(
+                              color: Color.fromARGB(255, 37, 179, 136)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 37, 179, 136)))),
+                    )
+                  ],
+                ),
+                actions: [
+                  MaterialButton(
+                    color: Color.fromARGB(255, 37, 179, 136),
+                    onPressed: () {
+                      if (EditName()) {
+                        setState(() {
+                          Navigator.of(context).pop();
+                          showSuccessSnackBarMSG();
+                        });
+                      } else {
+                        Navigator.of(context).pop();
+                        showFaildSnackBarMSG();
+                      }
+                    },
+                    child: Text(
+                      "Save",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ]);
+                  TextButton(
+                    child: Text(
+                      "Cancel",
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ]),
+          );
         });
   }
 
