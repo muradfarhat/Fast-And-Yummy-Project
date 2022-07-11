@@ -3,6 +3,7 @@
 import 'package:fast_and_yummy/stores.dart';
 import 'package:fast_and_yummy/user%20page/pagecontent.dart';
 import 'package:fast_and_yummy/user%20page/profile.dart';
+import 'package:fast_and_yummy/user%20page/favorite.dart';
 import 'package:flutter/material.dart';
 
 class UserPage extends StatefulWidget {
@@ -66,7 +67,7 @@ class _UserPageState extends State<UserPage> {
   /*************************************** Widget List For Pages ************************** */
   List<Widget> content = [
     profile(),
-    Text("Favorite"),
+    favorite(),
     PageContent(),
     Text("My Orders"),
     Text("Cart"),
@@ -96,6 +97,7 @@ class _UserPageState extends State<UserPage> {
                   ),
                   accountName: Text("User Name"),
                   accountEmail: Text("User Email")),
+              listTileDesgin("My Store", Icons.store),
               listTileDesgin("Stores", Icons.store),
               listTileDesgin("About", Icons.info),
               listTileDesgin("Support", Icons.support),
@@ -111,7 +113,7 @@ class _UserPageState extends State<UserPage> {
               setState(() {
                 selectedNavBarItem = index;
               });
-              if (index == 0) {
+              if (index != 2) {
                 setState(() {
                   showAppBar = false;
                 });
