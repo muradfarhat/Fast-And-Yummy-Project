@@ -260,9 +260,9 @@ class _cartState extends State<cart> {
             ],
           ),
         ),
-        Positioned(
-          top: 580,
-          left: 260,
+        Container(
+          alignment: Alignment.bottomRight,
+          margin: EdgeInsets.all(15),
           child: InkWell(
             onTap: () {},
             child: Container(
