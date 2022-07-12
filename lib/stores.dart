@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: prefer_const_literals_to_create_immutables
+import 'package:fast_and_yummy/store_product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -63,14 +64,12 @@ class _StoresState extends State<Stores> {
           itemBuilder: (context, i) {
             return MaterialButton(
               onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text("Test text"),
-                        actions: [Text("data")],
-                      );
-                    });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => StoreProduct(),
+                  ),
+                );
               },
               child: Container(
                 margin: EdgeInsets.all(10),
@@ -164,7 +163,7 @@ class _StoresState extends State<Stores> {
                               iconDesign(1),
                               iconDesign(0),
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),
