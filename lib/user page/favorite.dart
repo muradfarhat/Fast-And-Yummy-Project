@@ -96,6 +96,7 @@ class _favoriteState extends State<favorite> {
                             padding: EdgeInsets.all(10),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   "${myFav[i]["foodName"]}",
@@ -104,7 +105,7 @@ class _favoriteState extends State<favorite> {
                                       fontSize: 20),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.only(top: 5, bottom: 5),
+                                  //margin: EdgeInsets.only(top: 5, bottom: 5),
                                   child: Text("${myFav[i]["storeName"]}",
                                       style: TextStyle(color: Colors.grey)),
                                 ),
@@ -129,7 +130,7 @@ class _favoriteState extends State<favorite> {
                               color: myFav[i]["fav"] == false
                                   ? Colors.black
                                   : Colors.red,
-                              iconSize: 30,
+                              iconSize: 25,
                               icon: myFav[i]["fav"] == false
                                   ? Icon(Icons.favorite_border_outlined)
                                   : Icon(Icons.favorite),
