@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 
 class myOrders extends StatefulWidget {
@@ -8,8 +10,264 @@ class myOrders extends StatefulWidget {
 }
 
 class _myOrdersState extends State<myOrders> {
+  List<Map> myOrder = [
+    {
+      "name": "Pizza",
+      "store": "Food Store",
+      "image": "images/pizza.jpg",
+      "price": 8.99,
+      "number": 1,
+      "delivery":
+          1, // if = 1 that mean deliverd , if = 2 that mean the order in way , if = 0 that mean not deliver yet
+      "cancel": false,
+      "time": "1-2 PM,Wen"
+    },
+    {
+      "name": "Burder",
+      "store": "My Food",
+      "image": "images/burger.jpg",
+      "price": 10.99,
+      "number": 2,
+      "delivery":
+          2, // if = 1 that mean deliverd , if = 2 that mean the order in way , if = 0 that mean not deliver yet
+      "cancel": false,
+      "time": "Now"
+    },
+    {
+      "name": "KFC",
+      "store": "My Food",
+      "image": "images/kfc.png",
+      "price": 7.99,
+      "number": 3,
+      "delivery":
+          0, // if = 1 that mean deliverd , if = 2 that mean the order in way , if = 0 that mean not deliver yet
+      "cancel": false,
+      "time": "Now"
+    }
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            height: 200,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage("images/myOrders.jpg"))),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 150),
+            child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: myOrder.length,
+                itemBuilder: (context, i) {
+                  return InkWell(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text("data $i"),
+                            );
+                          });
+                    },
+                    child: Stack(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 25),
+                          width: double.infinity,
+                          height: 200,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: AssetImage("${myOrder[i]['image']}")),
+                            border: Border.all(
+                                color: Color.fromARGB(255, 197, 197, 197),
+                                width: 1),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  myOrder[i]["cancel"] = true;
+                                  myOrder.removeAt(i);
+                                });
+                              },
+                              child: Container(
+                                  margin: EdgeInsets.only(left: 40, top: 15),
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red[600],
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Text(
+                                    "Cancel Order",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                            ),
+                            Container(
+                                margin: EdgeInsets.only(right: 40, top: 15),
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(right: 5),
+                                      child: Icon(
+                                        Icons.circle,
+                                        color: deliveryStatusColor(i),
+                                      ),
+                                    ),
+                                    Text(deliveryStatus(i))
+                                  ],
+                                )),
+                          ],
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          width: double.infinity,
+                          height: 120,
+                          margin: EdgeInsets.only(
+                              top: 150, right: 50, left: 50, bottom: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            // ignore: prefer_const_literals_to_create_immutables
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Color.fromARGB(255, 197, 197, 197),
+                                  blurRadius: 4)
+                            ],
+                            border: Border.all(color: Colors.white, width: 1),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Text(
+                                        "${myOrder[i]["name"]}",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
+                                      ),
+                                      Text("${myOrder[i]["store"]}",
+                                          style: TextStyle(color: Colors.grey)),
+                                    ],
+                                  )),
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(vertical: 10),
+                                  child: VerticalDivider(
+                                    color: Colors.grey,
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(vertical: 5),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Container(
+                                          width: double.infinity,
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "\$ ${clacEachOrderPrice(myOrder[i]["price"], myOrder[i]["number"]).toStringAsFixed(2)}",
+                                            style: TextStyle(fontSize: 22),
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Text("Quantity : "),
+                                            Text("${myOrder[i]["number"]}"),
+                                          ],
+                                        ),
+                                        Container(
+                                          alignment: Alignment.center,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Text(
+                                                "Order Time",
+                                                style: TextStyle(
+                                                    color: Colors.green[800]),
+                                              ),
+                                              Text("${myOrder[i]["time"]}",
+                                                  style: TextStyle(
+                                                      color: Colors.green[800]))
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  double clacEachOrderPrice(double price, int quantity) {
+    double total = price * quantity.toDouble();
+    return total;
+  }
+
+  String deliveryStatus(int index) {
+    if (myOrder[index]["delivery"] == 0) {
+      return "Not delivered";
+    } else if (myOrder[index]["delivery"] == 1) {
+      return "Delivered";
+    } else if (myOrder[index]["delivery"] == 2) {
+      return "On Way";
+    } else {
+      return "No Status";
+    }
+  }
+
+  Color? deliveryStatusColor(int index) {
+    if (myOrder[index]["delivery"] == 1) {
+      return Colors.green[600];
+    } else if (myOrder[index]["delivery"] == 2) {
+      return Colors.yellow[600];
+    } else {
+      return Colors.red[600];
+    }
   }
 }

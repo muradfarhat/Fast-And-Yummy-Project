@@ -74,13 +74,8 @@ class _UserPageState extends State<UserPage> {
     profile(),
     favorite(),
     PageContent(),
-<<<<<<< HEAD
     myOrders(),
-    cart(),
-=======
-    Text("My Orders"),
     Cart(),
->>>>>>> 057b07322e6242da590784d0f70c950dc145dc21
   ];
   @override
   Widget build(BuildContext context) {
@@ -108,8 +103,8 @@ class _UserPageState extends State<UserPage> {
                   accountName: Text("User Name"),
                   accountEmail: Text("User Email")),
               InkWell(
-                  child:
-                      listTileDesgin("My Store", Icons.store, Detialscreen(""))),
+                  child: listTileDesgin(
+                      "My Store", Icons.store, Detialscreen(""))),
               InkWell(child: listTileDesgin("Stores", Icons.store, Stores())),
               InkWell(child: listTileDesgin("About", Icons.info, HomePage())),
               InkWell(

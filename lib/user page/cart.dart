@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_const_constructors
-<<<<<<< HEAD
 
-=======
->>>>>>> 057b07322e6242da590784d0f70c950dc145dc21
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 class Cart extends StatefulWidget {
@@ -64,197 +62,215 @@ class _CartState extends State<Cart> {
                     shrinkWrap: true,
                     itemCount: myCart.length,
                     itemBuilder: (context, i) {
-                      return Stack(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 25),
-                            width: double.infinity,
-                            height: 200,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: AssetImage("${myCart[i]['image']}")),
-                              border: Border.all(
-                                  color: Color.fromARGB(255, 197, 197, 197),
-                                  width: 1),
-                              borderRadius: BorderRadius.circular(15),
+                      return InkWell(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text("data $i"),
+                                );
+                              });
+                        },
+                        child: Stack(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: 25),
+                              width: double.infinity,
+                              height: 200,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: AssetImage("${myCart[i]['image']}")),
+                                border: Border.all(
+                                    color: Color.fromARGB(255, 197, 197, 197),
+                                    width: 1),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(left: 40, top: 10),
-                            child: InkWell(
-                              onTap: () {
-                                setState(() {
-                                  myCart.removeAt(i);
-                                });
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                      color: Color.fromARGB(255, 197, 197, 197),
-                                      width: 1),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Icon(
-                                  Icons.close,
-                                  color: Colors.black,
+                            Container(
+                              margin: EdgeInsets.only(left: 40, top: 10),
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    myCart.removeAt(i);
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                        color:
+                                            Color.fromARGB(255, 197, 197, 197),
+                                        width: 1),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            width: double.infinity,
-                            height: 120,
-                            margin: EdgeInsets.only(
-                                top: 150, right: 50, left: 50, bottom: 15),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              // ignore: prefer_const_literals_to_create_immutables
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Color.fromARGB(255, 197, 197, 197),
-                                    blurRadius: 4)
-                              ],
-                              border: Border.all(color: Colors.white, width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                    flex: 2,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text(
-                                          "${myCart[i]["foodName"]}",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20),
-                                        ),
-                                        Text("${myCart[i]["storeName"]}",
-                                            style:
-                                                TextStyle(color: Colors.grey)),
-                                        Row(
-                                          children: [
-                                            Container(
-                                                margin:
-                                                    EdgeInsets.only(right: 3),
-                                                child: Text(
-                                                    "${myCart[i]["rate"]}")),
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.amberAccent,
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    )),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    margin: EdgeInsets.symmetric(vertical: 10),
-                                    child: VerticalDivider(
-                                      color: Colors.grey,
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                    flex: 2,
-                                    child: Container(
-                                      margin: EdgeInsets.symmetric(vertical: 5),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              width: double.infinity,
+                              height: 120,
+                              margin: EdgeInsets.only(
+                                  top: 150, right: 50, left: 50, bottom: 15),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                // ignore: prefer_const_literals_to_create_immutables
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Color.fromARGB(255, 197, 197, 197),
+                                      blurRadius: 4)
+                                ],
+                                border:
+                                    Border.all(color: Colors.white, width: 1),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      flex: 2,
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.end,
+                                            CrossAxisAlignment.start,
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
                                         children: [
-                                          Container(
-                                            width: double.infinity,
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "\$ ${clacEachOrderPrice(myCart[i]["price"], myCart[i]["number"]).toStringAsFixed(2)}",
-                                              style: TextStyle(fontSize: 22),
-                                            ),
+                                          Text(
+                                            "${myCart[i]["foodName"]}",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20),
                                           ),
-                                          InkWell(
-                                            splashColor: Colors.grey,
-                                            onTap: () {},
-                                            child: Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 5),
-                                              height: 40,
-                                              width: 100,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                  color: Colors.yellow[500]),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                // ignore: prefer_const_literals_to_create_immutables
-                                                children: [
-                                                  Text(
-                                                    "Order",
-                                                    style: TextStyle(
-                                                        color: Colors.black),
-                                                  ),
-                                                  Icon(
-                                                    Icons.shopping_cart,
-                                                    size: 20,
-                                                    color: Colors.black,
-                                                  )
-                                                ],
-                                              ),
-                                            ),
+                                          Text("${myCart[i]["storeName"]}",
+                                              style: TextStyle(
+                                                  color: Colors.grey)),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                  margin:
+                                                      EdgeInsets.only(right: 3),
+                                                  child: Text(
+                                                      "${myCart[i]["rate"]}")),
+                                              Icon(
+                                                Icons.star,
+                                                color: Colors.amberAccent,
+                                              )
+                                            ],
                                           )
                                         ],
+                                      )),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Container(
+                                      margin:
+                                          EdgeInsets.symmetric(vertical: 10),
+                                      child: VerticalDivider(
+                                        color: Colors.grey,
+                                        width: 2,
                                       ),
-                                    )),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    margin: EdgeInsets.symmetric(vertical: 10),
-                                    child: VerticalDivider(
-                                      color: Colors.grey,
-                                      width: 2,
                                     ),
                                   ),
-                                ),
-                                Expanded(
+                                  Expanded(
+                                      flex: 2,
+                                      child: Container(
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 5),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Container(
+                                              width: double.infinity,
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                "\$ ${clacEachOrderPrice(myCart[i]["price"], myCart[i]["number"]).toStringAsFixed(2)}",
+                                                style: TextStyle(fontSize: 22),
+                                              ),
+                                            ),
+                                            InkWell(
+                                              splashColor: Colors.grey,
+                                              onTap: () {},
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 5),
+                                                height: 40,
+                                                width: 100,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                    color: Colors.yellow[500]),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                  // ignore: prefer_const_literals_to_create_immutables
+                                                  children: [
+                                                    Text(
+                                                      "Order",
+                                                      style: TextStyle(
+                                                          color: Colors.black),
+                                                    ),
+                                                    Icon(
+                                                      Icons.shopping_cart,
+                                                      size: 20,
+                                                      color: Colors.black,
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )),
+                                  Expanded(
                                     flex: 1,
-                                    child: Column(
-                                      children: [
-                                        IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                myCart[i]["number"]++;
-                                              });
-                                            },
-                                            icon: Icon(Icons.add)),
-                                        Text("${myCart[i]["number"]}"),
-                                        IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                if (myCart[i]["number"] <= 1) {
-                                                } else {
-                                                  myCart[i]["number"]--;
-                                                }
-                                              });
-                                            },
-                                            icon: Icon(Icons.minimize))
-                                      ],
-                                    )),
-                              ],
+                                    child: Container(
+                                      margin:
+                                          EdgeInsets.symmetric(vertical: 10),
+                                      child: VerticalDivider(
+                                        color: Colors.grey,
+                                        width: 2,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                      flex: 1,
+                                      child: Column(
+                                        children: [
+                                          IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  myCart[i]["number"]++;
+                                                });
+                                              },
+                                              icon: Icon(Icons.add)),
+                                          Text("${myCart[i]["number"]}"),
+                                          IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  if (myCart[i]["number"] <=
+                                                      1) {
+                                                  } else {
+                                                    myCart[i]["number"]--;
+                                                  }
+                                                });
+                                              },
+                                              icon: Icon(Icons.minimize))
+                                        ],
+                                      )),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     }),
               ),
