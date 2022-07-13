@@ -1,5 +1,8 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_new, slash_for_doc_comments, duplicate_ignore
 
+import 'package:fast_and_yummy/HomePage/homepage.dart';
+import 'package:fast_and_yummy/detialscreen.dart';
+import 'package:fast_and_yummy/splash.dart';
 import 'package:fast_and_yummy/stores.dart';
 import 'package:fast_and_yummy/user%20page/pagecontent.dart';
 import 'package:fast_and_yummy/user%20page/profile.dart';
@@ -71,8 +74,13 @@ class _UserPageState extends State<UserPage> {
     profile(),
     favorite(),
     PageContent(),
+<<<<<<< HEAD
     myOrders(),
     cart(),
+=======
+    Text("My Orders"),
+    Cart(),
+>>>>>>> 057b07322e6242da590784d0f70c950dc145dc21
   ];
   @override
   Widget build(BuildContext context) {
@@ -99,11 +107,16 @@ class _UserPageState extends State<UserPage> {
                   ),
                   accountName: Text("User Name"),
                   accountEmail: Text("User Email")),
-              listTileDesgin("My Store", Icons.store),
-              listTileDesgin("Stores", Icons.store),
-              listTileDesgin("About", Icons.info),
-              listTileDesgin("Support", Icons.support),
-              listTileDesgin("Logout", Icons.exit_to_app),
+              InkWell(
+                  child:
+                      listTileDesgin("My Store", Icons.store, Detialscreen(""))),
+              InkWell(child: listTileDesgin("Stores", Icons.store, Stores())),
+              InkWell(child: listTileDesgin("About", Icons.info, HomePage())),
+              InkWell(
+                  child:
+                      listTileDesgin("Support", Icons.support, PageContent())),
+              InkWell(
+                  child: listTileDesgin("Logout", Icons.exit_to_app, Splash())),
             ],
           ),
         ),
@@ -144,12 +157,12 @@ class _UserPageState extends State<UserPage> {
         body: content.elementAt(selectedNavBarItem));
   }
 
-  ListTile listTileDesgin(String name, IconData ic) {
+  ListTile listTileDesgin(String name, IconData ic, Widget ob) {
     return ListTile(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Stores()),
+          MaterialPageRoute(builder: (context) => ob),
         );
       },
       title: Text(name),

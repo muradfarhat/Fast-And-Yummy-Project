@@ -45,14 +45,6 @@ class StoreProduct extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Color.fromARGB(255, 37, 179, 136),
-        child: Icon(
-          Icons.add,
-          size: 30,
-        ),
-      ),
     );
   }
 
