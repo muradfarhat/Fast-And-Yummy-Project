@@ -5,6 +5,7 @@ import 'package:fast_and_yummy/user%20page/pagecontent.dart';
 import 'package:fast_and_yummy/user%20page/profile.dart';
 import 'package:fast_and_yummy/user%20page/favorite.dart';
 import 'package:fast_and_yummy/user%20page/cart.dart';
+import 'package:fast_and_yummy/user%20page/myOrders.dart';
 import 'package:flutter/material.dart';
 
 class UserPage extends StatefulWidget {
@@ -70,7 +71,7 @@ class _UserPageState extends State<UserPage> {
     profile(),
     favorite(),
     PageContent(),
-    Text("My Orders"),
+    myOrders(),
     cart(),
   ];
   @override
