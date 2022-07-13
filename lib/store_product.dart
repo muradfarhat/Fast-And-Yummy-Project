@@ -3,9 +3,14 @@
 import 'package:fast_and_yummy/containter_design_for_store_page.dart';
 import 'package:flutter/material.dart';
 
-class StoreProduct extends StatelessWidget {
-  const StoreProduct({Key? key}) : super(key: key);
+class StoreProduct extends StatefulWidget {
+  StoreProduct({Key? key}) : super(key: key);
 
+  @override
+  State<StoreProduct> createState() => _StoreProductState();
+}
+
+class _StoreProductState extends State<StoreProduct> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
