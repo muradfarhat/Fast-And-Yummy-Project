@@ -9,13 +9,18 @@ double price = 8.99;
 double total = price * count;
 
 class Detialscreen extends StatefulWidget {
-  const Detialscreen({Key? key}) : super(key: key);
+  String s;
+  Detialscreen(this.s, {Key? key}) : super(key: key);
 
   @override
-  State<Detialscreen> createState() => _DetialscreenState();
+  State<Detialscreen> createState() => _DetialscreenState(this.s);
 }
 
 class _DetialscreenState extends State<Detialscreen> {
+  String se = "";
+  _DetialscreenState(String s) {
+    this.se = s;
+  }
   var selected = 0;
   var time = [
     '12-1',
@@ -80,7 +85,7 @@ class _DetialscreenState extends State<Detialscreen> {
                               ),
                               image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: AssetImage("images/pizza.jpg"),
+                                image: AssetImage(se),
                               ),
                             ),
                           ),

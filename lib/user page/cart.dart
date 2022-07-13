@@ -1,17 +1,14 @@
 // ignore_for_file: prefer_const_constructors
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
-class cart extends StatefulWidget {
-  cart({Key? key}) : super(key: key);
+class Cart extends StatefulWidget {
+  const Cart({Key? key}) : super(key: key);
 
   @override
-  State<cart> createState() => _cartState();
+  State<Cart> createState() => _CartState();
 }
 
-class _cartState extends State<cart> {
+class _CartState extends State<Cart> {
   List<Map> myCart = [
     {
       "foodName": "Burger",

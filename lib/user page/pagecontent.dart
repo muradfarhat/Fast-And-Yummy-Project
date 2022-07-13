@@ -73,7 +73,7 @@ class _PageContentState extends State<PageContent> {
       "star5": 0
     },
     {
-      "image": "images/pizza.jpg",
+      "image": "images/burger.jpg",
       "name": "Food Name",
       "store": "Store Name",
       "price": "\$ 8.99",
@@ -330,7 +330,9 @@ class _PageContentState extends State<PageContent> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Detialscreen()),
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                Detialscreen("${sugg[i]['image']}")),
                       );
                     },
                     child: Container(

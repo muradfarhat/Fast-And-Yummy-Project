@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 //ignore_for_file: prefer_const_literals_to_create_immutables
+import 'package:fast_and_yummy/detialscreen.dart';
 import 'package:flutter/material.dart';
 
 class ContDFSP extends StatelessWidget {
@@ -12,14 +13,12 @@ class ContDFSP extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return InkWell(
       onTap: () {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text(name),
-                actions: [Text("data")],
-              );
-            });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Detialscreen(""),
+          ),
+        );
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
