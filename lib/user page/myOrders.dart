@@ -48,6 +48,9 @@ class _myOrdersState extends State<myOrders> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey<ScaffoldState> scaffoldKey =
+        new GlobalKey<ScaffoldState>(); // For snackBar
+
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Stack(
@@ -98,10 +101,14 @@ class _myOrdersState extends State<myOrders> {
                           children: [
                             InkWell(
                               onTap: () {
-                                setState(() {
-                                  myOrder[i]["cancel"] = true;
-                                  myOrder.removeAt(i);
-                                });
+                                if (myOrder[i]["delivery"] == 1) {
+                                  cancelOrderMSG();
+                                } else {
+                                  setState(() {
+                                    myOrder[i]["cancel"] = true;
+                                    myOrder.removeAt(i);
+                                  });
+                                }
                               },
                               child: Container(
                                   margin: EdgeInsets.only(left: 40, top: 15),
@@ -244,6 +251,7 @@ class _myOrdersState extends State<myOrders> {
     );
   }
 
+/********************************** Start Functions Section ********************************** */
   double clacEachOrderPrice(double price, int quantity) {
     double total = price * quantity.toDouble();
     return total;
@@ -270,4 +278,31 @@ class _myOrdersState extends State<myOrders> {
       return Colors.red[600];
     }
   }
+
+  cancelOrderMSG() {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Color.fromARGB(255, 75, 75, 75).withOpacity(0.7),
+      content: Row(
+        // ignore: prefer_const_literals_to_create_immutables
+        children: [
+          Container(
+            margin: EdgeInsets.only(right: 15),
+            child: Icon(
+              Icons.info,
+              color: Colors.white,
+              size: 35,
+            ),
+          ),
+          Text(
+            "Cannot Cancel deliverd order",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+      duration: Duration(seconds: 2),
+      margin: EdgeInsets.all(20),
+    ));
+  }
+  /********************************** End Functions Section ********************************** */
 }
