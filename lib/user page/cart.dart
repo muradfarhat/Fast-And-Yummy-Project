@@ -40,6 +40,7 @@ class _CartState extends State<Cart> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -54,6 +55,16 @@ class _CartState extends State<Cart> {
                     image: DecorationImage(
                         fit: BoxFit.cover,
                         image: AssetImage("images/cart.jpg"))),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 5, left: 5),
+                child: IconButton(
+                    onPressed: () => Scaffold.of(context).openDrawer(),
+                    icon: Icon(
+                      Icons.menu,
+                      color: Colors.white,
+                      size: 35,
+                    )),
               ),
               Container(
                 margin: EdgeInsets.only(top: 150),

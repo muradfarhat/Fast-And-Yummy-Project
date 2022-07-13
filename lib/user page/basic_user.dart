@@ -9,6 +9,8 @@ import 'package:fast_and_yummy/user%20page/profile.dart';
 import 'package:fast_and_yummy/user%20page/favorite.dart';
 import 'package:fast_and_yummy/user%20page/cart.dart';
 import 'package:fast_and_yummy/user%20page/myOrders.dart';
+import 'package:fast_and_yummy/user%20page/viewAllOffers.dart';
+import 'package:fast_and_yummy/user%20page/viewAllSugg.dart';
 import 'package:flutter/material.dart';
 
 class UserPage extends StatefulWidget {

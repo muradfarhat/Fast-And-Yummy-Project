@@ -64,6 +64,16 @@ class _myOrdersState extends State<myOrders> {
                     image: AssetImage("images/myOrders.jpg"))),
           ),
           Container(
+            margin: EdgeInsets.only(top: 5, left: 5),
+            child: IconButton(
+                onPressed: () => Scaffold.of(context).openDrawer(),
+                icon: Icon(
+                  Icons.menu,
+                  color: Colors.white,
+                  size: 35,
+                )),
+          ),
+          Container(
             margin: EdgeInsets.only(top: 150),
             child: ListView.builder(
                 physics: NeverScrollableScrollPhysics(),

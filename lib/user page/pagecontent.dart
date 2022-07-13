@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, prefer_const_literals_to_create_immutables
 
+import 'package:fast_and_yummy/user%20page/viewAllOffers.dart';
+import 'package:fast_and_yummy/user%20page/viewAllSugg.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../detialscreen.dart';
 
@@ -162,14 +165,10 @@ class _PageContentState extends State<PageContent> {
             ),
             trailing: TextButton(
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text("Test text"),
-                          actions: [Text("data")],
-                        );
-                      });
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return viewAllOffers();
+                  }));
                 },
                 child: Text(
                   "View All",
@@ -183,7 +182,7 @@ class _PageContentState extends State<PageContent> {
             height: 140,
             width: double.infinity,
             child: ListView.builder(
-                itemCount: 4,
+                itemCount: CountLength(offers.length),
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, i) {
                   return MaterialButton(
@@ -301,14 +300,10 @@ class _PageContentState extends State<PageContent> {
             ),
             trailing: TextButton(
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text("Test text"),
-                          actions: [Text("data")],
-                        );
-                      });
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return viewAllSugg();
+                  }));
                 },
                 child: Text(
                   "View All",
@@ -322,7 +317,7 @@ class _PageContentState extends State<PageContent> {
             height: 210,
             width: double.infinity,
             child: ListView.builder(
-                itemCount: 3,
+                itemCount: CountLength(sugg.length),
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, i) {
                   return MaterialButton(
@@ -436,6 +431,7 @@ class _PageContentState extends State<PageContent> {
     );
   }
 
+/**************************** Start Functions Section ********************************** */
   Icon iconStar(int index, String star) {
     return Icon(
       sugg[index][star] == 1 ? Icons.star : Icons.star_border_outlined,
@@ -444,4 +440,13 @@ class _PageContentState extends State<PageContent> {
       color: Colors.amberAccent,
     );
   }
+
+  int CountLength(int length) {
+    if (length < 4) {
+      return length;
+    } else {
+      return 4;
+    }
+  }
+  /**************************** End Functions Section ********************************** */
 }
