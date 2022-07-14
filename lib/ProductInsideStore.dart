@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 
 class ProductInsideStore extends StatefulWidget {
@@ -11,6 +10,13 @@ class ProductInsideStore extends StatefulWidget {
 
 class _ProductInsideStoreState extends State<ProductInsideStore> {
   Color basicColor = Color.fromARGB(255, 37, 179, 136);
+
+// variables for name & price information
+  String? newName;
+  String? newPrice;
+// variables for boolean values
+  bool showPriceSave = false;
+  bool enableEdit = false;
 
   List<Map> product = [
     {
@@ -35,8 +41,32 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
     {"name": "Murad Farhat", "comment": "Good Pizza"},
     {"name": "Ra'ed Khwayreh", "comment": "Nice one"},
   ];
+
   @override
   Widget build(BuildContext context) {
+    GlobalKey<FormState> formStateForName =
+        new GlobalKey<FormState>(); // For Text Filed in name Info
+
+    GlobalKey<ScaffoldState> scaffoldKey =
+        new GlobalKey<ScaffoldState>(); // For snackBar
+
+/************************************** Start Functions for edit Name & Price *********************************** */
+    bool EditNameData() {
+      var formNameData = formStateForName.currentState;
+
+      if (formNameData!.validate()) {
+        formNameData.save();
+
+        product[0]["name"] = newName;
+
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+/************************************** End Functions for edit Name & Price *********************************** */
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
@@ -104,14 +134,86 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                               )
                             ],
                           ),
-                          IconButton(
-                              onPressed: () {},
-                              // ignore: prefer_const_constructors
-                              icon: Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                                size: 20,
-                              ))
+                          Form(
+                            key: formStateForName,
+                            child: IconButton(
+                                onPressed: () {
+                                  showDialog(
+                                      context: (context),
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text("Edit product name"),
+                                          content: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              TextFormField(
+                                                autovalidateMode:
+                                                    AutovalidateMode.always,
+                                                initialValue:
+                                                    "${product[0]["name"]}",
+                                                validator: (productName) {
+                                                  if (productName!.length < 5) {
+                                                    return "Invalid input";
+                                                  } else {
+                                                    return null;
+                                                  }
+                                                },
+                                                onSaved: (name) {
+                                                  newName = name;
+                                                },
+                                                maxLength: 12,
+                                                decoration: InputDecoration(
+                                                    icon: Icon(
+                                                      Icons.edit_note,
+                                                      color: basicColor,
+                                                    ),
+                                                    labelText: "Name",
+                                                    labelStyle: TextStyle(
+                                                        color: basicColor)),
+                                              )
+                                            ],
+                                          ),
+                                          actions: [
+                                            MaterialButton(
+                                              color: basicColor,
+                                              onPressed: () {
+                                                if (EditNameData()) {
+                                                  setState(() {
+                                                    Navigator.of(context).pop();
+                                                  });
+                                                  showSuccessSnackBarMSG();
+                                                } else {
+                                                  Navigator.of(context).pop();
+                                                  showFaildSnackBarMSG();
+                                                }
+                                              },
+                                              child: Text(
+                                                "Save",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text(
+                                                "Cancel",
+                                                style: TextStyle(
+                                                    color: basicColor),
+                                              ),
+                                            )
+                                          ],
+                                        );
+                                      });
+                                },
+                                // ignore: prefer_const_constructors
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                  size: 20,
+                                )),
+                          )
                         ]),
                   ),
                 ],
@@ -196,15 +298,21 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                         children: [
                           Expanded(child: Text("Price : ")),
                           Expanded(
-                              child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            initialValue:
-                                "\$ ${product[0]["price"].toString()}",
-                            decoration: InputDecoration(),
+                              child: Container(
+                            margin: EdgeInsets.only(right: 10),
+                            child: TextFormField(
+                              enabled: enableEdit,
+                              keyboardType: TextInputType.number,
+                              initialValue: "${product[0]["price"].toString()}",
+                              decoration: InputDecoration(
+                                  prefix: Container(
+                                      margin: EdgeInsets.only(right: 5),
+                                      child: Text("\$"))),
+                            ),
                           )),
                           Expanded(
                               child: Visibility(
-                            visible: true,
+                            visible: showPriceSave,
                             child: MaterialButton(
                               color: basicColor,
                               onPressed: () {},
@@ -216,7 +324,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                           )),
                           Expanded(
                               child: Visibility(
-                            visible: true,
+                            visible: showPriceSave,
                             child: TextButton(
                               onPressed: () {},
                               child: Text(
@@ -321,6 +429,58 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
         size: 30,
       );
     }
+  }
+
+  showSuccessSnackBarMSG() {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: basicColor.withOpacity(0.7),
+      content: Row(
+        // ignore: prefer_const_literals_to_create_immutables
+        children: [
+          Container(
+            margin: EdgeInsets.only(right: 15),
+            child: Icon(
+              Icons.check_circle_rounded,
+              color: Colors.white,
+              size: 35,
+            ),
+          ),
+          Text(
+            "Saved",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+      duration: Duration(seconds: 2),
+      margin: EdgeInsets.all(20),
+    ));
+  }
+
+  showFaildSnackBarMSG() {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.red.withOpacity(0.7),
+      content: Row(
+        // ignore: prefer_const_literals_to_create_immutables
+        children: [
+          Container(
+            margin: EdgeInsets.only(right: 15),
+            child: Icon(
+              Icons.close,
+              color: Colors.white,
+              size: 35,
+            ),
+          ),
+          Text(
+            "Save Faild",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+      duration: Duration(seconds: 2),
+      margin: EdgeInsets.all(20),
+    ));
   }
 
   /******************************************** End Finctions Section ********************************** */
