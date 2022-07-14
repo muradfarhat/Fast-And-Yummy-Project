@@ -2,9 +2,7 @@
 import 'package:flutter/material.dart';
 
 class ProductInsideStore extends StatefulWidget {
-  String image;
-  String name;
-  ProductInsideStore(this.name, this.image, {Key? key}) : super(key: key);
+  const ProductInsideStore({Key? key}) : super(key: key);
 
   @override
   State<ProductInsideStore> createState() => _ProductInsideStoreState();
@@ -45,48 +43,48 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
     {"name": "Ra'ed Khwayreh", "comment": "Nice one"},
   ];
 
-  @override
-  Widget build(BuildContext context) {
-    GlobalKey<FormState> formStateForName =
-        new GlobalKey<FormState>(); // For Text Filed in name Info
+  GlobalKey<FormState> formStateForName =
+      new GlobalKey<FormState>(); // For Text Filed in name Info
 
-    GlobalKey<FormState> formStateForDescription =
-        new GlobalKey<FormState>(); // For Text Filed in name Info
+  GlobalKey<FormState> formStateForDescription =
+      new GlobalKey<FormState>(); // For Text Filed in name Info
 
-    GlobalKey<ScaffoldState> scaffoldKey =
-        new GlobalKey<ScaffoldState>(); // For snackBar
+  GlobalKey<ScaffoldState> scaffoldKey =
+      new GlobalKey<ScaffoldState>(); // For snackBar
 
 /************************************** Start Functions for edit Name & Price *********************************** */
-    bool EditNameData() {
-      var formNameData = formStateForName.currentState;
+  bool EditNameData() {
+    var formNameData = formStateForName.currentState;
 
-      if (formNameData!.validate()) {
-        formNameData.save();
+    if (formNameData!.validate()) {
+      formNameData.save();
 
-        product[0]["name"] = newName;
+      product[0]["name"] = newName;
 
-        return true;
-      } else {
-        return false;
-      }
+      return true;
+    } else {
+      return false;
     }
+  }
 
-    bool EditDescriptionData() {
-      var formDescData = formStateForDescription.currentState;
+  bool EditDescriptionData() {
+    var formDescData = formStateForDescription.currentState;
 
-      if (formDescData!.validate()) {
-        formDescData.save();
+    if (formDescData!.validate()) {
+      formDescData.save();
 
-        product[0]["description"] = newDesc;
+      product[0]["description"] = newDesc;
 
-        return true;
-      } else {
-        return false;
-      }
+      return true;
+    } else {
+      return false;
     }
+  }
 
 /************************************** End Functions for edit Name & Price *********************************** */
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
@@ -109,9 +107,9 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                 Colors.black.withOpacity(0.5),
                                 BlendMode.darken),
                             fit: BoxFit.cover,
-                            image: AssetImage(widget.image))),
+                            image: AssetImage("${product[0]["image"]}"))),
                     child: Text(
-                      widget.name,
+                      "${product[0]["name"]}",
                       // ignore: prefer_const_constructors
                       style: TextStyle(
                           color: Colors.white,
@@ -401,7 +399,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                 autovalidateMode: AutovalidateMode.always,
                 initialValue: "${product[0]["description"]}",
                 validator: (desc) {
-                  if (desc!.length < 15) {
+                  if (desc!.length < 25) {
                     return "Invalid input";
                   } else {
                     return null;
@@ -413,17 +411,23 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                 maxLength: 150,
                 maxLines: 5,
                 decoration: InputDecoration(
-                    icon: Icon(
-                      Icons.edit_note,
-                      color: basicColor,
-                    ),
-                    labelText: "Name",
+                    labelText: "Description",
                     labelStyle: TextStyle(color: basicColor)),
               ),
               actions: [
                 MaterialButton(
                   color: basicColor,
-                  onPressed: () {},
+                  onPressed: () {
+                    if (EditDescriptionData()) {
+                      setState(() {
+                        Navigator.of(context).pop();
+                      });
+                      showSuccessSnackBarMSG();
+                    } else {
+                      Navigator.of(context).pop();
+                      showFaildSnackBarMSG();
+                    }
+                  },
                   child: Text(
                     "Save",
                     style: TextStyle(color: Colors.white),

@@ -305,8 +305,7 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ProductInsideStore(
-                              choice[index]['name'], choice[index]['image'])),
+                          builder: (context) => ProductInsideStore()),
                     );
                   },
                   child: Icon(
