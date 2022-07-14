@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 
 class ProductInsideStore extends StatefulWidget {
-  const ProductInsideStore({Key? key}) : super(key: key);
+  String image;
+  String name;
+  ProductInsideStore(this.name, this.image, {Key? key}) : super(key: key);
 
   @override
   State<ProductInsideStore> createState() => _ProductInsideStoreState();
@@ -89,9 +91,9 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                 Colors.black.withOpacity(0.5),
                                 BlendMode.darken),
                             fit: BoxFit.cover,
-                            image: AssetImage("${product[0]["image"]}"))),
+                            image: AssetImage(widget.image))),
                     child: Text(
-                      "${product[0]["name"]}",
+                      widget.name,
                       // ignore: prefer_const_constructors
                       style: TextStyle(
                           color: Colors.white,
