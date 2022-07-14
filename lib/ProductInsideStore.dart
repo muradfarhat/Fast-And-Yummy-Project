@@ -14,8 +14,12 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
 // variables for name & price information
   String? newName;
   String? newDesc;
-  String? newPrice;
+  String? newContent;
+  double? newPrice;
 // variables for boolean values
+  bool showDescriptionSave = false;
+  bool enableDescEdit = false;
+  bool showContentSave = false;
   bool showPriceSave = false;
   bool enableEdit = false;
 
@@ -47,7 +51,13 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
       new GlobalKey<FormState>(); // For Text Filed in name Info
 
   GlobalKey<FormState> formStateForDescription =
-      new GlobalKey<FormState>(); // For Text Filed in name Info
+      new GlobalKey<FormState>(); // For Text Filed in Description Info
+
+  GlobalKey<FormState> formStateForContent =
+      new GlobalKey<FormState>(); // For Text Filed in Content Info
+
+  GlobalKey<FormState> formStateForPrice =
+      new GlobalKey<FormState>(); // For Text Filed in Price Info
 
   GlobalKey<ScaffoldState> scaffoldKey =
       new GlobalKey<ScaffoldState>(); // For snackBar
@@ -74,6 +84,34 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
       formDescData.save();
 
       product[0]["description"] = newDesc;
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool EditPriceData() {
+    var formPriceData = formStateForPrice.currentState;
+
+    if (formPriceData!.validate()) {
+      formPriceData.save();
+
+      product[0]["price"] = newPrice;
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool EditContentData() {
+    var formContentData = formStateForContent.currentState;
+
+    if (formContentData!.validate()) {
+      formContentData.save();
+
+      productContent.add({"name": newContent});
 
       return true;
     } else {
@@ -128,33 +166,33 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                       Navigator.pop(context);
                     },
                   ),
-                  Form(
-                    key: formStateForName,
-                    child: Container(
-                      margin: EdgeInsets.only(
-                          left: 10, top: 150, right: 10, bottom: 10),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(right: 5),
-                                  child: Text(
-                                    "${product[0]["rate"]}",
-                                    // ignore: prefer_const_constructors
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: 10, top: 150, right: 10, bottom: 10),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(right: 5),
+                                child: Text(
+                                  "${product[0]["rate"]}",
+                                  // ignore: prefer_const_constructors
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow[600],
-                                )
-                              ],
-                            ),
-                            IconButton(
+                              ),
+                              Icon(
+                                Icons.star,
+                                color: Colors.yellow[600],
+                              )
+                            ],
+                          ),
+                          Form(
+                            key: formStateForName,
+                            child: IconButton(
                                 onPressed: () {
                                   showDialog(
                                       context: (context),
@@ -230,9 +268,9 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                   Icons.edit,
                                   color: Colors.white,
                                   size: 20,
-                                ))
-                          ]),
-                    ),
+                                )),
+                          )
+                        ]),
                   ),
                 ],
               ),
@@ -244,10 +282,76 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                     listTileInfo("Description", 1),
                     Container(
                       margin: EdgeInsets.only(right: 15, left: 15, bottom: 15),
-                      child: Text(
-                        "${product[0]["description"]}",
-                        style: TextStyle(fontSize: 17),
-                      ),
+                      child: Form(
+                          //key: formStateForDescription,
+                          child: Column(
+                        children: [
+                          TextFormField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "must write description";
+                              } else if (value.length < 25) {
+                                return "Invalid input";
+                              } else {
+                                return null;
+                              }
+                            },
+                            onSaved: (value) {
+                              newDesc = value;
+                            },
+                            enabled: enableDescEdit,
+                            maxLength: 150,
+                            maxLines: 4,
+                            initialValue: "${product[0]["description"]}",
+                            decoration:
+                                InputDecoration(hintText: "Add Description"),
+                          ),
+                          Visibility(
+                            visible: showDescriptionSave,
+                            child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: MaterialButton(
+                                      color: basicColor,
+                                      onPressed: () {
+                                        if (EditDescriptionData()) {
+                                          setState(() {
+                                            showDescriptionSave = false;
+                                            enableDescEdit = false;
+                                          });
+                                          showSuccessSnackBarMSG();
+                                        } else {
+                                          showFaildSnackBarMSG();
+                                        }
+                                      },
+                                      child: Text(
+                                        "Save",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          showDescriptionSave = false;
+                                          enableDescEdit = false;
+                                        });
+                                      },
+                                      child: Text(
+                                        "Cancel",
+                                        style: TextStyle(color: basicColor),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      )),
                     )
                   ]),
                 ),
@@ -255,8 +359,81 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
               /************************************ End Description Section ********************************* */
               /************************************ Start Content Section ********************************* */
               Card(
-                child: Column(
-                  children: [listTileInfo("Content", 2), wrapFavoriteContent()],
+                child: Form(
+                  key: formStateForContent,
+                  child: Column(
+                    children: [
+                      listTileInfo("Content", 2),
+                      wrapFavoriteContent(),
+                      Visibility(
+                        visible: showContentSave,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "must write description";
+                                  } else if (value.length <= 2) {
+                                    return "Invalid input";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                onSaved: (value) {
+                                  newContent = value;
+                                },
+                                maxLength: 12,
+                                decoration:
+                                    InputDecoration(hintText: "Add Content"),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(
+                                    left: 10, right: 10, bottom: 10),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: MaterialButton(
+                                        color: basicColor,
+                                        onPressed: () {
+                                          if (EditContentData()) {
+                                            setState(() {
+                                              showContentSave = false;
+                                            });
+                                            showSuccessSnackBarMSG();
+                                          } else {
+                                            showFaildSnackBarMSG();
+                                          }
+                                        },
+                                        child: Text(
+                                          "Save",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            showContentSave = false;
+                                          });
+                                        },
+                                        child: Text(
+                                          "Cancel",
+                                          style: TextStyle(color: basicColor),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
               /*********************************** End Content Section ********************************* */
@@ -313,48 +490,80 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                 child: Column(
                   children: [
                     listTileInfo("Price", 3),
-                    Container(
-                      margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                      child: Row(
-                        children: [
-                          Expanded(child: Text("Price : ")),
-                          Expanded(
-                              child: Container(
-                            margin: EdgeInsets.only(right: 10),
-                            child: TextFormField(
-                              enabled: enableEdit,
-                              keyboardType: TextInputType.number,
-                              initialValue: "${product[0]["price"].toString()}",
-                              decoration: InputDecoration(
-                                  prefix: Container(
-                                      margin: EdgeInsets.only(right: 5),
-                                      child: Text("\$"))),
-                            ),
-                          )),
-                          Expanded(
-                              child: Visibility(
-                            visible: showPriceSave,
-                            child: MaterialButton(
-                              color: basicColor,
-                              onPressed: () {},
-                              child: Text(
-                                "Save",
-                                style: TextStyle(color: Colors.white),
+                    Form(
+                      key: formStateForPrice,
+                      child: Container(
+                        margin:
+                            EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                        child: Row(
+                          children: [
+                            Expanded(child: Text("Price : ")),
+                            Expanded(
+                                child: Container(
+                              margin: EdgeInsets.only(right: 10),
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "you must add price";
+                                  } else if (double.parse(value) <= 0.0 ||
+                                      double.parse(value) > 150.0) {
+                                    return "invalid input";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                onSaved: (value) {
+                                  newPrice = double.parse(value!);
+                                },
+                                enabled: enableEdit,
+                                keyboardType: TextInputType.number,
+                                initialValue: product[0]["price"].toString(),
+                                decoration: InputDecoration(
+                                    prefix: Container(
+                                        margin: EdgeInsets.only(right: 5),
+                                        child: Text("\$"))),
                               ),
-                            ),
-                          )),
-                          Expanded(
-                              child: Visibility(
-                            visible: showPriceSave,
-                            child: TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                "Cancel",
-                                style: TextStyle(color: basicColor),
+                            )),
+                            Expanded(
+                                child: Visibility(
+                              visible: showPriceSave,
+                              child: MaterialButton(
+                                color: basicColor,
+                                onPressed: () {
+                                  if (EditPriceData()) {
+                                    setState(() {
+                                      showPriceSave = false;
+                                      enableEdit = false;
+                                    });
+                                    showSuccessSnackBarMSG();
+                                  } else {
+                                    showFaildSnackBarMSG();
+                                  }
+                                },
+                                child: Text(
+                                  "Save",
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
-                            ),
-                          ))
-                        ],
+                            )),
+                            Expanded(
+                                child: Visibility(
+                              visible: showPriceSave,
+                              child: TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    enableEdit = false;
+                                    showPriceSave = false;
+                                  });
+                                },
+                                child: Text(
+                                  "Cancel",
+                                  style: TextStyle(color: basicColor),
+                                ),
+                              ),
+                            ))
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -381,69 +590,23 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
         icon: Icon(Icons.edit_note),
         onPressed: () {
           if (select == 1) {
-            showEditDescription();
+            setState(() {
+              showDescriptionSave = true;
+              enableDescEdit = true;
+            });
           } else if (select == 2) {
-          } else if (select == 3) {}
+            setState(() {
+              showContentSave = true;
+            });
+          } else if (select == 3) {
+            setState(() {
+              enableEdit = true;
+              showPriceSave = true;
+            });
+          }
         },
       ),
     );
-  }
-
-  showEditDescription() {
-    return showDialog(
-        context: (context),
-        builder: (context) {
-          return AlertDialog(
-              title: Text("Edit Description"),
-              content: TextFormField(
-                autovalidateMode: AutovalidateMode.always,
-                initialValue: "${product[0]["description"]}",
-                validator: (desc) {
-                  if (desc!.length < 25) {
-                    return "Invalid input";
-                  } else {
-                    return null;
-                  }
-                },
-                onSaved: (description) {
-                  newDesc = description;
-                },
-                maxLength: 150,
-                maxLines: 5,
-                decoration: InputDecoration(
-                    labelText: "Description",
-                    labelStyle: TextStyle(color: basicColor)),
-              ),
-              actions: [
-                MaterialButton(
-                  color: basicColor,
-                  onPressed: () {
-                    if (EditDescriptionData()) {
-                      setState(() {
-                        Navigator.of(context).pop();
-                      });
-                      showSuccessSnackBarMSG();
-                    } else {
-                      Navigator.of(context).pop();
-                      showFaildSnackBarMSG();
-                    }
-                  },
-                  child: Text(
-                    "Save",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    "Cancel",
-                    style: TextStyle(color: basicColor),
-                  ),
-                )
-              ]);
-        });
   }
 
   Wrap wrapFavoriteContent() {
