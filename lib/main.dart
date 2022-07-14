@@ -12,7 +12,6 @@ import 'package:fast_and_yummy/splash.dart';
 import 'package:fast_and_yummy/store_product.dart';
 import 'package:fast_and_yummy/user%20page/basic_user.dart';
 import 'package:flutter/material.dart';
-import 'dart:html';
 
 void main() {
   runApp(MyApp());

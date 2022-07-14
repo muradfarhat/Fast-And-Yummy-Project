@@ -44,7 +44,7 @@ class _InfoMyStoreState extends State<InfoMyStore> {
     {"image": "images/drinks/coc.png", "name": "Coca Cola"},
     {"image": "images/drinks/dr.jpeg", "name": "Original"},
     {"image": "images/drinks/sp.png", "name": "Sprite"},
-    {"image": "images/drinks/fan.jp g", "name": "Fanta"},
+    {"image": "images/drinks/fan.jpg", "name": "Fanta"},
   ];
   List<Map> choice = [];
   @override
