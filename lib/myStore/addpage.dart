@@ -187,7 +187,6 @@ class _AddPageState extends State<AddPage> {
                                         items,
                                         style: TextStyle(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     );
@@ -205,7 +204,7 @@ class _AddPageState extends State<AddPage> {
                           SizedBox(
                             height: 10,
                           ),
-                          textFieldDesign("Image Path", Icons.food_bank, false),
+                          textFieldDesign("Image Path", Icons.image, false),
                           SizedBox(
                             height: 20,
                           ),
