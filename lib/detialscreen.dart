@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, must_be_immutable
+// ignore_for_file: prefer_const_constructors, must_be_immutable, no_logic_in_create_state
 // ignore_for_file: prefer_const_literals_to_create_immutables
 import 'dart:ui';
 
@@ -13,13 +13,13 @@ class Detialscreen extends StatefulWidget {
   Detialscreen(this.s, {Key? key}) : super(key: key);
 
   @override
-  State<Detialscreen> createState() => _DetialscreenState(this.s);
+  State<Detialscreen> createState() => _DetialscreenState(s);
 }
 
 class _DetialscreenState extends State<Detialscreen> {
   String se = "";
   _DetialscreenState(String s) {
-    this.se = s;
+    se = s;
   }
   var selected = 0;
   var time = [

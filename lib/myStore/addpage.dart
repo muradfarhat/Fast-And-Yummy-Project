@@ -13,7 +13,17 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
+  late bool bol = false;
+  late bool bol2 = false;
   Color color = Color.fromARGB(255, 37, 179, 136);
+  var selected = 0;
+  var time = [
+    'Fries',
+    'Drinks',
+    'Fried chicken',
+    'Sweets',
+  ];
+  String dropdownvalue = 'Fries';
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -33,7 +43,7 @@ class _AddPageState extends State<AddPage> {
                   width: size.width,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage("images/food.jpg"),
+                        image: AssetImage("images/photo.jpg"),
                         fit: BoxFit.cover),
                     boxShadow: [
                       BoxShadow(
@@ -75,7 +85,11 @@ class _AddPageState extends State<AddPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ListTile(
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        bol = !bol;
+                      });
+                    },
                     title: Text(
                       "New Category",
                       style:
@@ -88,6 +102,7 @@ class _AddPageState extends State<AddPage> {
                     ),
                   ),
                   Visibility(
+                    visible: bol,
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 15),
                       width: size.width,
@@ -114,13 +129,20 @@ class _AddPageState extends State<AddPage> {
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
+                          ),
+                          SizedBox(
+                            height: 20,
                           )
                         ],
                       ),
                     ),
                   ),
                   ListTile(
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        bol2 = !bol2;
+                      });
+                    },
                     title: Text(
                       "New Item",
                       style:
@@ -130,6 +152,78 @@ class _AddPageState extends State<AddPage> {
                       Icons.edit_note_sharp,
                       size: 30,
                       color: Color.fromARGB(255, 37, 179, 136),
+                    ),
+                  ),
+                  Visibility(
+                    visible: bol2,
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 15),
+                      width: size.width,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          textFieldDesign(
+                              "Item Name", Icons.food_bank_outlined, true),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(
+                                Icons.food_bank,
+                                color: color,
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Flexible(
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  value: dropdownvalue,
+                                  items: time.map((String items) {
+                                    return DropdownMenuItem(
+                                      value: items,
+                                      child: Text(
+                                        items,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      dropdownvalue = value!;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          textFieldDesign("Price", Icons.price_change, true),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          textFieldDesign("Image Path", Icons.food_bank, false),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          InkWell(
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 40,
+                              width: 100,
+                              color: color,
+                              child: Text(
+                                "Save",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ],
