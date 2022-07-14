@@ -63,6 +63,11 @@ flutter:
   assets:
     - assets/
     - images/
+    - images/cat/
+    - images/chk/
+    - images/fries/
+    - images/sweets/
+    - images/drinks/
     
   # assets:
   #   - images/a_dot_burr.jpeg

@@ -2,14 +2,14 @@
 
 import 'package:flutter/material.dart';
 
-class productInsideStore extends StatefulWidget {
-  productInsideStore({Key? key}) : super(key: key);
+class ProductInsideStore extends StatefulWidget {
+  const ProductInsideStore({Key? key}) : super(key: key);
 
   @override
-  State<productInsideStore> createState() => _productInsideStoreState();
+  State<ProductInsideStore> createState() => _ProductInsideStoreState();
 }
 
-class _productInsideStoreState extends State<productInsideStore> {
+class _ProductInsideStoreState extends State<ProductInsideStore> {
   Color basicColor = Color.fromARGB(255, 37, 179, 136);
 
   List<Map> product = [
@@ -76,7 +76,9 @@ class _productInsideStoreState extends State<productInsideStore> {
                       color: Colors.white,
                       size: 30,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
                   Container(
                     margin: EdgeInsets.only(

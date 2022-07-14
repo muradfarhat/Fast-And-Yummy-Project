@@ -2,6 +2,7 @@
 
 import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/detialscreen.dart';
+import 'package:fast_and_yummy/myStore.dart';
 import 'package:fast_and_yummy/splash.dart';
 import 'package:fast_and_yummy/stores.dart';
 import 'package:fast_and_yummy/user%20page/pagecontent.dart';
@@ -103,8 +104,7 @@ class _UserPageState extends State<UserPage> {
                   accountName: Text("User Name"),
                   accountEmail: Text("User Email")),
               InkWell(
-                  child: listTileDesgin(
-                      "My Store", Icons.store, Detialscreen(""))),
+                  child: listTileDesgin("My Store", Icons.store, MyStore())),
               InkWell(child: listTileDesgin("Stores", Icons.store, Stores())),
               InkWell(child: listTileDesgin("About", Icons.info, HomePage())),
               InkWell(
