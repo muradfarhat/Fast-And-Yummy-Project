@@ -13,6 +13,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
 
 // variables for name & price information
   String? newName;
+  String? newDesc;
   String? newPrice;
 // variables for boolean values
   bool showPriceSave = false;
@@ -47,6 +48,9 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
     GlobalKey<FormState> formStateForName =
         new GlobalKey<FormState>(); // For Text Filed in name Info
 
+    GlobalKey<FormState> formStateForDescription =
+        new GlobalKey<FormState>(); // For Text Filed in name Info
+
     GlobalKey<ScaffoldState> scaffoldKey =
         new GlobalKey<ScaffoldState>(); // For snackBar
 
@@ -58,6 +62,20 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
         formNameData.save();
 
         product[0]["name"] = newName;
+
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    bool EditDescriptionData() {
+      var formDescData = formStateForDescription.currentState;
+
+      if (formDescData!.validate()) {
+        formDescData.save();
+
+        product[0]["description"] = newDesc;
 
         return true;
       } else {
@@ -110,33 +128,33 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                       Navigator.pop(context);
                     },
                   ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        left: 10, top: 150, right: 10, bottom: 10),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(right: 5),
-                                child: Text(
-                                  "${product[0]["rate"]}",
-                                  // ignore: prefer_const_constructors
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                  Form(
+                    key: formStateForName,
+                    child: Container(
+                      margin: EdgeInsets.only(
+                          left: 10, top: 150, right: 10, bottom: 10),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(right: 5),
+                                  child: Text(
+                                    "${product[0]["rate"]}",
+                                    // ignore: prefer_const_constructors
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow[600],
-                              )
-                            ],
-                          ),
-                          Form(
-                            key: formStateForName,
-                            child: IconButton(
+                                Icon(
+                                  Icons.star,
+                                  color: Colors.yellow[600],
+                                )
+                              ],
+                            ),
+                            IconButton(
                                 onPressed: () {
                                   showDialog(
                                       context: (context),
@@ -212,30 +230,33 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                   Icons.edit,
                                   color: Colors.white,
                                   size: 20,
-                                )),
-                          )
-                        ]),
+                                ))
+                          ]),
+                    ),
                   ),
                 ],
               ),
               /************************************ Start Description Section ********************************* */
               Card(
-                child: Column(children: [
-                  listTileInfo("Description"),
-                  Container(
-                    margin: EdgeInsets.only(right: 15, left: 15, bottom: 15),
-                    child: Text(
-                      "${product[0]["description"]}",
-                      style: TextStyle(fontSize: 17),
-                    ),
-                  )
-                ]),
+                child: Form(
+                  key: formStateForDescription,
+                  child: Column(children: [
+                    listTileInfo("Description", 1),
+                    Container(
+                      margin: EdgeInsets.only(right: 15, left: 15, bottom: 15),
+                      child: Text(
+                        "${product[0]["description"]}",
+                        style: TextStyle(fontSize: 17),
+                      ),
+                    )
+                  ]),
+                ),
               ),
               /************************************ End Description Section ********************************* */
               /************************************ Start Content Section ********************************* */
               Card(
                 child: Column(
-                  children: [listTileInfo("Content"), wrapFavoriteContent()],
+                  children: [listTileInfo("Content", 2), wrapFavoriteContent()],
                 ),
               ),
               /*********************************** End Content Section ********************************* */
@@ -291,7 +312,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
               Card(
                 child: Column(
                   children: [
-                    listTileInfo("Price"),
+                    listTileInfo("Price", 3),
                     Container(
                       margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
                       child: Row(
@@ -347,7 +368,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
 
   /******************************************** Start Finctions Section ********************************** */
 
-  ListTile listTileInfo(String tileTitle) {
+  ListTile listTileInfo(String tileTitle, int select) {
     return ListTile(
       title: Text(
         tileTitle,
@@ -358,9 +379,65 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
         alignment: Alignment.centerLeft,
         color: basicColor,
         icon: Icon(Icons.edit_note),
-        onPressed: () {},
+        onPressed: () {
+          if (select == 1) {
+            showEditDescription();
+          } else if (select == 2) {
+          } else if (select == 3) {}
+        },
       ),
     );
+  }
+
+  showEditDescription() {
+    return showDialog(
+        context: (context),
+        builder: (context) {
+          return AlertDialog(
+              title: Text("Edit Description"),
+              content: TextFormField(
+                autovalidateMode: AutovalidateMode.always,
+                initialValue: "${product[0]["description"]}",
+                validator: (desc) {
+                  if (desc!.length < 15) {
+                    return "Invalid input";
+                  } else {
+                    return null;
+                  }
+                },
+                onSaved: (description) {
+                  newDesc = description;
+                },
+                maxLength: 150,
+                maxLines: 5,
+                decoration: InputDecoration(
+                    icon: Icon(
+                      Icons.edit_note,
+                      color: basicColor,
+                    ),
+                    labelText: "Name",
+                    labelStyle: TextStyle(color: basicColor)),
+              ),
+              actions: [
+                MaterialButton(
+                  color: basicColor,
+                  onPressed: () {},
+                  child: Text(
+                    "Save",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(color: basicColor),
+                  ),
+                )
+              ]);
+        });
   }
 
   Wrap wrapFavoriteContent() {
