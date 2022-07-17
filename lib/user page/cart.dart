@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:io';
+import 'package:fast_and_yummy/user%20page/oneOrader.dart';
 import 'package:flutter/material.dart';
 
 class Cart extends StatefulWidget {
@@ -207,7 +208,15 @@ class _CartState extends State<Cart> {
                                             ),
                                             InkWell(
                                               splashColor: Colors.grey,
-                                              onTap: () {},
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        OneOrder(),
+                                                  ),
+                                                );
+                                              },
                                               child: Container(
                                                 padding: EdgeInsets.symmetric(
                                                     horizontal: 5),

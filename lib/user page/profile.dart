@@ -331,7 +331,7 @@ class _profileState extends State<profile> {
                       Divider(
                         color: Colors.white,
                       ),
-                      TextFormField(
+                 TextFormField(
                         autovalidateMode: AutovalidateMode.always,
                         validator: (phone) {
                           if (phone!.length < 9 || phone.length > 12) {

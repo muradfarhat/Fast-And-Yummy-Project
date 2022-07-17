@@ -2,14 +2,14 @@
 
 import 'package:flutter/material.dart';
 
-class myOrders extends StatefulWidget {
-  myOrders({Key? key}) : super(key: key);
+class MyOrders extends StatefulWidget {
+  const MyOrders({Key? key}) : super(key: key);
 
   @override
-  State<myOrders> createState() => _myOrdersState();
+  State<MyOrders> createState() => _MyOrdersState();
 }
 
-class _myOrdersState extends State<myOrders> {
+class _MyOrdersState extends State<MyOrders> {
   List<Map> myOrder = [
     {
       "name": "Pizza",

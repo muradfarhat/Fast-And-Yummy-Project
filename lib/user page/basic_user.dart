@@ -75,7 +75,7 @@ class _UserPageState extends State<UserPage> {
     profile(),
     favorite(),
     PageContent(),
-    myOrders(),
+    MyOrders(),
     Cart(),
   ];
   @override
