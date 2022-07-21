@@ -1,3 +1,5 @@
+import 'package:fast_and_yummy/HomePage/signupInfoWidgets/continueButton.dart';
+import 'package:fast_and_yummy/HomePage/signupInfoWidgets/slider.dart';
 import 'package:fast_and_yummy/HomePage/staticData.dart';
 import 'package:flutter/material.dart';
 
@@ -57,37 +59,8 @@ class _afterSignupState extends State<afterSignup> {
               flex: 1,
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ...List.generate(
-                          onboardingList.length,
-                          (index) => AnimatedContainer(
-                                margin: const EdgeInsets.only(right: 5),
-                                duration: const Duration(milliseconds: 900),
-                                width: 6,
-                                height: 6,
-                                decoration: BoxDecoration(
-                                    color: basicColor,
-                                    borderRadius: BorderRadius.circular(10)),
-                              ))
-                    ],
-                  ),
-                  Container(
-                      margin: const EdgeInsets.only(top: 40),
-                      child: MaterialButton(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 100, vertical: 10),
-                        onPressed: () {},
-                        color: basicColor,
-                        textColor: Colors.white,
-                        child: const Text(
-                          "Continue",
-                          style: TextStyle(
-                            fontSize: 17,
-                          ),
-                        ),
-                      ))
+                  slider(),
+                  continueButton(),
                 ],
               ))
         ],
