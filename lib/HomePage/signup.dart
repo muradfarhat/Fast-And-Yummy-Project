@@ -39,9 +39,9 @@ class _SignUpState extends State<SignUp> {
         "email": email.text,
         "first_name": firstname.text,
         "last_name": lastname.text,
-        "phone": email.text,
+        "phone": phone.text,
         "password": password.text,
-        "have_store": "yes"
+        "have_store": "no"
       });
       if (resp == "suc") {
         Navigator.push(
