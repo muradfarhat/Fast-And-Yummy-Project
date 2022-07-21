@@ -10,9 +10,19 @@ import 'package:flutter/material.dart';
 List<onboardingModel> onboardingList = [
   onboardingModel(
     title: "Choose your direction",
-    image: "images/chooseDirection.png",
+    //image: "images/chooseDirection.png",
     body: Container(
       child: Column(children: [
+        Container(
+          width: double.infinity,
+          height: 250,
+          margin: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+            fit: BoxFit.contain,
+            image: AssetImage("images/chooseDirection.png"),
+          )),
+        ),
         Container(
           alignment: Alignment.center,
           child: const Text(
@@ -26,48 +36,8 @@ List<onboardingModel> onboardingList = [
   ),
   onboardingModel(
     title: "Choose your favorite",
-    image: "images/burger.jpg",
     body: Container(
       child: const Text("favorite"),
     ),
   ),
 ];
-/*
-InkWell(
-          onTap: () {
-            boxOneChecked = true;
-            boxTwoChecked = false;
-          },
-          child: Container(
-            margin: const EdgeInsets.only(left: 75, right: 75, bottom: 40),
-            height: 150,
-            width: double.infinity,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(
-                    width: 3,
-                    color: boxOneChecked == true ? basicColor : Colors.black),
-                image: const DecorationImage(
-                    fit: BoxFit.cover, image: AssetImage("images/store.jpg"))),
-          ),
-        ),
-        InkWell(
-          onTap: () {
-            boxOneChecked = false;
-            boxTwoChecked = true;
-          },
-          child: Container(
-            margin: const EdgeInsets.only(left: 75, right: 75, bottom: 40),
-            height: 150,
-            width: double.infinity,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(
-                    width: 3,
-                    color: boxTwoChecked == true ? basicColor : Colors.black),
-                image: const DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage("images/delivery.jpg"))),
-          ),
-        ),
- */

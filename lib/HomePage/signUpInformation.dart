@@ -37,18 +37,6 @@ class _afterSignupState extends State<afterSignup> {
                                     fontSize: 22, fontWeight: FontWeight.bold),
                               )),
                           Container(
-                            width: double.infinity,
-                            height: 250,
-                            margin: const EdgeInsets.only(
-                                left: 20, right: 20, bottom: 30),
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                              fit: BoxFit.contain,
-                              image:
-                                  AssetImage("${onboardingList[index].image}"),
-                            )),
-                          ),
-                          Container(
                             margin: const EdgeInsets.only(
                                 left: 40, right: 40, bottom: 30),
                             child: onboardingList[index].body,
