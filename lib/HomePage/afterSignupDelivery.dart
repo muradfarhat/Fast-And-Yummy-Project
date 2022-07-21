@@ -21,9 +21,7 @@ class _afterChooseDeliveryState extends State<afterChooseDelivery> {
     GlobalKey<FormState> formStateForData =
         new GlobalKey<FormState>(); // For Text Filed in data Info
 
-    List<Map> data = [
-      {"carNum": "12345678", "carModel": "Fiat", "idNum": "123456789"}
-    ];
+    List<String> data = [];
 
     /*********************** Start Functions section ****************************** */
     bool EditData() {
@@ -32,9 +30,9 @@ class _afterChooseDeliveryState extends State<afterChooseDelivery> {
       if (formData!.validate()) {
         formData.save();
 
-        data[0]['carNum'] = carNumber;
-        data[0]['carModel'] = carModel;
-        data[0]['idNum'] = idNumber;
+        data.add(carNumber!);
+        data.add(carModel!);
+        data.add(idNumber!);
 
         return true;
       } else {

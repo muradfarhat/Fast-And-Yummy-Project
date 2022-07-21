@@ -1,3 +1,4 @@
+import 'package:fast_and_yummy/HomePage/afterSignupCustomer.dart';
 import 'package:fast_and_yummy/HomePage/afterSignupDelivery.dart';
 import 'package:flutter/material.dart';
 
@@ -39,29 +40,27 @@ class _afterSignupState extends State<afterSignup> {
                   Container(
                     margin:
                         const EdgeInsets.only(left: 40, right: 40, bottom: 30),
-                    child: Container(
-                      child: Column(children: [
-                        Container(
-                          width: double.infinity,
-                          height: 250,
-                          margin: const EdgeInsets.only(
-                              left: 20, right: 20, bottom: 30),
-                          decoration: const BoxDecoration(
-                              image: DecorationImage(
-                            fit: BoxFit.contain,
-                            image: AssetImage("images/chooseDirection.png"),
-                          )),
+                    child: Column(children: [
+                      Container(
+                        width: double.infinity,
+                        height: 250,
+                        margin: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 30),
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                          fit: BoxFit.contain,
+                          image: AssetImage("images/chooseDirection.png"),
+                        )),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        child: const Text(
+                          "Choose whether you want to create a user and store account or a delivery operator account",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.grey),
                         ),
-                        Container(
-                          alignment: Alignment.center,
-                          child: const Text(
-                            "Choose whether you want to create a user and store account or a delivery operator account",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ),
-                      ]),
-                    ),
+                      ),
+                    ]),
                   ),
                   /************************* Start radio buttons just for first page ************** */
                   radioButtons(),
@@ -92,6 +91,10 @@ class _afterSignupState extends State<afterSignup> {
             } else if (radioChoiceValue == "Delivery") {
               Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
                 return afterChooseDelivery();
+              })));
+            } else if (radioChoiceValue == "Customer") {
+              Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
+                return afterChooseCustomer();
               })));
             }
           },
