@@ -1,10 +1,11 @@
-// ignore_for_file: use_build_context_synchronously, must_be_immutable
+// ignore_for_file: use_build_context_synchronously, must_be_immutable, curly_braces_in_flow_control_structures, prefer_const_constructors_in_immutables, avoid_print
 
-import 'package:fast_and_yummy/HomePage/signin.dart';
+import 'package:email_auth/email_auth.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/user%20page/basic_user.dart';
 import 'package:flutter/material.dart';
+import 'package:email_auth/email_auth.dart';
 
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 class SignUp extends StatefulWidget {
@@ -21,9 +22,10 @@ class _SignUpState extends State<SignUp> {
   TextEditingController lastname = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController password = TextEditingController();
-
+  TextEditingController valid = TextEditingController();
   bool check = false;
   bool bol = true;
+  bool privcey = false;
 
   Color color = Color.fromARGB(255, 37, 179, 136);
   Icon ico = Icon(
@@ -31,10 +33,11 @@ class _SignUpState extends State<SignUp> {
     color: Color.fromARGB(255, 37, 179, 136),
   );
   Api api = Api();
+  
+
   signUP() async {
-    RegExp reg = RegExp(
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-    if (reg.hasMatch(email.text)) {
+    setState(() {});
+    if (formstate.currentState!.validate() && !privcey) {
       var resp = await api.postReq(signUpLink, {
         "email": email.text,
         "first_name": firstname.text,
@@ -43,14 +46,13 @@ class _SignUpState extends State<SignUp> {
         "password": password.text,
         "have_store": "no"
       });
+      setState(() {});
       if (resp == "suc") {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => UserPage()),
         );
       }
-    } else {
-      print("INVALID EMAIL");
     }
   }
 
@@ -65,8 +67,9 @@ class _SignUpState extends State<SignUp> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(35, 45, 35, 0),
-            child: textFieldDesign(
-                email, TextInputType.emailAddress, "Email", false),
+            child: textFieldDesign((val) {
+              return validInput(val!, 0, 0, "email");
+            }, email, TextInputType.emailAddress, "Email", false),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(35, 25, 35, 0),
@@ -75,15 +78,17 @@ class _SignUpState extends State<SignUp> {
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.only(right: 8.0),
-                    child: textFieldDesign(
-                        firstname, TextInputType.name, "First Name", false),
+                    child: textFieldDesign((val) {
+                      return validInput(val!, 3, 12, "fn");
+                    }, firstname, TextInputType.name, "First Name", false),
                   ),
                 ),
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: textFieldDesign(
-                        lastname, TextInputType.name, "Last Name", false),
+                    child: textFieldDesign((val) {
+                      return validInput(val!, 3, 12, "ln");
+                    }, lastname, TextInputType.name, "Last Name", false),
                   ),
                 ),
               ],
@@ -91,12 +96,21 @@ class _SignUpState extends State<SignUp> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(35, 25, 35, 0),
-            child: textFieldDesign(phone, TextInputType.phone, "Phone", false),
+            child: textFieldDesign((val) {
+              return validInput(val!, 0, 0, "phone");
+            }, valid, TextInputType.phone, "Phone", false),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(35, 25, 35, 0),
-            child:
-                textFieldDesign(password, TextInputType.text, "Password", bol),
+            child: textFieldDesign((val) {
+              return validInput(val!, 0, 0, "");
+            }, phone, TextInputType.phone, "Phone", false),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(35, 25, 35, 0),
+            child: textFieldDesign((val) {
+              return validInput(val!, 6, 20, "password");
+            }, password, TextInputType.text, "Password", bol),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 35, top: 25),
@@ -118,8 +132,21 @@ class _SignUpState extends State<SignUp> {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text(
-                                "Our Privecy Polices fsafdgjdfoh\nsafjoidgjosg"),
+                            title: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Text("Privacy and Polices"),
+                            ),
+                            content: Container(
+                              padding: EdgeInsets.all(10),
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              height: 300,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                child: Column(
+                                  children: const [Text(policy)],
+                                ),
+                              ),
+                            ),
                             backgroundColor: Color.fromARGB(255, 241, 241, 241),
                             actions: [
                               InkWell(
@@ -135,7 +162,7 @@ class _SignUpState extends State<SignUp> {
                                     color: color,
                                     margin: EdgeInsets.all(14),
                                     child: Text(
-                                      "Acept",
+                                      "Accept",
                                       style: TextStyle(color: Colors.white),
                                     )),
                               )
@@ -155,11 +182,27 @@ class _SignUpState extends State<SignUp> {
               ],
             ),
           ),
+          Visibility(
+            visible: privcey,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 55),
+              child: Text(
+                "You don't accept privecy polices",
+                style: TextStyle(color: Colors.red, fontSize: 12),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(top: 25.0),
             child: Center(
               child: ElevatedButton(
                 onPressed: () async {
+                  setState(() {
+                    if (check == false) {
+                      privcey = true;
+                    } else
+                      privcey = false;
+                  });
                   await signUP();
                 },
                 child: Text(
@@ -184,9 +227,14 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  TextFormField textFieldDesign(TextEditingController cont,
-      TextInputType inputType, String hint, bool obscureTextState) {
+  TextFormField textFieldDesign(
+      final String? Function(String?)? valid,
+      TextEditingController cont,
+      TextInputType inputType,
+      String hint,
+      bool obscureTextState) {
     return TextFormField(
+      validator: valid,
       controller: cont,
       cursorColor: Color.fromARGB(255, 21, 157, 117),
       keyboardType: inputType,
@@ -230,5 +278,59 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+
+  validInput(String val, int min, int max, String str) {
+    if (val.isEmpty) {
+      return "Can't be empty";
+    }
+    RegExp emailReg = RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    switch (str) {
+      case "email":
+        {
+          if (!emailReg.hasMatch(val)) {
+            return "Invalid Email, please check it again";
+          }
+        }
+        break;
+      case "fn":
+        {
+          if (val.length < min) {
+            return "$min letters at least";
+          }
+          if (val.length > max) {
+            return "more than $max letters";
+          }
+        }
+        break;
+      case "ln":
+        {
+          if (val.length < min) {
+            return "$min letters at least";
+          }
+          if (val.length > max) {
+            return "more than $max letters";
+          }
+        }
+        break;
+      case "phone":
+        {
+          if (val.length != 10) {
+            return "Invalid phone, please check it again";
+          }
+        }
+        break;
+      case "password":
+        {
+          if (val.length < min) {
+            return "Should be $min letters at least";
+          }
+          if (val.length > max) {
+            return "Should be less than $max letters";
+          }
+        }
+        break;
+    }
   }
 }

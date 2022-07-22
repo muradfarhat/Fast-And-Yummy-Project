@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
+import 'package:fast_and_yummy/HomePage/forget.dart';
 import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/HomePage/signUpInformation.dart';
 import 'package:fast_and_yummy/HomePage/signup.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: afterSignup(),
+      home: HomePage(),
     );
   }
 }
