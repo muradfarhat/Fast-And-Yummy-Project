@@ -1,4 +1,4 @@
-import 'package:fast_and_yummy/HomePage/homepage.dart';
+import 'package:fast_and_yummy/HomePage/personalInfoAfterSignup.dart';
 import 'package:flutter/material.dart';
 
 class insertCreditCard extends StatefulWidget {
@@ -49,7 +49,7 @@ class _insertCreditCardState extends State<insertCreditCard> {
             if (EditData()) {
               showSuccessSnackBarMSG();
               Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-                return HomePage();
+                return personalInfo();
               })));
             }
           },
@@ -233,7 +233,7 @@ class _insertCreditCardState extends State<insertCreditCard> {
                     onPressed: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: ((context) {
-                        return HomePage();
+                        return personalInfo();
                       })));
                     },
                     child: Text("Skip",

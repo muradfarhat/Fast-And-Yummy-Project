@@ -1,0 +1,3 @@
+// users table create sql
+CREATE TABLE `gp`.`users` ( `id` INT NOT NULL AUTO_INCREMENT , `email` VARCHAR(255) NOT NULL , `first_name` VARCHAR(255) NOT NULL , `last_name` VARCHAR(255) NOT NULL , `phone` VARCHAR(255) NOT NULL , `password` VARCHAR(255) NOT NULL , `have_store` VARCHAR(255) NOT NULL , `city` VARCHAR(255) NOT NULL , `town` VARCHAR(255) NOT NULL , `street` VARCHAR(255) NOT NULL , `visaName` VARCHAR(255) NOT NULL , `visaNumber` VARCHAR(255) NOT NULL , `CVV` VARCHAR(255) NOT NULL , `visaDate` VARCHAR(255) NOT NULL , `image` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+// tables 

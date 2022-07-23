@@ -12,6 +12,7 @@ class _afterChooseDeliveryState extends State<afterChooseDelivery> {
   String? carModel;
   String? carNumber;
   String? idNumber;
+  String? driverCity;
 
   GlobalKey<ScaffoldState> scaffoldKey =
       new GlobalKey<ScaffoldState>(); // For snackBar
@@ -33,6 +34,7 @@ class _afterChooseDeliveryState extends State<afterChooseDelivery> {
         data.add(carNumber!);
         data.add(carModel!);
         data.add(idNumber!);
+        data.add(driverCity!);
 
         return true;
       } else {
@@ -42,7 +44,7 @@ class _afterChooseDeliveryState extends State<afterChooseDelivery> {
 
     continueButton() {
       return Container(
-          margin: const EdgeInsets.only(top: 30),
+          margin: const EdgeInsets.symmetric(vertical: 30),
           child: MaterialButton(
             padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
             onPressed: () {
@@ -150,6 +152,27 @@ class _afterChooseDeliveryState extends State<afterChooseDelivery> {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       label: const Text("Your ID number"),
+                      labelStyle: TextStyle(color: basicColor)),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "The must not be empty";
+                    } else if (value.length < 3 || value.length > 25) {
+                      return "Invalid input";
+                    } else {
+                      return null;
+                    }
+                  },
+                  onSaved: (value) {
+                    driverCity = value;
+                  },
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                      label: const Text("Your City"),
                       labelStyle: TextStyle(color: basicColor)),
                 ),
               ),
