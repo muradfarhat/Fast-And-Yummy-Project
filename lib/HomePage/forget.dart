@@ -3,12 +3,15 @@
 import 'package:email_auth/email_auth.dart';
 import 'package:fast_and_yummy/HomePage/resetpass.dart';
 import 'package:fast_and_yummy/api/api.dart';
+import 'package:fast_and_yummy/user%20page/basic_user.dart';
 import 'package:flutter/material.dart';
 
 import '../api/linkapi.dart';
 
 class ForgetPass extends StatefulWidget {
-  const ForgetPass({Key? key}) : super(key: key);
+  bool sing;
+  String ema;
+  ForgetPass(this.sing, this.ema, {Key? key}) : super(key: key);
 
   @override
   State<ForgetPass> createState() => _ForgetPassState();
@@ -35,17 +38,17 @@ class _ForgetPassState extends State<ForgetPass> {
     }
   }
 
-  void verifyOtp(String s) async {
+  void verifyOtp(String str) async {
     EmailAuth emailAuth = EmailAuth(
       sessionName: "Fast And Yummy",
     );
-    var res = emailAuth.validateOtp(recipientMail: email.text, userOtp: s);
-    if (res) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ResetPass(email.text)),
-      );
-    }
+    var res = emailAuth.validateOtp(recipientMail: email.text, userOtp: str);
+    print(str);
+    widget.sing
+        ? Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ResetPass(email.text)))
+        : Navigator.push(
+            context, MaterialPageRoute(builder: (context) => UserPage()));
   }
 
   Api api = Api();
@@ -58,7 +61,7 @@ class _ForgetPassState extends State<ForgetPass> {
     );
     if (resp == "suc") {
       setState(() {
-        chose = !chose;
+        widget.sing = !widget.sing;
       });
       send();
     } else {
@@ -100,17 +103,17 @@ class _ForgetPassState extends State<ForgetPass> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            logo(chose ? "images/forget.png" : "images/otp.png"),
+            logo(widget.sing ? "images/forget.png" : "images/otp.png"),
             SizedBox(
               height: 40,
             ),
-            chose ? pad1() : pad2(),
+            widget.sing ? pad1() : pad2(),
             SizedBox(
               height: 40,
             ),
             elvD(
-                chose ? "Send" : "Check",
-                chose
+                widget.sing ? "Send" : "Check",
+                widget.sing
                     ? () async {
                         await checkEmail();
                       }
@@ -121,7 +124,7 @@ class _ForgetPassState extends State<ForgetPass> {
                             t4.text +
                             t5.text +
                             t6.text;
-                        verifyOtp(s);
+                        verifyOtp(widget.sing ? email.text : widget.ema);
                       }),
           ],
         ),

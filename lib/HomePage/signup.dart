@@ -1,6 +1,7 @@
-// ignore_for_file: use_build_context_synchronously, must_be_immutable, curly_braces_in_flow_control_structures, prefer_const_constructors_in_immutables, avoid_print
+// ignore_for_file: use_build_context_synchronously, must_be_immutable, curly_braces_in_flow_control_structures, prefer_const_constructors_in_immutables, avoid_print, unrelated_type_equality_checks
 
 import 'package:email_auth/email_auth.dart';
+import 'package:fast_and_yummy/HomePage/forget.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/user%20page/basic_user.dart';
@@ -33,10 +34,27 @@ class _SignUpState extends State<SignUp> {
     color: Color.fromARGB(255, 37, 179, 136),
   );
   Api api = Api();
-  
+  void send() {
+    EmailAuth emailAuth = EmailAuth(
+      sessionName: "Fast And Yummy",
+    );
+    emailAuth.sendOtp(recipientMail: email.text);
+  }
+
+  void verifyOtp(String s) async {
+    EmailAuth emailAuth = EmailAuth(
+      sessionName: "Fast And Yummy",
+    );
+    var res = emailAuth.validateOtp(recipientMail: email.text, userOtp: s);
+    if (res) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => UserPage()),
+      );
+    }
+  }
 
   signUP() async {
-    setState(() {});
     if (formstate.currentState!.validate() && !privcey) {
       var resp = await api.postReq(signUpLink, {
         "email": email.text,
@@ -46,12 +64,13 @@ class _SignUpState extends State<SignUp> {
         "password": password.text,
         "have_store": "no"
       });
-      setState(() {});
+
       if (resp == "suc") {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => UserPage()),
+          MaterialPageRoute(builder: (context) => ForgetPass(false,email.text)),
         );
+        send();
       }
     }
   }
@@ -93,12 +112,6 @@ class _SignUpState extends State<SignUp> {
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(35, 25, 35, 0),
-            child: textFieldDesign((val) {
-              return validInput(val!, 0, 0, "phone");
-            }, valid, TextInputType.phone, "Phone", false),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(35, 25, 35, 0),
