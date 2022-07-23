@@ -3,6 +3,7 @@
 
 import 'package:fast_and_yummy/HomePage/forget.dart';
 import 'package:fast_and_yummy/HomePage/homepage.dart';
+import 'package:fast_and_yummy/HomePage/resetpass.dart';
 import 'package:fast_and_yummy/HomePage/signUpInformation.dart';
 import 'package:fast_and_yummy/HomePage/signup.dart';
 import 'package:fast_and_yummy/ProductInsideStore.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ForgetPass(),
+      home: HomePage(),
     );
   }
 }

@@ -1,7 +1,11 @@
-// ignore_for_file: prefer_const_constructors, sort_child_properties_last
+// ignore_for_file: prefer_const_constructors, sort_child_properties_last, avoid_print, use_build_context_synchronously, unrelated_type_equality_checks
 
 import 'package:email_auth/email_auth.dart';
+import 'package:fast_and_yummy/HomePage/resetpass.dart';
+import 'package:fast_and_yummy/api/api.dart';
 import 'package:flutter/material.dart';
+
+import '../api/linkapi.dart';
 
 class ForgetPass extends StatefulWidget {
   const ForgetPass({Key? key}) : super(key: key);
@@ -21,25 +25,67 @@ class _ForgetPassState extends State<ForgetPass> {
   TextEditingController t4 = TextEditingController();
   TextEditingController t5 = TextEditingController();
   TextEditingController t6 = TextEditingController();
-
-  void verifyOtp() async {
-    EmailAuth emailAuth = EmailAuth(
-      sessionName: "Fast And Yummy",
-    );
-    var res =
-        emailAuth.validateOtp(recipientMail: email.text, userOtp: t1.text);
-    if (res) {
-      print(("done"));
-    }
-  }
-
   void send() {
     EmailAuth emailAuth = EmailAuth(
       sessionName: "Fast And Yummy",
     );
     var res = emailAuth.sendOtp(recipientMail: email.text);
     if (res == true) {
-      print(("done"));
+      print(("dd"));
+    }
+  }
+
+  void verifyOtp(String s) async {
+    EmailAuth emailAuth = EmailAuth(
+      sessionName: "Fast And Yummy",
+    );
+    var res = emailAuth.validateOtp(recipientMail: email.text, userOtp: s);
+    if (res) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ResetPass(email.text)),
+      );
+    }
+  }
+
+  Api api = Api();
+  checkEmail() async {
+    var resp = await api.postReq(
+      forgetLink,
+      {
+        "email": email.text,
+      },
+    );
+    if (resp == "suc") {
+      setState(() {
+        chose = !chose;
+      });
+      send();
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Email not found"),
+              backgroundColor: Color.fromARGB(255, 241, 241, 241),
+              actions: [
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      color: color,
+                      margin: EdgeInsets.all(14),
+                      child: Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.white),
+                      )),
+                )
+              ],
+            );
+          });
     }
   }
 
@@ -54,7 +100,7 @@ class _ForgetPassState extends State<ForgetPass> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ourLogo(chose ? "images/forget.png" : "images/otp.png"),
+            logo(chose ? "images/forget.png" : "images/otp.png"),
             SizedBox(
               height: 40,
             ),
@@ -62,7 +108,21 @@ class _ForgetPassState extends State<ForgetPass> {
             SizedBox(
               height: 40,
             ),
-            elvD(chose ? "Send" : "Check"),
+            elvD(
+                chose ? "Send" : "Check",
+                chose
+                    ? () async {
+                        await checkEmail();
+                      }
+                    : () {
+                        String s = t1.text +
+                            t2.text +
+                            t3.text +
+                            t4.text +
+                            t5.text +
+                            t6.text;
+                        verifyOtp(s);
+                      }),
           ],
         ),
       ),
@@ -72,21 +132,25 @@ class _ForgetPassState extends State<ForgetPass> {
   Padding pad1() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 35),
-      child: TextFormField(
-        cursorColor: Color.fromARGB(255, 21, 157, 117),
-        keyboardType: TextInputType.emailAddress,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 10),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Color.fromARGB(255, 21, 157, 117)),
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Color.fromARGB(255, 21, 157, 117)),
-          ),
-          hintText: "Email addres or phone number",
-          fillColor: Colors.black,
-          hintStyle: TextStyle(
-            fontFamily: "Prompt2",
+      child: Form(
+        key: formstate,
+        child: TextFormField(
+          controller: email,
+          cursorColor: Color.fromARGB(255, 21, 157, 117),
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 10),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Color.fromARGB(255, 21, 157, 117)),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Color.fromARGB(255, 21, 157, 117)),
+            ),
+            hintText: "Email addres or phone number",
+            fillColor: Colors.black,
+            hintStyle: TextStyle(
+              fontFamily: "Prompt2",
+            ),
           ),
         ),
       ),
@@ -116,6 +180,12 @@ class _ForgetPassState extends State<ForgetPass> {
               ),
               Flexible(
                 child: textD(t3, false, false),
+              ),
+              SizedBox(
+                width: 14,
+              ),
+              Flexible(
+                child: textD(t4, false, false),
               ),
               SizedBox(
                 width: 14,
@@ -166,15 +236,9 @@ class _ForgetPassState extends State<ForgetPass> {
     );
   }
 
-  ElevatedButton elvD(text) {
+  ElevatedButton elvD(text, void Function()? onPressed) {
     return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          String s = t1.text + t2.text + t3.text + t4.text + t5.text + t6.text;
-          print(s);
-          chose = !chose;
-        });
-      },
+      onPressed: onPressed,
       child: Text(
         text,
         style: TextStyle(
@@ -191,10 +255,10 @@ class _ForgetPassState extends State<ForgetPass> {
     );
   }
 
-  Center ourLogo(String s) {
+  Center logo(String s) {
     return Center(
       child: Container(
-        width: 280,
+        width: 300,
         margin: EdgeInsets.only(top: 45),
         child: Image(
           image: AssetImage(s),
