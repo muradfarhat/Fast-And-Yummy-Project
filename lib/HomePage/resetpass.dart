@@ -23,44 +23,50 @@ class _ResetPassState extends State<ResetPass> {
   Api api = Api();
   bool match = false;
   resetp() async {
-    var resp = await api.postReq(
-      resetLink,
-      {
-        "password": reset.text,
-        "email": widget.s,
-      },
-    );
-    if (resp == "suc") {
-      print("done");
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+    setState(() {
+      match = false;
+    });
+    if (formstate.currentState!.validate()) {
+      var resp = await api.postReq(
+        resetLink,
+        {
+          "password": reset.text,
+          "email": widget.s,
+        },
       );
-    } else {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text("Can't reset"),
-              backgroundColor: Color.fromARGB(255, 241, 241, 241),
-              actions: [
-                InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                      color: color,
-                      margin: EdgeInsets.all(14),
-                      child: Text(
-                        "Ok",
-                        style: TextStyle(color: Colors.white),
-                      )),
-                )
-              ],
-            );
-          });
+      if (resp == "suc") {
+        print("done");
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Can't reset"),
+                backgroundColor: Color.fromARGB(255, 241, 241, 241),
+                actions: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        color: color,
+                        margin: EdgeInsets.all(14),
+                        child: Text(
+                          "Ok",
+                          style: TextStyle(color: Colors.white),
+                        )),
+                  )
+                ],
+              );
+            });
+      }
     }
   }
 
@@ -86,13 +92,26 @@ class _ResetPassState extends State<ResetPass> {
                   child: Column(
                     children: [
                       txtD(
+                        (val) {
+                          return validInput(
+                            val!,
+                            6,
+                            20,
+                          );
+                        },
                         reset,
                         "New password",
                       ),
                       SizedBox(
                         height: 20,
                       ),
-                      txtD(confirm, "Confirm new password"),
+                      txtD((val) {
+                        return validInput(
+                          val!,
+                          6,
+                          20,
+                        );
+                      }, confirm, "Confirm new password"),
                     ],
                   ),
                 ),
@@ -128,7 +147,7 @@ class _ResetPassState extends State<ResetPass> {
           await resetp();
         } else {
           setState(() {
-            match = !match;
+            match = true;
           });
         }
       },
@@ -160,8 +179,10 @@ class _ResetPassState extends State<ResetPass> {
     );
   }
 
-  TextFormField txtD(TextEditingController cont, String hint) {
+  TextFormField txtD(final String? Function(String?)? valid,
+      TextEditingController cont, String hint) {
     return TextFormField(
+      validator: valid,
       controller: cont,
       cursorColor: Color.fromARGB(255, 21, 157, 117),
       keyboardType: TextInputType.emailAddress,
@@ -180,5 +201,16 @@ class _ResetPassState extends State<ResetPass> {
         ),
       ),
     );
+  }
+
+  validInput(String val, int min, int max) {
+    if (val.isEmpty) {
+      return "Can't be empty";
+    }
+    if (val.length < min) {
+      return "Should be $min letters at least";
+    } else if (val.length > max) {
+      return "more than $max letters";
+    }
   }
 }
