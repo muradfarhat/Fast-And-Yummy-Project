@@ -43,7 +43,7 @@ class _ForgetPassState extends State<ForgetPass> {
     var res = emailAuth.validateOtp(
         recipientMail: chose ? email.text : widget.ema, userOtp: str);
     if (res == true) {
-      widget.sign && chose
+      widget.sign || chose
           ? Navigator.push(context,
               MaterialPageRoute(builder: (context) => ResetPass(email.text)))
           : Navigator.push(

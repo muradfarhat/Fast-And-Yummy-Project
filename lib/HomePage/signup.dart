@@ -104,7 +104,7 @@ class _SignUpState extends State<SignUp> {
           Padding(
             padding: const EdgeInsets.fromLTRB(35, 25, 35, 0),
             child: textFieldDesign((val) {
-              return validInput(val!, 0, 0, "");
+              return validInput(val!, 0, 0, "phone");
             }, phone, TextInputType.phone, "Phone", false),
           ),
           Padding(
