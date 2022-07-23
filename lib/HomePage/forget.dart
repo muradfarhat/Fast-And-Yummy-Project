@@ -49,19 +49,22 @@ class _ForgetPassState extends State<ForgetPass> {
       appBar: AppBar(
         backgroundColor: color,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ourLogo(),
-          SizedBox(
-            height: 40,
-          ),
-          chose ? pad1() : pad2(),
-          SizedBox(
-            height: 40,
-          ),
-          elvD(chose ? "Send" : "Check"),
-        ],
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ourLogo(chose ? "images/forget.png" : "images/otp.png"),
+            SizedBox(
+              height: 40,
+            ),
+            chose ? pad1() : pad2(),
+            SizedBox(
+              height: 40,
+            ),
+            elvD(chose ? "Send" : "Check"),
+          ],
+        ),
       ),
     );
   }
@@ -188,13 +191,13 @@ class _ForgetPassState extends State<ForgetPass> {
     );
   }
 
-  Center ourLogo() {
+  Center ourLogo(String s) {
     return Center(
       child: Container(
-        width: 220,
+        width: 280,
         margin: EdgeInsets.only(top: 45),
         child: Image(
-          image: AssetImage("images/logo.png"),
+          image: AssetImage(s),
         ),
       ),
     );

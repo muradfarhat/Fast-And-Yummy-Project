@@ -1,4 +1,4 @@
-const String linkServer = "http://10.0.2.2/raedphp";
+const String linkServer = "http://10.0.2.2/Graduation-Project/php";
 const String signUpLink = "$linkServer/auth/signup.php";
 const String loginLink = "$linkServer/auth/signin.php";
 const String policy =
