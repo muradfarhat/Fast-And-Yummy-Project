@@ -41,19 +41,6 @@ class _SignUpState extends State<SignUp> {
     emailAuth.sendOtp(recipientMail: email.text);
   }
 
-  void verifyOtp(String s) async {
-    EmailAuth emailAuth = EmailAuth(
-      sessionName: "Fast And Yummy",
-    );
-    var res = emailAuth.validateOtp(recipientMail: email.text, userOtp: s);
-    if (res) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => UserPage()),
-      );
-    }
-  }
-
   signUP() async {
     if (formstate.currentState!.validate() && !privcey) {
       var resp = await api.postReq(signUpLink, {
@@ -68,7 +55,8 @@ class _SignUpState extends State<SignUp> {
       if (resp == "suc") {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ForgetPass(false,email.text)),
+          MaterialPageRoute(
+              builder: (context) => ForgetPass(false, email.text)),
         );
         send();
       }
