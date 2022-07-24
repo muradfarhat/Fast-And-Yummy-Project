@@ -28,7 +28,7 @@ class _afterSignupState extends State<afterSignup> {
         })));
       } else if (radioChoiceValue == "Customer") {
         Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-          return afterChooseCustomer();
+          return afterChooseCustomer(widget.userID);
         })));
       }
     } else {

@@ -2,7 +2,8 @@ import 'package:fast_and_yummy/HomePage/personalInfoAfterSignup.dart';
 import 'package:flutter/material.dart';
 
 class insertCreditCard extends StatefulWidget {
-  insertCreditCard({Key? key}) : super(key: key);
+  String userID;
+  insertCreditCard(this.userID, {Key? key}) : super(key: key);
 
   @override
   State<insertCreditCard> createState() => _insertCreditCardState();
