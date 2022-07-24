@@ -9,16 +9,16 @@ import 'package:flutter/material.dart';
 
 import '../api/linkapi.dart';
 
-class ForgetPass extends StatefulWidget {
+class ForgetPassAndVerf extends StatefulWidget {
   bool sign;
   String ema;
-  ForgetPass(this.sign, this.ema, {Key? key}) : super(key: key);
+  ForgetPassAndVerf(this.sign, this.ema, {Key? key}) : super(key: key);
 
   @override
-  State<ForgetPass> createState() => _ForgetPassState();
+  State<ForgetPassAndVerf> createState() => _ForgetPassAndVerfState();
 }
 
-class _ForgetPassState extends State<ForgetPass> {
+class _ForgetPassAndVerfState extends State<ForgetPassAndVerf> {
   GlobalKey<FormState> formstate = GlobalKey();
   Color color = Color.fromARGB(255, 37, 179, 136);
   bool show = false;

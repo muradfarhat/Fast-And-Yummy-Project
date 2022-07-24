@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
-import 'package:fast_and_yummy/HomePage/forget.dart';
+import 'package:fast_and_yummy/HomePage/forgetandverf.dart';
 import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/HomePage/resetpass.dart';
 import 'package:fast_and_yummy/HomePage/signUpInformation.dart';
@@ -17,8 +17,12 @@ import 'package:fast_and_yummy/user%20page/basic_user.dart';
 import 'package:fast_and_yummy/user%20page/oneOrader.dart';
 import 'package:fast_and_yummy/user%20page/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+late SharedPreferences sharedPref;
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  sharedPref = await SharedPreferences.getInstance();
   runApp(MyApp());
 }
 
@@ -29,7 +33,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      initialRoute: sharedPref.getString("id") == null ? "home" : "userpage",
+      routes: {
+        "home": (context) => HomePage(),
+        "userpage": (context) => UserPage(),
+      },
     );
   }
 }

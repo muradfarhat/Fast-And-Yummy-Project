@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last, must_be_immutable, use_build_context_synchronously
 
-import 'package:fast_and_yummy/HomePage/forget.dart';
+import 'package:fast_and_yummy/HomePage/forgetandverf.dart';
 import 'package:flutter/material.dart';
-
 import '../api/api.dart';
 import '../api/linkapi.dart';
+import '../main.dart';
 import '../user page/basic_user.dart';
 
 class SignIn extends StatefulWidget {
@@ -25,6 +25,7 @@ class _SignInState extends State<SignIn> {
     color: Color.fromARGB(255, 37, 179, 136),
   );
   Api api = Api();
+
   login() async {
     setState(() {});
     if (formstate.currentState!.validate()) {
@@ -34,7 +35,8 @@ class _SignInState extends State<SignIn> {
       );
       setState(() {});
       if (resp['status'] == "suc") {
-        Navigator.push(
+        sharedPref.setString("id", resp['data']['id'].toString());
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => UserPage()),
         );
@@ -81,7 +83,7 @@ class _SignInState extends State<SignIn> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ForgetPass(true, email.text)),
+                      builder: (context) => ForgetPassAndVerf(true, email.text)),
                 );
               },
               child: Text(
@@ -102,7 +104,7 @@ class _SignInState extends State<SignIn> {
                   await login();
                 },
                 child: Text(
-                  "Sign in",
+                  "Log in",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,

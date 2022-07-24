@@ -2,6 +2,7 @@
 
 import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/detialscreen.dart';
+import 'package:fast_and_yummy/main.dart';
 import 'package:fast_and_yummy/myStore.dart';
 import 'package:fast_and_yummy/splash.dart';
 import 'package:fast_and_yummy/stores.dart';
@@ -104,14 +105,43 @@ class _UserPageState extends State<UserPage> {
                   accountName: Text("User Name"),
                   accountEmail: Text("User Email")),
               InkWell(
-                  child: listTileDesgin("My Store", Icons.store, MyStore())),
-              InkWell(child: listTileDesgin("Stores", Icons.store, Stores())),
-              InkWell(child: listTileDesgin("About", Icons.info, HomePage())),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyStore()),
+                    );
+                  },
+                  child: listTileDesgin(
+                    "My Store",
+                    Icons.store,
+                  )),
               InkWell(
-                  child:
-                      listTileDesgin("Support", Icons.support, PageContent())),
+                  child: listTileDesgin(
+                "Stores",
+                Icons.store,
+              )),
               InkWell(
-                  child: listTileDesgin("Logout", Icons.exit_to_app, Splash())),
+                  child: listTileDesgin(
+                "About",
+                Icons.info,
+              )),
+              InkWell(
+                  child: listTileDesgin(
+                "Support",
+                Icons.support,
+              )),
+              InkWell(
+                  onTap: () {
+                    sharedPref.clear();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                  },
+                  child: listTileDesgin(
+                    "Logout",
+                    Icons.exit_to_app,
+                  )),
             ],
           ),
         ),
@@ -152,14 +182,8 @@ class _UserPageState extends State<UserPage> {
         body: content.elementAt(selectedNavBarItem));
   }
 
-  ListTile listTileDesgin(String name, IconData ic, Widget ob) {
+  ListTile listTileDesgin(String name, IconData ic) {
     return ListTile(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ob),
-        );
-      },
       title: Text(name),
       leading: Icon(
         ic,

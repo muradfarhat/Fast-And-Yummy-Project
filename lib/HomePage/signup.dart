@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, must_be_immutable, curly_braces_in_flow_control_structures, prefer_const_constructors_in_immutables, avoid_print, unrelated_type_equality_checks
 
 import 'package:email_auth/email_auth.dart';
-import 'package:fast_and_yummy/HomePage/forget.dart';
+import 'package:fast_and_yummy/HomePage/forgetandverf.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/user%20page/basic_user.dart';
@@ -56,7 +56,7 @@ class _SignUpState extends State<SignUp> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ForgetPass(false, email.text)),
+              builder: (context) => ForgetPassAndVerf(false, email.text)),
         );
         send();
       }
