@@ -33,36 +33,13 @@ class _SignInState extends State<SignIn> {
         {"email": email.text, "password": password.text},
       );
       setState(() {});
-      if (resp == "suc") {
+      if (resp['status'] == "suc") {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => UserPage()),
         );
       } else {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text("Wrong Email or Password"),
-                backgroundColor: Color.fromARGB(255, 241, 241, 241),
-                actions: [
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                        color: color,
-                        margin: EdgeInsets.all(14),
-                        child: Text(
-                          "Accept",
-                          style: TextStyle(color: Colors.white),
-                        )),
-                  )
-                ],
-              );
-            });
+        showFaildSnackBarMSG();
       }
     }
   }
@@ -251,5 +228,31 @@ class _SignInState extends State<SignIn> {
         }
         break;
     }
+  }
+
+  showFaildSnackBarMSG() {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.red.withOpacity(0.7),
+      content: Row(
+        // ignore: prefer_const_literals_to_create_immutables
+        children: [
+          Container(
+            margin: const EdgeInsets.only(right: 15),
+            child: const Icon(
+              Icons.close,
+              color: Colors.white,
+              size: 35,
+            ),
+          ),
+          const Text(
+            "Wrong Email or Password",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+      duration: const Duration(seconds: 2),
+      margin: const EdgeInsets.all(20),
+    ));
   }
 }

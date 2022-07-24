@@ -1,9 +1,12 @@
 import 'package:fast_and_yummy/HomePage/afterSignupCustomer.dart';
 import 'package:fast_and_yummy/HomePage/afterSignupDelivery.dart';
+import 'package:fast_and_yummy/api/api.dart';
+import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:flutter/material.dart';
 
 class afterSignup extends StatefulWidget {
-  afterSignup({Key? key}) : super(key: key);
+  String userID;
+  afterSignup(this.userID, {Key? key}) : super(key: key);
 
   @override
   State<afterSignup> createState() => _afterSignupState();
@@ -12,6 +15,26 @@ class afterSignup extends StatefulWidget {
 class _afterSignupState extends State<afterSignup> {
   Color basicColor = const Color.fromARGB(255, 37, 179, 136);
   String? radioChoiceValue;
+
+  Api _api = Api(); // Create API SELECT SCOPE_IDENTITY()
+
+  chooseDirection() async {
+    var response = await _api.postReq(afterSignupPage,
+        {"deliveryOrCustomer": radioChoiceValue, "id": widget.userID});
+    if (response['status'] == "suc") {
+      if (radioChoiceValue == "Delivery") {
+        Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
+          return afterChooseDelivery();
+        })));
+      } else if (radioChoiceValue == "Customer") {
+        Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
+          return afterChooseCustomer();
+        })));
+      }
+    } else {
+      showFaildSnackBarMSG();
+    }
+  }
 
   GlobalKey<ScaffoldState> scaffoldKey =
       new GlobalKey<ScaffoldState>(); // For snackBar
@@ -85,18 +108,21 @@ class _afterSignupState extends State<afterSignup> {
         margin: const EdgeInsets.only(top: 30),
         child: MaterialButton(
           padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-          onPressed: () {
+          onPressed: () async {
             if (radioChoiceValue == null) {
               showFaildSnackBarMSG();
-            } else if (radioChoiceValue == "Delivery") {
-              Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-                return afterChooseDelivery();
-              })));
-            } else if (radioChoiceValue == "Customer") {
-              Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-                return afterChooseCustomer();
-              })));
+            } else {
+              await chooseDirection();
             }
+            // else if (radioChoiceValue == "Delivery") {
+            //   Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
+            //     return afterChooseDelivery();
+            //   })));
+            // } else if (radioChoiceValue == "Customer") {
+            //   Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
+            //     return afterChooseCustomer();
+            //   })));
+            // }
           },
           color: basicColor,
           textColor: Colors.white,

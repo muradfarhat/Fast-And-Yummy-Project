@@ -2,6 +2,7 @@
 
 import 'package:email_auth/email_auth.dart';
 import 'package:fast_and_yummy/HomePage/resetpass.dart';
+import 'package:fast_and_yummy/HomePage/signUpInformation.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/user%20page/basic_user.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class _ForgetPassState extends State<ForgetPass> {
   Color color = Color.fromARGB(255, 37, 179, 136);
   bool show = false;
   bool chose = false;
+  String userIDNumber = "";
   TextEditingController email = TextEditingController();
   TextEditingController t1 = TextEditingController();
   TextEditingController t2 = TextEditingController();
@@ -37,9 +39,21 @@ class _ForgetPassState extends State<ForgetPass> {
   }
 
   void verifyOtp(String str) async {
+    /********************************************** */
+    var response = await api.postReq(
+      forgetLink,
+      {
+        "email": widget.ema,
+      },
+    );
+    print(response);
+    userIDNumber = response['data'][0]['id'];
+    print(userIDNumber);
+    /***************************************** */
     EmailAuth emailAuth = EmailAuth(
       sessionName: "Fast And Yummy",
     );
+
     var res = emailAuth.validateOtp(
         recipientMail: chose ? email.text : widget.ema, userOtp: str);
     if (res == true) {
@@ -47,7 +61,9 @@ class _ForgetPassState extends State<ForgetPass> {
           ? Navigator.push(context,
               MaterialPageRoute(builder: (context) => ResetPass(email.text)))
           : Navigator.push(
-              context, MaterialPageRoute(builder: (context) => UserPage()));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => afterSignup(userIDNumber)));
     } else {
       setState(() {
         show = true;
@@ -63,10 +79,13 @@ class _ForgetPassState extends State<ForgetPass> {
         "email": email.text,
       },
     );
-    if (resp == "suc") {
+
+    if (resp['status'] == "suc") {
       setState(() {
         widget.sign = !widget.sign;
         chose = !chose;
+        userIDNumber = resp['data'][0]['id'];
+        print("we are inside map murad farhat");
       });
       send(email.text);
     } else {

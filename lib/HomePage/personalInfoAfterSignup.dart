@@ -1,4 +1,5 @@
 import 'package:fast_and_yummy/HomePage/homepage.dart';
+import 'package:fast_and_yummy/user%20page/basic_user.dart';
 import 'package:flutter/material.dart';
 
 class personalInfo extends StatefulWidget {
@@ -47,7 +48,7 @@ class _personalInfoState extends State<personalInfo> {
             if (EditAddressData()) {
               showSuccessSnackBarMSG();
               Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-                return HomePage();
+                return UserPage();
               })));
             }
           },
@@ -203,7 +204,7 @@ class _personalInfoState extends State<personalInfo> {
                           onPressed: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: ((context) {
-                              return HomePage();
+                              return UserPage();
                             })));
                           },
                           child: Text("Skip",

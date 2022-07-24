@@ -23,7 +23,7 @@ class Api {
       var response = await http.post(Uri.parse(url), body: data);
       if (response.statusCode == 200) {
         var responseBody = jsonDecode(response.body);
-        return (responseBody['status']);
+        return responseBody;
       } else {
         print("dasdas");
       }

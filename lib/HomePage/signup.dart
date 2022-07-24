@@ -52,7 +52,7 @@ class _SignUpState extends State<SignUp> {
         "have_store": "no"
       });
 
-      if (resp == "suc") {
+      if (resp['status'] == "suc") {
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -207,7 +207,7 @@ class _SignUpState extends State<SignUp> {
                   await signUP();
                 },
                 child: Text(
-                  "Sign in",
+                  "Sign up",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
