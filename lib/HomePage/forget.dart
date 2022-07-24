@@ -46,9 +46,7 @@ class _ForgetPassState extends State<ForgetPass> {
         "email": widget.ema,
       },
     );
-    print(response);
     userIDNumber = response['data'][0]['id'];
-    print(userIDNumber);
     /***************************************** */
     EmailAuth emailAuth = EmailAuth(
       sessionName: "Fast And Yummy",
