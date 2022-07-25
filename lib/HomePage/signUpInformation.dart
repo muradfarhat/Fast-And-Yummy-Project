@@ -28,11 +28,7 @@ class _afterSignupState extends State<afterSignup> {
         })));
       } else if (radioChoiceValue == "Customer") {
         Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-<<<<<<< HEAD
           return afterChooseCustomer(widget.userID);
-=======
-          return afterChooseCustomer();
->>>>>>> parent of a40c14f (Back end)
         })));
       }
     } else {
