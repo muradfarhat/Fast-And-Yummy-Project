@@ -63,12 +63,12 @@ class _afterChooseCustomerState extends State<afterChooseCustomer> {
         margin: const EdgeInsets.symmetric(vertical: 30),
         child: MaterialButton(
           padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-          onPressed: () {
+          onPressed: () async {
             if (choosed.length < 2) {
               showFaildSnackBarMSG("You must choose at least 2 choises");
             } else {
               for (int i = 0; i < choosed.length; i++) {
-                chooseDirection(
+                await chooseDirection(
                     choosed[i]['id'], widget.userID, choosed[i]['favName']);
               }
               showSuccessSnackBarMSG();

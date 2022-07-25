@@ -1,9 +1,12 @@
 import 'package:fast_and_yummy/HomePage/homepage.dart';
+import 'package:fast_and_yummy/api/api.dart';
+import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/user%20page/basic_user.dart';
 import 'package:flutter/material.dart';
 
 class personalInfo extends StatefulWidget {
-  personalInfo({Key? key}) : super(key: key);
+  String userID;
+  personalInfo(this.userID, {Key? key}) : super(key: key);
 
   @override
   State<personalInfo> createState() => _personalInfoState();
@@ -17,6 +20,23 @@ class _personalInfoState extends State<personalInfo> {
   String? street;
 
   List<String> address = [];
+
+  Api _api = Api(); // Create API SELECT SCOPE_IDENTITY()
+
+  AddPersonal() async {
+    var response = await _api.postReq(personalDataAfterSignup, {
+      "city": address[0],
+      "town": address[1],
+      "street": address[2],
+      "id": widget.userID
+    });
+    if (response['status'] == "suc") {
+      showSuccessSnackBarMSG();
+      Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
+        return HomePage();
+      })));
+    }
+  }
 
   GlobalKey<FormState> formStateForPrsonData =
       new GlobalKey<FormState>(); // For Text Filed in data Info
@@ -44,12 +64,9 @@ class _personalInfoState extends State<personalInfo> {
         margin: const EdgeInsets.only(top: 30),
         child: MaterialButton(
           padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-          onPressed: () {
+          onPressed: () async {
             if (EditAddressData()) {
-              showSuccessSnackBarMSG();
-              Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-                return UserPage();
-              })));
+              await AddPersonal();
             }
           },
           color: basicColor,

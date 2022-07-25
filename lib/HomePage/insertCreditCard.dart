@@ -1,4 +1,6 @@
 import 'package:fast_and_yummy/HomePage/personalInfoAfterSignup.dart';
+import 'package:fast_and_yummy/api/api.dart';
+import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:flutter/material.dart';
 
 class insertCreditCard extends StatefulWidget {
@@ -18,6 +20,24 @@ class _insertCreditCardState extends State<insertCreditCard> {
   String? cvv;
 
   List<String> cardDataInfo = [];
+
+  Api _api = Api(); // Create API SELECT SCOPE_IDENTITY()
+
+  AddCreditCard() async {
+    var response = await _api.postReq(insertCreditCardInfo, {
+      "visaName": cardDataInfo[0],
+      "visaNumber": cardDataInfo[1],
+      "visaDate": cardDataInfo[2],
+      "CVV": cardDataInfo[3],
+      "id": widget.userID
+    });
+    if (response['status'] == "suc") {
+      showSuccessSnackBarMSG();
+      Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
+        return personalInfo(widget.userID);
+      })));
+    }
+  }
 
   GlobalKey<FormState> formStateForCardData =
       new GlobalKey<FormState>(); // For Text Filed in data Info
@@ -46,12 +66,9 @@ class _insertCreditCardState extends State<insertCreditCard> {
         margin: const EdgeInsets.only(top: 30),
         child: MaterialButton(
           padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-          onPressed: () {
+          onPressed: () async {
             if (EditData()) {
-              showSuccessSnackBarMSG();
-              Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-                return personalInfo();
-              })));
+              await AddCreditCard();
             }
           },
           color: basicColor,
@@ -234,7 +251,7 @@ class _insertCreditCardState extends State<insertCreditCard> {
                     onPressed: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: ((context) {
-                        return personalInfo();
+                        return personalInfo(widget.userID);
                       })));
                     },
                     child: Text("Skip",
