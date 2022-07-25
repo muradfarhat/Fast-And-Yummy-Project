@@ -22,7 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 late SharedPreferences sharedPref;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  sharedPref = await SharedPreferences.getInstance(); 
+  sharedPref = await SharedPreferences.getInstance();
   runApp(MyApp());
 }
 
@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("hi");
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: sharedPref.getString("id") == null ? "home" : "userpage",
