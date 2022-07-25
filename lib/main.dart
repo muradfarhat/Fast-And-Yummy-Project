@@ -31,7 +31,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("hi");
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: sharedPref.getString("id") == null ? "home" : "userpage",

@@ -25,7 +25,7 @@ class Api {
         var responseBody = jsonDecode(response.body);
         return responseBody;
       } else {
-        print("dasdas");
+        print("No Connection");
       }
     } catch (e) {
       return "false";

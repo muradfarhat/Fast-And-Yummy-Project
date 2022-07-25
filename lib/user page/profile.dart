@@ -74,6 +74,8 @@ class _profileState extends State<profile> {
     {"expDate": '10/23'},
     {"cvv": 999}
   ];
+  String? inital;
+  String? inital2;
   Api api = Api();
   getData() async {
     var resp =
@@ -81,6 +83,32 @@ class _profileState extends State<profile> {
     if (resp['status'] == "suc") {
       return resp;
     } else {}
+  }
+
+  udpatePersonalData() async {
+    var resp = await api.postReq(updatePers, {
+      "password": pass,
+      "phone": phone,
+      "city": city,
+      "town": town,
+      "street": street,
+      "id": sharedPref.getString("id"),
+    });
+
+    if (resp['status'] == "suc") {
+      return true;
+    }
+  }
+
+  updateUName() async {
+    var resp = await api.postReq(updateNameLink, {
+      "first_name": firstName,
+      "last_name": lastName,
+      "id": sharedPref.getString("id"),
+    });
+    if (resp['status'] == "suc") {
+      return true;
+    }
   }
 
   @override
@@ -98,17 +126,13 @@ class _profileState extends State<profile> {
         GlobalKey<ScaffoldState>(); // For snackBar
 
 /********** Start Function for edit personal information & Favorite & Card Information validation ************** */
+
     bool EditPersonalData() {
       var formData = formStateForPersonal.currentState;
 
       if (formData!.validate()) {
         formData.save();
-
-        personalInfo[3]['password'] = pass;
-        personalInfo[4]['phone'] = phone;
-        personalInfo[5]['city'] = city;
-        personalInfo[6]['town'] = town;
-        personalInfo[7]['street'] = street;
+        udpatePersonalData();
 
         return true;
       } else {
@@ -142,6 +166,8 @@ class _profileState extends State<profile> {
           future: getData(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
+              inital = "${snapshot.data['data']['first_name']}";
+              inital2 = "${snapshot.data['data']['last_name']}";
               return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -1064,9 +1090,6 @@ class _profileState extends State<profile> {
     if (formNameData!.validate()) {
       formNameData.save();
 
-      personalInfo[0]['firstName'] = firstName;
-      personalInfo[1]['lastName'] = lastName;
-
       return true;
     } else {
       return false;
@@ -1096,7 +1119,7 @@ class _profileState extends State<profile> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextFormField(
-                      initialValue: personalInfo[0]['firstName'],
+                      initialValue: inital!,
                       autovalidateMode: AutovalidateMode.always,
                       validator: (value) {
                         if (value!.length < 2) {
@@ -1120,7 +1143,7 @@ class _profileState extends State<profile> {
                                   color: Color.fromARGB(255, 37, 179, 136)))),
                     ),
                     TextFormField(
-                      initialValue: personalInfo[1]['lastName'],
+                      initialValue: inital2,
                       autovalidateMode: AutovalidateMode.always,
                       validator: (value) {
                         if (value!.length < 2) {
@@ -1151,6 +1174,7 @@ class _profileState extends State<profile> {
                     onPressed: () {
                       if (EditName()) {
                         setState(() {
+                          updateUName();
                           Navigator.of(context).pop();
                           showSuccessSnackBarMSG();
                         });
