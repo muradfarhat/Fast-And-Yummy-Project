@@ -39,15 +39,6 @@ class _ForgetPassAndVerfState extends State<ForgetPassAndVerf> {
   }
 
   void verifyOtp(String str) async {
-    /********************************************** */
-    var response = await api.postReq(
-      forgetLink,
-      {
-        "email": widget.ema,
-      },
-    );
-    userIDNumber = response['data'][0]['id'];
-    /***************************************** */
     EmailAuth emailAuth = EmailAuth(
       sessionName: "Fast And Yummy",
     );
@@ -61,7 +52,8 @@ class _ForgetPassAndVerfState extends State<ForgetPassAndVerf> {
           : Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => afterSignup(userIDNumber)));
+                  builder: (context) =>
+                      afterSignup(chose ? email.text : widget.ema)));
     } else {
       setState(() {
         show = true;
@@ -82,8 +74,6 @@ class _ForgetPassAndVerfState extends State<ForgetPassAndVerf> {
       setState(() {
         widget.sign = !widget.sign;
         chose = !chose;
-        userIDNumber = resp['data'][0]['id'];
-        print("we are inside map murad farhat");
       });
       send(email.text);
     } else {

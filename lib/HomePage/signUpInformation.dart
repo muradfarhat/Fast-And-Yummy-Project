@@ -5,8 +5,8 @@ import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:flutter/material.dart';
 
 class afterSignup extends StatefulWidget {
-  String userID;
-  afterSignup(this.userID, {Key? key}) : super(key: key);
+  String email;
+  afterSignup(this.email, {Key? key}) : super(key: key);
 
   @override
   State<afterSignup> createState() => _afterSignupState();
@@ -15,20 +15,24 @@ class afterSignup extends StatefulWidget {
 class _afterSignupState extends State<afterSignup> {
   Color basicColor = const Color.fromARGB(255, 37, 179, 136);
   String? radioChoiceValue;
+  String? userID;
 
   Api _api = Api(); // Create API SELECT SCOPE_IDENTITY()
 
   chooseDirection() async {
     var response = await _api.postReq(afterSignupPage,
-        {"deliveryOrCustomer": radioChoiceValue, "id": widget.userID});
+        {"deliveryOrCustomer": radioChoiceValue, "email": widget.email});
     if (response['status'] == "suc") {
+      setState(() {
+        userID = response['data'];
+      });
       if (radioChoiceValue == "Delivery") {
         Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
           return afterChooseDelivery();
         })));
       } else if (radioChoiceValue == "Customer") {
         Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-          return afterChooseCustomer(widget.userID);
+          return afterChooseCustomer(widget.email);
         })));
       }
     } else {
