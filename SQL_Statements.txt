@@ -6,4 +6,6 @@ CREATE TABLE `gp`.`favoritetable` ( `userID` VARCHAR(255) NOT NULL , `orderID` V
 CREATE TABLE `gp`.`category_table` ( `cateID` INT NOT NULL AUTO_INCREMENT , `cateName` VARCHAR(255) NOT NULL , `cateImage` VARCHAR(255) NOT NULL , PRIMARY KEY (`cateID`)) ENGINE = InnoDB; 
 // add column to users table
 ALTER TABLE `users` ADD `deliveryOrCustomer` VARCHAR(255) NOT NULL AFTER `have_store`; 
+// favorite cate
+CREATE TABLE `gp`.`favorite_cate` ( `cateID` VARCHAR(255) NOT NULL , `userID` VARCHAR(255) NOT NULL , `cateName` VARCHAR(255) NOT NULL ) ENGINE = InnoDB; 
 //

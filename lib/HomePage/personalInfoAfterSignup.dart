@@ -48,7 +48,7 @@ class _personalInfoState extends State<personalInfo> {
             if (EditAddressData()) {
               showSuccessSnackBarMSG();
               Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-                return UserPage();
+                return HomePage();
               })));
             }
           },
@@ -204,7 +204,7 @@ class _personalInfoState extends State<personalInfo> {
                           onPressed: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: ((context) {
-                              return UserPage();
+                              return HomePage();
                             })));
                           },
                           child: Text("Skip",

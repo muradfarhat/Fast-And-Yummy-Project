@@ -34,7 +34,7 @@ class _ResetPassState extends State<ResetPass> {
           "email": widget.s,
         },
       );
-      if (resp == "suc") {
+      if (resp['status'] == "suc") {
         print("done");
 
         Navigator.push(

@@ -46,9 +46,7 @@ class _ForgetPassState extends State<ForgetPass> {
         "email": widget.ema,
       },
     );
-    print(response);
-    userIDNumber = response['data'][0]['id'];
-    print(userIDNumber);
+    //userIDNumber = response['data'][0]['id'];
     /***************************************** */
     EmailAuth emailAuth = EmailAuth(
       sessionName: "Fast And Yummy",
@@ -63,7 +61,8 @@ class _ForgetPassState extends State<ForgetPass> {
           : Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => afterSignup(userIDNumber)));
+                  builder: (context) =>
+                      afterSignup(chose ? email.text : widget.ema)));
     } else {
       setState(() {
         show = true;
@@ -84,8 +83,6 @@ class _ForgetPassState extends State<ForgetPass> {
       setState(() {
         widget.sign = !widget.sign;
         chose = !chose;
-        userIDNumber = resp['data'][0]['id'];
-        print("we are inside map murad farhat");
       });
       send(email.text);
     } else {
