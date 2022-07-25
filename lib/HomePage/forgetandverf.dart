@@ -46,7 +46,13 @@ class _ForgetPassAndVerfState extends State<ForgetPassAndVerf> {
         "email": widget.ema,
       },
     );
+<<<<<<< HEAD:lib/HomePage/forgetandverf.dart
     userIDNumber = response['data'][0]['id'];
+=======
+    print(response);
+    userIDNumber = response['data'][0]['id'];
+    print(userIDNumber);
+>>>>>>> parent of a40c14f (Back end):lib/HomePage/forget.dart
     /***************************************** */
     EmailAuth emailAuth = EmailAuth(
       sessionName: "Fast And Yummy",

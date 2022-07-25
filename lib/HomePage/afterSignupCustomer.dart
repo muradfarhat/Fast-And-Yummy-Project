@@ -1,11 +1,8 @@
 import 'package:fast_and_yummy/HomePage/insertCreditCard.dart';
-import 'package:fast_and_yummy/api/api.dart';
-import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:flutter/material.dart';
 
 class afterChooseCustomer extends StatefulWidget {
-  String userID;
-  afterChooseCustomer(this.userID, {Key? key}) : super(key: key);
+  afterChooseCustomer({Key? key}) : super(key: key);
 
   @override
   State<afterChooseCustomer> createState() => _afterChooseCustomerState();
@@ -14,44 +11,13 @@ class afterChooseCustomer extends StatefulWidget {
 class _afterChooseCustomerState extends State<afterChooseCustomer> {
   Color basicColor = const Color.fromARGB(255, 37, 179, 136);
   String? radioChoiceValue;
-  bool success = false;
-  bool ifCall = false;
 
-  List<Map> chooseFav = [];
-  List<Map> choosed = [];
-
-  Api _api = Api(); // Create API SELECT SCOPE_IDENTITY()
-
-  bringAllCatergorys() async {
-    var response = await _api.getReq(bringAllCate);
-    if (response['status'] == "suc") {
-      List<dynamic> values = response['data'];
-      int lengthOfValue = values.length;
-      for (int i = 0; i < lengthOfValue; i++) {
-        setState(() {
-          chooseFav.add({
-            "id": "${values[i]["cateID"]}",
-            "favName": "${values[i]['cateName']}",
-            "value": false
-          });
-        });
-        ifCall = true;
-        if (i == lengthOfValue) {
-          break;
-        }
-      }
-    }
-  }
-
-  chooseDirection(String cate_id, String user_id, String cate_name) async {
-    var response = await _api.postReq(afterSignupChooseFavorite,
-        {"cateID": cate_id, "userID": user_id, "cateName": cate_name});
-    if (response['status'] == "suc") {
-      success = true;
-    } else {
-      success = false;
-    }
-  }
+  List<Map> chooseFav = [
+    {"favName": "Sweet", "value": false},
+    {"favName": "Drinks", "value": false},
+    {"favName": "Traditional", "value": false}
+  ];
+  List<String> choosed = [];
 
   GlobalKey<ScaffoldState> scaffoldKey =
       new GlobalKey<ScaffoldState>(); // For snackBar
@@ -65,15 +31,11 @@ class _afterChooseCustomerState extends State<afterChooseCustomer> {
           padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
           onPressed: () {
             if (choosed.length < 2) {
-              showFaildSnackBarMSG("You must choose at least 2 choises");
+              showFaildSnackBarMSG();
             } else {
-              for (int i = 0; i < choosed.length; i++) {
-                chooseDirection(
-                    choosed[i]['id'], widget.userID, choosed[i]['favName']);
-              }
               showSuccessSnackBarMSG();
               Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-                return insertCreditCard(widget.userID);
+                return insertCreditCard();
               })));
             }
           },
@@ -88,7 +50,7 @@ class _afterChooseCustomerState extends State<afterChooseCustomer> {
         ));
   }
 
-  showFaildSnackBarMSG(String msg) {
+  showFaildSnackBarMSG() {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
       backgroundColor: Colors.red.withOpacity(0.7),
@@ -103,8 +65,8 @@ class _afterChooseCustomerState extends State<afterChooseCustomer> {
               size: 35,
             ),
           ),
-          Text(
-            msg,
+          const Text(
+            "You must choose at least 2 choices",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           )
         ],
@@ -143,9 +105,6 @@ class _afterChooseCustomerState extends State<afterChooseCustomer> {
 /************************** End Functions ******************************** */
   @override
   Widget build(BuildContext context) {
-    if (ifCall == false) {
-      bringAllCatergorys();
-    }
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
@@ -195,11 +154,11 @@ class _afterChooseCustomerState extends State<afterChooseCustomer> {
                             if (val == false && choosed.isNotEmpty) {
                               setState(() {
                                 choosed.removeWhere((element) =>
-                                    element['id'] == chooseFav[index]['id']);
+                                    element == chooseFav[index]['favName']);
                               });
                             } else {
                               setState(() {
-                                choosed.add(chooseFav[index]);
+                                choosed.add(chooseFav[index]['favName']);
                               });
                             }
                           });
