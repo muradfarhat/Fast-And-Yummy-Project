@@ -46,6 +46,7 @@ class _profileState extends State<profile> {
   String? cardDate;
   int? cardCVV;
   dynamic lis;
+  dynamic lis2;
 
   List<Map> personalInfo = [
     {"firstName": "Customer"},
@@ -112,12 +113,14 @@ class _profileState extends State<profile> {
     });
     var resp =
         await api.postReq(getInfoLink, {"id": sharedPref.getString("id")});
+    var resp2 =
+        await api.postReq(getfavlink, {"userID": sharedPref.getString("id")});
     if (resp['status'] == "suc") {
       setState(() {
         lis = resp['data'];
+        lis2 = resp2['data'];
         loading = false;
       });
-      return resp['status'];
     } else {}
   }
 
@@ -152,7 +155,11 @@ class _profileState extends State<profile> {
   @override
   void initState() {
     getData();
+<<<<<<< Updated upstream
     bringAllCatergorys();
+=======
+
+>>>>>>> Stashed changes
     super.initState();
   }
 
@@ -972,7 +979,11 @@ class _profileState extends State<profile> {
                 flex: 3,
                 child: Container(
                   child: Text(
+<<<<<<< Updated upstream
                     "${favorite[index]['favName']}", // ${favorite[index]['name']}
+=======
+                    "${lis2[index]['cateName']}", // ${favorite[index]['name']}
+>>>>>>> Stashed changes
                     textAlign: TextAlign.start,
                     style: TextStyle(fontSize: 17),
                   ),
