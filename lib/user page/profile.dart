@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, non_constant_identifier_names, slash_for_doc_comments
 import 'dart:convert';
 import 'dart:ffi';
 
@@ -46,7 +46,6 @@ class _profileState extends State<profile> {
   String? cardDate;
   int? cardCVV;
   dynamic lis;
-  dynamic lis2;
 
   List<Map> personalInfo = [
     {"firstName": "Customer"},
@@ -118,7 +117,6 @@ class _profileState extends State<profile> {
     if (resp['status'] == "suc") {
       setState(() {
         lis = resp['data'];
-        lis2 = resp2['data'];
         loading = false;
       });
     } else {}
@@ -140,6 +138,21 @@ class _profileState extends State<profile> {
     }
   }
 
+  udpateVisaData() async {
+    var resp = await api.postReq(visaLink, {
+      "visaName": cardName.toString(),
+      "visaNumber": cardNum.toString(),
+      "visaDate": cardDate.toString(),
+      "CVV": cardCVV.toString(),
+      "id": sharedPref.getString("id"),
+    });
+
+    if (resp['status'] == "suc") {
+      getData();
+      return true;
+    } else {}
+  }
+
   updateUName() async {
     var resp = await api.postReq(updateNameLink, {
       "first_name": firstName,
@@ -155,11 +168,7 @@ class _profileState extends State<profile> {
   @override
   void initState() {
     getData();
-<<<<<<< Updated upstream
     bringAllCatergorys();
-=======
-
->>>>>>> Stashed changes
     super.initState();
   }
 
@@ -198,13 +207,7 @@ class _profileState extends State<profile> {
 
       if (formCardData!.validate()) {
         formCardData.save();
-
-        if (cardNum!.isEmpty) {
-          bankCardInfo[0]['cardNumber'] = cardNum;
-        }
-        bankCardInfo[1]['name'] = cardName;
-        bankCardInfo[2]['expDate'] = cardDate;
-        bankCardInfo[3]['cvv'] = cardCVV;
+        udpateVisaData();
 
         return true;
       } else {
@@ -749,7 +752,7 @@ class _profileState extends State<profile> {
                                     ),
                                   ),
                                   Text(
-                                    "${bankCardInfo[2]['expDate']}",
+                                    "${lis?['visaDate']}",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,
@@ -765,7 +768,7 @@ class _profileState extends State<profile> {
                                     ),
                                   ),
                                   Text(
-                                    "${bankCardInfo[3]['cvv']}",
+                                    "${lis?['CVV']}",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,
@@ -797,7 +800,7 @@ class _profileState extends State<profile> {
                                   onSaved: (text) {
                                     cardName = text;
                                   },
-                                  initialValue: bankCardInfo[1]['name'],
+                                  initialValue: lis?['visaName'],
                                   keyboardType: TextInputType.text,
                                   decoration: InputDecoration(
                                       icon: Icon(
@@ -811,6 +814,7 @@ class _profileState extends State<profile> {
                                               255, 37, 179, 136))),
                                 ),
                                 TextFormField(
+                                  initialValue: lis?['visaNumber'],
                                   validator: (value) {
                                     if (value!.isEmpty) {
                                       return null;
@@ -850,8 +854,7 @@ class _profileState extends State<profile> {
                                         onSaved: (text) {
                                           cardDate = text;
                                         },
-                                        initialValue: bankCardInfo[2]
-                                            ['expDate'],
+                                        initialValue: lis?['visaDate'],
                                         keyboardType: TextInputType.datetime,
                                         decoration: InputDecoration(
                                             icon: Icon(
@@ -878,8 +881,7 @@ class _profileState extends State<profile> {
                                         onSaved: (text) {
                                           cardCVV = int.parse(text!);
                                         },
-                                        initialValue:
-                                            bankCardInfo[3]['cvv'].toString(),
+                                        initialValue: lis?['CVV'].toString(),
                                         keyboardType: TextInputType.number,
                                         decoration: InputDecoration(
                                             icon: Icon(
@@ -979,11 +981,8 @@ class _profileState extends State<profile> {
                 flex: 3,
                 child: Container(
                   child: Text(
-<<<<<<< Updated upstream
                     "${favorite[index]['favName']}", // ${favorite[index]['name']}
-=======
-                    "${lis2[index]['cateName']}", // ${favorite[index]['name']}
->>>>>>> Stashed changes
+                    // ${favorite[
                     textAlign: TextAlign.start,
                     style: TextStyle(fontSize: 17),
                   ),
@@ -1076,8 +1075,8 @@ class _profileState extends State<profile> {
       margin: EdgeInsets.only(bottom: 15),
       child: Text(
         infoNum == 0
-            ? convertString("${bankCardInfo[infoNum][infoType]}")
-            : "${bankCardInfo[infoNum][infoType]}",
+            ? convertString("${lis?['visaNumber']}")
+            : "${lis?['visaName']}",
         style: TextStyle(
             color: Colors.white,
             fontSize: fontSize,
