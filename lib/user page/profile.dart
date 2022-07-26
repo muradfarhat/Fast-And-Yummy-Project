@@ -18,6 +18,7 @@ class profile extends StatefulWidget {
 }
 
 class _profileState extends State<profile> {
+  Color basicColor = const Color.fromARGB(255, 37, 179, 136);
   GlobalKey<FormState> formStateForName =
       new GlobalKey<FormState>(); // For Text Filed in Customer Name
 
@@ -28,6 +29,7 @@ class _profileState extends State<profile> {
   bool showSaveInfo = false;
   bool showFavEdit = false;
   bool showCardEdit = false;
+  bool ifCall = false;
 
 // variables for personal information
   String? firstName;
@@ -57,20 +59,9 @@ class _profileState extends State<profile> {
     {"image": "images/profile.jpg"}
   ];
 
-  List<Map> favoriteCkeckBox = [
-    // favorite items that will check from it :: fixed list edit just from admin
-    {"name": "Sweet"},
-    {"name": "Meat"},
-    {"name": "Drinks"},
-    {"name": "Traditional"},
-    {"name": "Traditional"}
-  ];
+  List<Map> favoriteCkeckBox = [];
 
-  List<Map> favorite = [
-    {"name": "Sweet"},
-    {"name": "Meat"},
-    {"name": "Traditional"},
-  ];
+  List<Map> favorite = [];
 
   List<Map> bankCardInfo = [
     {"cardNumber": "5555555555555555"},
@@ -81,6 +72,40 @@ class _profileState extends State<profile> {
   String ff = "hello";
   Api api = Api();
   bool loading = false;
+
+/***************** Start To bring all categoryes in data base ********************** */
+  bringAllCatergorys() async {
+    var response = await api.getReq(bringAllCate);
+    if (response['status'] == "suc") {
+      List<dynamic> values = response['data'];
+      int lengthOfValue = values.length;
+      for (int i = 0; i < lengthOfValue; i++) {
+        setState(() {
+          favoriteCkeckBox.add({
+            "id": "${values[i]["cateID"]}",
+            "favName": "${values[i]['cateName']}",
+            "value": findFavorite(favorite, "${values[i]['cateName']}")
+          });
+        });
+        ifCall = true;
+        if (i == lengthOfValue) {
+          break;
+        }
+      }
+    }
+  }
+
+  findFavorite(List<dynamic> listChoose, String fav) {
+    bool ifFind = false;
+    for (int i = 0; i < listChoose.length; i++) {
+      if (listChoose[i]['favName'] == fav) {
+        ifFind = true;
+      }
+    }
+    return ifFind;
+  }
+
+/***************** End To bring all categoryes in data base ********************** */
   getData() async {
     setState(() {
       loading = true;
@@ -127,6 +152,7 @@ class _profileState extends State<profile> {
   @override
   void initState() {
     getData();
+    bringAllCatergorys();
     super.initState();
   }
 
@@ -946,67 +972,49 @@ class _profileState extends State<profile> {
                 flex: 3,
                 child: Container(
                   child: Text(
-                    "${favorite[index]['name']}", // ${favorite[index]['name']}
+                    "${favorite[index]['favName']}", // ${favorite[index]['name']}
                     textAlign: TextAlign.start,
                     style: TextStyle(fontSize: 17),
                   ),
                 ),
               ),
-              Expanded(
-                  child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          favorite.removeAt(index);
-                        });
-                      },
-                      icon: Icon(Icons.close),
-                      splashColor: Colors.white))
             ],
           ));
     });
+  }
+
+  setFavoriteCate() {
+    return List.generate(
+        favoriteCkeckBox.length,
+        (index) => Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              child: CheckboxListTile(
+                  activeColor: basicColor,
+                  title: Text("${favoriteCkeckBox[index]['favName']}"),
+                  value: favoriteCkeckBox[index]['value'],
+                  onChanged: (val) {
+                    setState(() {
+                      favoriteCkeckBox[index]['value'] = val;
+                      if (val == false && favorite.isNotEmpty) {
+                        setState(() {
+                          favorite.removeWhere((element) =>
+                              element['id'] == favoriteCkeckBox[index]['id']);
+                        });
+                      } else {
+                        setState(() {
+                          favorite.add(favoriteCkeckBox[index]);
+                        });
+                      }
+                    });
+                  }),
+            ));
   }
 
   Wrap wrapFavoriteContentCheckBox() {
     return Wrap(
       direction: Axis.horizontal,
-      children: CheckBoxGenerate(),
+      children: setFavoriteCate(),
     );
-  }
-
-  CheckBoxGenerate() {
-    return List.generate(favoriteCkeckBox.length, (index) {
-      return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            // ignore: prefer_const_literals_to_create_immutables
-            boxShadow: [
-              BoxShadow(
-                  color: Color.fromARGB(255, 197, 197, 197), blurRadius: 4)
-            ],
-            borderRadius: BorderRadius.circular(30),
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          margin: EdgeInsets.only(left: 5, bottom: 15, right: 5),
-          alignment: Alignment.center,
-          width: 180,
-          height: 40,
-          child: Row(
-            // ignore: prefer_const_literals_to_create_immutables
-            children: [
-              Expanded(child: Icon(Icons.food_bank)),
-              Expanded(
-                flex: 2,
-                child: Container(
-                  child: Text(
-                    "${favoriteCkeckBox[index]['name']}", // ${favorite[index]['name']}
-                    textAlign: TextAlign.start,
-                    style: TextStyle(fontSize: 17),
-                  ),
-                ),
-              )
-            ],
-          ));
-    });
   }
 
   ListTile listTileInfo(String tileTitle, int whichInfo) {
