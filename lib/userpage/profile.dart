@@ -49,6 +49,7 @@ class _ProfileState extends State<Profile> {
   int? cardCVV;
   dynamic lis;
 
+  String image = "";
   List<Map> personalInfo = [
     {"firstName": "Customer"},
     {"lastName": "Name"},
@@ -74,7 +75,6 @@ class _ProfileState extends State<Profile> {
   String ff = "hello";
   Api api = Api();
   bool loading = false;
-
 /***************** Start To bring all categoryes in data base ********************** */
   bringAllCatergorys() async {
     var response = await api.getReq(bringAllCate);
@@ -151,6 +151,22 @@ class _ProfileState extends State<Profile> {
       getData();
       return true;
     } else {}
+  }
+
+  uploadImageF() async {
+    if (file == null) {
+    } else {
+      var resp = await api.postReqImage(
+          imageULink,
+          {
+            "id": sharedPref.getString("id"),
+          },
+          file!);
+      if (resp['status'] == "suc") {
+        getData();
+        return true;
+      }
+    }
   }
 
   updateUName() async {
@@ -264,9 +280,11 @@ class _ProfileState extends State<Profile> {
                                 ],
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: AssetImage(lis?['image'] == ""
-                                        ? "${personalInfo[8]['image']}"
-                                        : "images/profile.jpg")),
+                                    image: lis?['image'] == ""
+                                        ? NetworkImage(
+                                            "https://i.stack.imgur.com/l60Hf.png")
+                                        : NetworkImage(
+                                            "$imageRoot/${lis?['image']}")),
                                 borderRadius: BorderRadius.circular(100),
                               ),
                             ),
@@ -309,8 +327,12 @@ class _ProfileState extends State<Profile> {
                                                   width: 220,
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
-                                                        image: AssetImage(
-                                                            "images/default.png"),
+                                                        image: lis?['image'] ==
+                                                                ""
+                                                            ? NetworkImage(
+                                                                "https://i.stack.imgur.com/l60Hf.png")
+                                                            : NetworkImage(
+                                                                "$imageRoot/${lis?['image']}"),
                                                         fit: BoxFit.cover),
                                                     boxShadow: [
                                                       BoxShadow(
@@ -405,7 +427,11 @@ class _ProfileState extends State<Profile> {
                                                       EdgeInsets.only(top: 10),
                                                   child: MaterialButton(
                                                     color: color,
-                                                    onPressed: () {},
+                                                    onPressed: () {
+                                                      uploadImageF();
+                                                      Navigator.pop(context);
+                                                      showSuccessSnackBarMSG();
+                                                    },
                                                     child: Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
@@ -419,6 +445,105 @@ class _ProfileState extends State<Profile> {
                                                         ),
                                                         Text(
                                                           "Save",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  margin:
+                                                      EdgeInsets.only(top: 10),
+                                                  child: MaterialButton(
+                                                    color: Colors.red,
+                                                    onPressed: () {
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return AlertDialog(
+                                                              title: Text(
+                                                                  "Are you sure ?"),
+                                                              content: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceAround,
+                                                                    children: [
+                                                                      MaterialButton(
+                                                                        color:
+                                                                            color,
+                                                                        onPressed:
+                                                                            () {
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                        },
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          children: [
+                                                                            Icon(Icons.check,
+                                                                                color: Colors.white),
+                                                                            SizedBox(
+                                                                              width: 10,
+                                                                            ),
+                                                                            Text(
+                                                                              "Yes",
+                                                                              style: TextStyle(color: Colors.white),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                      MaterialButton(
+                                                                        color: Colors
+                                                                            .red,
+                                                                        onPressed:
+                                                                            () {},
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceAround,
+                                                                          children: [
+                                                                            Icon(Icons.close,
+                                                                                color: Colors.white),
+                                                                            SizedBox(
+                                                                              width: 10,
+                                                                            ),
+                                                                            Text(
+                                                                              "No",
+                                                                              style: TextStyle(color: Colors.white),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            );
+                                                          });
+                                                    },
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Icon(
+                                                            Icons
+                                                                .highlight_remove,
+                                                            color:
+                                                                Colors.white),
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Text(
+                                                          "Delete",
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.white),

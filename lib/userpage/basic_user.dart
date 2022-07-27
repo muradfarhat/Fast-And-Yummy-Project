@@ -131,7 +131,10 @@ class _UserPageState extends State<UserPage> {
                         ),
                         currentAccountPicture: CircleAvatar(
                           backgroundColor: Colors.white,
-                          backgroundImage: AssetImage("images/default.png"),
+                          backgroundImage: lis?['image'] == ""
+                              ? NetworkImage(
+                                  "https://i.stack.imgur.com/l60Hf.png")
+                              : NetworkImage("$imageRoot/${lis?['image']}"),
                         ),
                         accountName:
                             Text(lis?['first_name'] + " " + lis?['last_name']),
