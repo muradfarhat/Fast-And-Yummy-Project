@@ -1,7 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:fast_and_yummy/HomePage/homepage.dart';
-import 'package:fast_and_yummy/HomePage/signin.dart';
-import 'package:fast_and_yummy/user%20page/basic_user.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 

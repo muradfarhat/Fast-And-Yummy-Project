@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:io';
-import 'package:fast_and_yummy/user%20page/oneOrader.dart';
+import 'package:fast_and_yummy/userpage/oneOrader.dart';
 import 'package:flutter/material.dart';
 
 class Cart extends StatefulWidget {

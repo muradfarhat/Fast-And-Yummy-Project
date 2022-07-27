@@ -1,17 +1,18 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_new, slash_for_doc_comments, duplicate_ignore
 
 import 'package:fast_and_yummy/HomePage/homepage.dart';
-import 'package:fast_and_yummy/detialscreen.dart';
 import 'package:fast_and_yummy/main.dart';
 import 'package:fast_and_yummy/myStore.dart';
-import 'package:fast_and_yummy/splash.dart';
-import 'package:fast_and_yummy/stores.dart';
-import 'package:fast_and_yummy/user%20page/pagecontent.dart';
-import 'package:fast_and_yummy/user%20page/profile.dart';
-import 'package:fast_and_yummy/user%20page/favorite.dart';
-import 'package:fast_and_yummy/user%20page/cart.dart';
-import 'package:fast_and_yummy/user%20page/myOrders.dart';
+
+import 'package:fast_and_yummy/userpage/pagecontent.dart';
+import 'package:fast_and_yummy/userpage/profile.dart';
+import 'package:fast_and_yummy/userpage/favorite.dart';
+import 'package:fast_and_yummy/userpage/cart.dart';
+import 'package:fast_and_yummy/userpage/myOrders.dart';
 import 'package:flutter/material.dart';
+
+import '../api/api.dart';
+import '../api/linkapi.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({Key? key}) : super(key: key);
@@ -21,6 +22,30 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  dynamic lis;
+  bool loading = false;
+  Api api = Api();
+  getData() async {
+    setState(() {
+      loading = true;
+    });
+    var resp =
+        await api.postReq(getInfoLink, {"id": sharedPref.getString("id")});
+
+    if (resp['status'] == "suc") {
+      setState(() {
+        lis = resp['data'];
+        loading = false;
+      });
+    } else {}
+  }
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
   bool showAppBar = true;
 /********************************* Start Appbar ******************************* */
   appBarDesign() {
@@ -73,7 +98,7 @@ class _UserPageState extends State<UserPage> {
   // ignore: slash_for_doc_comments
   /*************************************** Widget List For Pages ************************** */
   List<Widget> content = [
-    profile(),
+    Profile(),
     favorite(),
     PageContent(),
     MyOrders(),
@@ -81,69 +106,76 @@ class _UserPageState extends State<UserPage> {
   ];
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         /********************************* Start Appbar ******************************* */
         appBar: appBarDesign(),
         /********************************* End Appbar ******************************* */
         /******************************* Start Drawer ******************************* */
         drawer: Drawer(
-          child: Column(
-            // ignore: prefer_const_literals_to_create_immutables
-            children: [
-              UserAccountsDrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 37, 179, 136),
+          child: loading
+              ? SizedBox(
+                  height: size.height,
+                  width: size.width,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                        color: Color.fromARGB(255, 37, 179, 136)),
                   ),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: Text(
-                      "UN",
-                      style:
-                          TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
-                    ),
-                  ),
-                  accountName: Text("User Name"),
-                  accountEmail: Text("User Email")),
-              InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyStore()),
-                    );
-                  },
-                  child: listTileDesgin(
-                    "My Store",
-                    Icons.store,
-                  )),
-              InkWell(
-                  child: listTileDesgin(
-                "Stores",
-                Icons.store,
-              )),
-              InkWell(
-                  child: listTileDesgin(
-                "About",
-                Icons.info,
-              )),
-              InkWell(
-                  child: listTileDesgin(
-                "Support",
-                Icons.support,
-              )),
-              InkWell(
-                  onTap: () {
-                    sharedPref.clear();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
-                  },
-                  child: listTileDesgin(
-                    "Logout",
-                    Icons.exit_to_app,
-                  )),
-            ],
-          ),
+                )
+              : Column(
+                  // ignore: prefer_const_literals_to_create_immutables
+                  children: [
+                    UserAccountsDrawerHeader(
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 37, 179, 136),
+                        ),
+                        currentAccountPicture: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          backgroundImage: AssetImage("images/default.png"),
+                        ),
+                        accountName:
+                            Text(lis?['first_name'] + " " + lis?['last_name']),
+                        accountEmail: Text(lis?['email'])),
+                    InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MyStore()),
+                          );
+                        },
+                        child: listTileDesgin(
+                          "My Store",
+                          Icons.store,
+                        )),
+                    InkWell(
+                        child: listTileDesgin(
+                      "Stores",
+                      Icons.store,
+                    )),
+                    InkWell(
+                        child: listTileDesgin(
+                      "About",
+                      Icons.info,
+                    )),
+                    InkWell(
+                        child: listTileDesgin(
+                      "Support",
+                      Icons.support,
+                    )),
+                    InkWell(
+                        onTap: () {
+                          sharedPref.clear();
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                          );
+                        },
+                        child: listTileDesgin(
+                          "Logout",
+                          Icons.exit_to_app,
+                        )),
+                  ],
+                ),
         ),
         /******************************* End Drawer ******************************* */
         /********************************* Start Bottom Navegation bar **************************** */

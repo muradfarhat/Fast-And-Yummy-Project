@@ -4,7 +4,7 @@ import 'package:email_auth/email_auth.dart';
 import 'package:fast_and_yummy/HomePage/forgetandverf.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
-import 'package:fast_and_yummy/user%20page/basic_user.dart';
+
 import 'package:flutter/material.dart';
 import 'package:email_auth/email_auth.dart';
 

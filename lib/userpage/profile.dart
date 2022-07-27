@@ -1,26 +1,28 @@
-// ignore_for_file: prefer_const_constructors, non_constant_identifier_names, slash_for_doc_comments
+// ignore_for_file: prefer_const_constructors, non_constant_identifier_names, slash_for_doc_comments,prefer_const_literals_to_create_immutables
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:math' as math;
 
 import '../main.dart';
 
-class profile extends StatefulWidget {
-  profile({Key? key}) : super(key: key);
+class Profile extends StatefulWidget {
+  const Profile({Key? key}) : super(key: key);
 
   @override
-  State<profile> createState() => _profileState();
+  State<Profile> createState() => _ProfileState();
 }
 
-class _profileState extends State<profile> {
-  Color basicColor = const Color.fromARGB(255, 37, 179, 136);
+class _ProfileState extends State<Profile> {
+  Color color = const Color.fromARGB(255, 37, 179, 136);
   GlobalKey<FormState> formStateForName =
-      new GlobalKey<FormState>(); // For Text Filed in Customer Name
+      GlobalKey<FormState>(); // For Text Filed in Customer Name
 
 // variables for show and hidden the fields
   bool hidePass = true;
@@ -56,7 +58,7 @@ class _profileState extends State<profile> {
     {"city": "Nablus"},
     {"town": "Beita"},
     {"street": "50 Street"},
-    {"image": "images/profile.jpg"}
+    {"image": "images/default.png"}
   ];
 
   List<Map> favoriteCkeckBox = [];
@@ -112,8 +114,6 @@ class _profileState extends State<profile> {
     });
     var resp =
         await api.postReq(getInfoLink, {"id": sharedPref.getString("id")});
-    var resp2 =
-        await api.postReq(getfavlink, {"userID": sharedPref.getString("id")});
     if (resp['status'] == "suc") {
       setState(() {
         lis = resp['data'];
@@ -172,6 +172,7 @@ class _profileState extends State<profile> {
     super.initState();
   }
 
+  File? file;
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -224,15 +225,14 @@ class _profileState extends State<profile> {
                 height: size.height,
                 width: size.width,
                 child: Center(
-                  child: CircularProgressIndicator(
-                      color: Color.fromARGB(255, 37, 179, 136)),
+                  child: CircularProgressIndicator(color: color),
                 ),
               )
             : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 /*************************************** Start header => User image and name *************************** */
                 Container(
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 37, 179, 136),
+                    color: color,
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(100),
                         bottomRight: Radius.circular(100)),
@@ -258,17 +258,15 @@ class _profileState extends State<profile> {
                               margin: EdgeInsets.only(top: 30, bottom: 20),
                               height: 150,
                               width: 150,
-
-                              // ignore: prefer_const_constructors
                               decoration: BoxDecoration(
-                                // ignore: prefer_const_literals_to_create_immutables
                                 boxShadow: [
-                                  BoxShadow(color: Colors.white, blurRadius: 10)
+                                  BoxShadow(color: Colors.white, blurRadius: 4)
                                 ],
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
-                                    image: AssetImage(
-                                        "${personalInfo[8]['image']}")),
+                                    image: AssetImage(lis?['image'] == ""
+                                        ? "${personalInfo[8]['image']}"
+                                        : "images/profile.jpg")),
                                 borderRadius: BorderRadius.circular(100),
                               ),
                             ),
@@ -280,17 +278,166 @@ class _profileState extends State<profile> {
                                     borderRadius: BorderRadius.circular(100)),
                                 child: IconButton(
                                   splashColor: Colors.white,
-                                  color: Color.fromARGB(255, 37, 179, 136),
+                                  color: color,
                                   iconSize: 20,
                                   icon: Icon(Icons.camera_enhance),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Row(
+                                              children: [
+                                                Container(
+                                                    margin: EdgeInsets.only(
+                                                        right: 5),
+                                                    child: Icon(
+                                                      Icons.image_outlined,
+                                                      color: color,
+                                                    )),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text("Upload Image")
+                                              ],
+                                            ),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Container(
+                                                  height: 220,
+                                                  width: 220,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image: AssetImage(
+                                                            "images/default.png"),
+                                                        fit: BoxFit.cover),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Color.fromARGB(
+                                                            255, 133, 133, 133),
+                                                        blurRadius: 2,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Container(
+                                                  margin:
+                                                      EdgeInsets.only(top: 20),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      MaterialButton(
+                                                        color: Color.fromARGB(
+                                                            255, 179, 179, 189),
+                                                        onPressed: () async {
+                                                          XFile? xfile =
+                                                              await ImagePicker()
+                                                                  .pickImage(
+                                                                      source: ImageSource
+                                                                          .gallery);
+                                                          file =
+                                                              File(xfile!.path);
+                                                        },
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Icon(
+                                                                Icons
+                                                                    .photo_camera_front_outlined,
+                                                                color: Colors
+                                                                    .white),
+                                                            SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            Text(
+                                                              "Gallery",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      MaterialButton(
+                                                        color: Color.fromARGB(
+                                                            255, 179, 179, 189),
+                                                        onPressed: () async {
+                                                          XFile? xfile =
+                                                              await ImagePicker()
+                                                                  .pickImage(
+                                                                      source: ImageSource
+                                                                          .camera);
+                                                          file =
+                                                              File(xfile!.path);
+                                                        },
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceAround,
+                                                          children: [
+                                                            Icon(
+                                                                Icons
+                                                                    .camera_alt_outlined,
+                                                                color: Colors
+                                                                    .white),
+                                                            SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            Text(
+                                                              "Camera",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Container(
+                                                  margin:
+                                                      EdgeInsets.only(top: 10),
+                                                  child: MaterialButton(
+                                                    color: color,
+                                                    onPressed: () {},
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Icon(Icons.save,
+                                                            color:
+                                                                Colors.white),
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Text(
+                                                          "Save",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                  },
                                 ),
                               ),
                             ),
                           ],
                         ),
                         Row(
-                          // ignore: prefer_const_literals_to_create_immutables
                           children: [
                             Expanded(child: Container()),
                             Expanded(
@@ -332,7 +479,6 @@ class _profileState extends State<profile> {
                   key: formStateForPersonal,
                   child: Card(
                     child: Column(
-                      // ignore: prefer_const_literals_to_create_immutables
                       children: [
                         listTileInfo('Personal Information', 0),
                         Container(
@@ -346,10 +492,8 @@ class _profileState extends State<profile> {
                                 decoration: InputDecoration(
                                   suffixText: "Fixed",
                                   labelText: "Email",
-                                  labelStyle: TextStyle(
-                                      color: Color.fromARGB(255, 37, 179, 136)),
-                                  icon: Icon(Icons.email,
-                                      color: Color.fromARGB(255, 37, 179, 136)),
+                                  labelStyle: TextStyle(color: color),
+                                  icon: Icon(Icons.email, color: color),
                                 ),
                               ),
                               Divider(
@@ -375,8 +519,7 @@ class _profileState extends State<profile> {
                                 obscureText: hidePass,
                                 decoration: InputDecoration(
                                   labelText: "Password",
-                                  labelStyle: TextStyle(
-                                      color: Color.fromARGB(255, 37, 179, 136)),
+                                  labelStyle: TextStyle(color: color),
                                   suffixIcon: Visibility(
                                     visible: showSaveInfo,
                                     child: IconButton(
@@ -393,66 +536,60 @@ class _profileState extends State<profile> {
                                           hidePass
                                               ? Icons.visibility_sharp
                                               : Icons.visibility_off_sharp,
-                                          color:
-                                              Color.fromARGB(255, 37, 179, 136),
+                                          color: color,
                                         )),
                                   ),
-                                  icon: Icon(Icons.password,
-                                      color: Color.fromARGB(255, 37, 179, 136)),
+                                  icon: Icon(Icons.password, color: color),
                                 ),
                               ),
                               Visibility(
                                 visible: showSaveInfo,
-                                child: Container(
-                                  child: Column(
-                                    children: [
-                                      Divider(
-                                        color: Colors.white,
+                                child: Column(
+                                  children: [
+                                    Divider(
+                                      color: Colors.white,
+                                    ),
+                                    TextFormField(
+                                      autovalidateMode: AutovalidateMode.always,
+                                      validator: (text) {
+                                        if (confirmValue == null) {
+                                          return null;
+                                        } else if (text != confirmValue) {
+                                          return "Passwords are not the same";
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      enabled: notEnable,
+                                      obscureText: hidePass2,
+                                      decoration: InputDecoration(
+                                        suffixIcon: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                if (hidePass2) {
+                                                  hidePass2 = false;
+                                                } else {
+                                                  hidePass2 = true;
+                                                }
+                                              });
+                                            },
+                                            icon: Icon(
+                                              hidePass2
+                                                  ? Icons.visibility_sharp
+                                                  : Icons.visibility_off_sharp,
+                                              color: Color.fromARGB(
+                                                  255, 37, 179, 136),
+                                            )),
+                                        labelText: "Confirm Password",
+                                        labelStyle: TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 37, 179, 136)),
+                                        icon: Icon(Icons.password,
+                                            color: Color.fromARGB(
+                                                255, 37, 179, 136)),
                                       ),
-                                      TextFormField(
-                                        autovalidateMode:
-                                            AutovalidateMode.always,
-                                        validator: (text) {
-                                          if (confirmValue == null) {
-                                            return null;
-                                          } else if (text != confirmValue) {
-                                            return "Passwords are not the same";
-                                          } else {
-                                            return null;
-                                          }
-                                        },
-                                        enabled: notEnable,
-                                        obscureText: hidePass2,
-                                        decoration: InputDecoration(
-                                          suffixIcon: IconButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  if (hidePass2) {
-                                                    hidePass2 = false;
-                                                  } else {
-                                                    hidePass2 = true;
-                                                  }
-                                                });
-                                              },
-                                              icon: Icon(
-                                                hidePass2
-                                                    ? Icons.visibility_sharp
-                                                    : Icons
-                                                        .visibility_off_sharp,
-                                                color: Color.fromARGB(
-                                                    255, 37, 179, 136),
-                                              )),
-                                          labelText: "Confirm Password",
-                                          labelStyle: TextStyle(
-                                              color: Color.fromARGB(
-                                                  255, 37, 179, 136)),
-                                          icon: Icon(Icons.password,
-                                              color: Color.fromARGB(
-                                                  255, 37, 179, 136)),
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                    )
+                                  ],
                                 ),
                               ),
                               Divider(
@@ -480,14 +617,12 @@ class _profileState extends State<profile> {
                                 enabled: notEnable,
                                 decoration: InputDecoration(
                                   labelText: "Phone Number",
-                                  labelStyle: TextStyle(
-                                      color: Color.fromARGB(255, 37, 179, 136)),
+                                  labelStyle: TextStyle(color: color),
                                   prefix: Text(
                                     "+970 ",
                                     style: TextStyle(color: Colors.grey),
                                   ),
-                                  icon: Icon(Icons.phone,
-                                      color: Color.fromARGB(255, 37, 179, 136)),
+                                  icon: Icon(Icons.phone, color: color),
                                 ),
                               ),
                               Divider(
@@ -509,10 +644,8 @@ class _profileState extends State<profile> {
                                 enabled: notEnable,
                                 decoration: InputDecoration(
                                   labelText: "City",
-                                  labelStyle: TextStyle(
-                                      color: Color.fromARGB(255, 37, 179, 136)),
-                                  icon: Icon(Icons.map,
-                                      color: Color.fromARGB(255, 37, 179, 136)),
+                                  labelStyle: TextStyle(color: color),
+                                  icon: Icon(Icons.map, color: color),
                                 ),
                               ),
                               Divider(
@@ -534,10 +667,8 @@ class _profileState extends State<profile> {
                                 enabled: notEnable,
                                 decoration: InputDecoration(
                                   labelText: "Town",
-                                  labelStyle: TextStyle(
-                                      color: Color.fromARGB(255, 37, 179, 136)),
-                                  icon: Icon(Icons.location_city,
-                                      color: Color.fromARGB(255, 37, 179, 136)),
+                                  labelStyle: TextStyle(color: color),
+                                  icon: Icon(Icons.location_city, color: color),
                                 ),
                               ),
                               Divider(
@@ -559,10 +690,8 @@ class _profileState extends State<profile> {
                                 enabled: notEnable,
                                 decoration: InputDecoration(
                                   labelText: "Street",
-                                  labelStyle: TextStyle(
-                                      color: Color.fromARGB(255, 37, 179, 136)),
-                                  icon: Icon(Icons.edit_location,
-                                      color: Color.fromARGB(255, 37, 179, 136)),
+                                  labelStyle: TextStyle(color: color),
+                                  icon: Icon(Icons.edit_location, color: color),
                                 ),
                               ),
                               Divider(
@@ -574,8 +703,7 @@ class _profileState extends State<profile> {
                                   children: [
                                     Expanded(
                                       child: MaterialButton(
-                                        color:
-                                            Color.fromARGB(255, 37, 179, 136),
+                                        color: color,
                                         onPressed: () {
                                           if (EditPersonalData()) {
                                             setState(() {
@@ -663,8 +791,7 @@ class _profileState extends State<profile> {
                                     children: [
                                       Expanded(
                                         child: MaterialButton(
-                                          color:
-                                              Color.fromARGB(255, 37, 179, 136),
+                                          color: color,
                                           onPressed: () {},
                                           child: Text(
                                             "Save",
@@ -805,8 +932,7 @@ class _profileState extends State<profile> {
                                   decoration: InputDecoration(
                                       icon: Icon(
                                         Icons.person,
-                                        color:
-                                            Color.fromARGB(255, 37, 179, 136),
+                                        color: color,
                                       ),
                                       labelText: "Person Name",
                                       labelStyle: TextStyle(
@@ -831,8 +957,7 @@ class _profileState extends State<profile> {
                                   decoration: InputDecoration(
                                       icon: Icon(
                                         Icons.credit_card_outlined,
-                                        color:
-                                            Color.fromARGB(255, 37, 179, 136),
+                                        color: color,
                                       ),
                                       labelText: "Card Number",
                                       labelStyle: TextStyle(
@@ -905,8 +1030,7 @@ class _profileState extends State<profile> {
                                   children: [
                                     Expanded(
                                       child: MaterialButton(
-                                        color:
-                                            Color.fromARGB(255, 37, 179, 136),
+                                        color: color,
                                         onPressed: () {
                                           if (EditCardData()) {
                                             setState(() {
@@ -999,7 +1123,7 @@ class _profileState extends State<profile> {
         (index) => Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: CheckboxListTile(
-                  activeColor: basicColor,
+                  activeColor: color,
                   title: Text("${favoriteCkeckBox[index]['favName']}"),
                   value: favoriteCkeckBox[index]['value'],
                   onChanged: (val) {
@@ -1034,9 +1158,9 @@ class _profileState extends State<profile> {
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
       ),
       trailing: IconButton(
-        splashColor: Color.fromARGB(255, 37, 179, 136),
+        splashColor: color,
         alignment: Alignment.centerLeft,
-        color: Color.fromARGB(255, 37, 179, 136),
+        color: color,
         icon: Icon(Icons.edit_note),
         onPressed: () {
           if (whichInfo == 0) {
@@ -1112,7 +1236,7 @@ class _profileState extends State<profile> {
                         margin: EdgeInsets.only(right: 5),
                         child: Icon(
                           Icons.edit_note,
-                          color: Color.fromARGB(255, 37, 179, 136),
+                          color: color,
                         )),
                     Text("Edit Name")
                   ],
@@ -1135,17 +1259,15 @@ class _profileState extends State<profile> {
                       },
                       maxLength: 15,
                       keyboardType: TextInputType.name,
-                      cursorColor: Color.fromARGB(255, 37, 179, 136),
+                      cursorColor: color,
                       decoration: InputDecoration(
                           labelText: "First Name",
-                          labelStyle: TextStyle(
-                              color: Color.fromARGB(255, 37, 179, 136)),
+                          labelStyle: TextStyle(color: color),
                           focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color.fromARGB(255, 37, 179, 136)))),
+                              borderSide: BorderSide(color: color))),
                     ),
                     TextFormField(
-                      initialValue: "${lis?['first_name']}",
+                      initialValue: "${lis?['last_name']}",
                       autovalidateMode: AutovalidateMode.always,
                       validator: (value) {
                         if (value!.length < 2) {
@@ -1159,20 +1281,18 @@ class _profileState extends State<profile> {
                       },
                       maxLength: 15,
                       keyboardType: TextInputType.name,
-                      cursorColor: Color.fromARGB(255, 37, 179, 136),
+                      cursorColor: color,
                       decoration: InputDecoration(
                           labelText: "Last Name",
-                          labelStyle: TextStyle(
-                              color: Color.fromARGB(255, 37, 179, 136)),
+                          labelStyle: TextStyle(color: color),
                           focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color.fromARGB(255, 37, 179, 136)))),
+                              borderSide: BorderSide(color: color))),
                     )
                   ],
                 ),
                 actions: [
                   MaterialButton(
-                    color: Color.fromARGB(255, 37, 179, 136),
+                    color: color,
                     onPressed: () {
                       if (EditName()) {
                         setState(() {
@@ -1193,8 +1313,7 @@ class _profileState extends State<profile> {
                   TextButton(
                     child: Text(
                       "Cancel",
-                      style:
-                          TextStyle(color: Color.fromARGB(255, 37, 179, 136)),
+                      style: TextStyle(color: color),
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -1208,7 +1327,7 @@ class _profileState extends State<profile> {
   showSuccessSnackBarMSG() {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
-      backgroundColor: Color.fromARGB(255, 37, 179, 136).withOpacity(0.7),
+      backgroundColor: color.withOpacity(0.7),
       content: Row(
         // ignore: prefer_const_literals_to_create_immutables
         children: [

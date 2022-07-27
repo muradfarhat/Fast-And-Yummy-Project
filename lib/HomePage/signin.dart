@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../api/api.dart';
 import '../api/linkapi.dart';
 import '../main.dart';
-import '../user page/basic_user.dart';
+import '../userpage/basic_user.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -26,15 +26,21 @@ class _SignInState extends State<SignIn> {
   );
   Api api = Api();
 
+  bool loading = false;
   login() async {
-    setState(() {});
+    setState(() {
+      loading = true;
+    });
     if (formstate.currentState!.validate()) {
       var resp = await api.postReq(
         loginLink,
         {"email": email.text, "password": password.text},
       );
-      setState(() {});
+
       if (resp['status'] == "suc") {
+        setState(() {
+          loading = false;
+        });
         sharedPref.setString("id", resp['data']['id'].toString());
         Navigator.pushReplacement(
           context,
@@ -48,80 +54,92 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Form(
       key: formstate,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Center(
-            child: Container(
-              width: 220,
-              margin: EdgeInsets.only(top: 45),
-              child: Image(
-                image: AssetImage("images/logo.png"),
+      child: loading
+          ? SizedBox(
+              height: size.height,
+              width: size.width,
+              child: Center(
+                child: CircularProgressIndicator(
+                    color: Color.fromARGB(255, 37, 179, 136)),
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(35, 45, 35, 0),
-            child: textFieldDesign((val) {
-              return validInput(val!, 0, 0, "email");
-            }, email, TextInputType.emailAddress, "Email", false),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(35, 25, 35, 0),
-            child: textFieldDesign((val) {
-              return validInput(val!, 6, 20, "password");
-            }, password, TextInputType.text, "Password", bol),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 25),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ForgetPassAndVerf(true, email.text)),
-                );
-              },
-              child: Text(
-                "Forget Password! ",
-                style: TextStyle(
-                  color: Color.fromARGB(255, 0, 0, 0),
-                  fontFamily: "Prompt2",
-                  fontSize: 15,
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 25.0),
-            child: Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  await login();
-                },
-                child: Text(
-                  "Log in",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontFamily: "Prompt",
+            )
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Center(
+                  child: Container(
+                    width: 220,
+                    margin: EdgeInsets.only(top: 45),
+                    child: Image(
+                      image: AssetImage("images/logo.png"),
+                    ),
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  primary: color,
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 70),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(35, 45, 35, 0),
+                  child: textFieldDesign((val) {
+                    return validInput(val!, 0, 0, "email");
+                  }, email, TextInputType.emailAddress, "Email", false),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(35, 25, 35, 0),
+                  child: textFieldDesign((val) {
+                    return validInput(val!, 6, 20, "password");
+                  }, password, TextInputType.text, "Password", bol),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 25),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ForgetPassAndVerf(true, email.text)),
+                      );
+                    },
+                    child: Text(
+                      "Forget Password! ",
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 0, 0, 0),
+                        fontFamily: "Prompt2",
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 25.0),
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await login();
+                      },
+                      child: Text(
+                        "Log in",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontFamily: "Prompt",
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)),
+                        primary: color,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 70),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 

@@ -1,7 +1,7 @@
 import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
-import 'package:fast_and_yummy/user%20page/basic_user.dart';
+import 'package:fast_and_yummy/userpage/basic_user.dart';
 import 'package:flutter/material.dart';
 
 class personalInfo extends StatefulWidget {

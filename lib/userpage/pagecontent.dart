@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, prefer_const_literals_to_create_immutables
 
-import 'package:fast_and_yummy/user%20page/viewAllOffers.dart';
-import 'package:fast_and_yummy/user%20page/viewAllSugg.dart';
+import 'package:fast_and_yummy/userpage/viewAllOffers.dart';
+import 'package:fast_and_yummy/userpage/viewAllSugg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 

@@ -4,7 +4,7 @@ import 'package:email_auth/email_auth.dart';
 import 'package:fast_and_yummy/HomePage/resetpass.dart';
 import 'package:fast_and_yummy/HomePage/signUpInformation.dart';
 import 'package:fast_and_yummy/api/api.dart';
-import 'package:fast_and_yummy/user%20page/basic_user.dart';
+import 'package:fast_and_yummy/userpage/basic_user.dart';
 import 'package:flutter/material.dart';
 
 import '../api/linkapi.dart';
