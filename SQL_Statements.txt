@@ -1,5 +1,5 @@
 // users table create sql
-CREATE TABLE `gp`.`users` ( `id` INT NOT NULL AUTO_INCREMENT , `email` VARCHAR(255) NOT NULL , `first_name` VARCHAR(255) NOT NULL , `last_name` VARCHAR(255) NOT NULL , `phone` VARCHAR(255) NOT NULL , `password` VARCHAR(255) NOT NULL , `have_store` VARCHAR(255) NOT NULL , `city` VARCHAR(255) NOT NULL , `town` VARCHAR(255) NOT NULL , `street` VARCHAR(255) NOT NULL , `visaName` VARCHAR(255) NOT NULL , `visaNumber` VARCHAR(255) NOT NULL , `CVV` VARCHAR(255) NOT NULL , `visaDate` VARCHAR(255) NOT NULL , `image` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+CREATE TABLE `gp`.`users` ( `id` INT NOT NULL AUTO_INCREMENT , `email` VARCHAR(255) NOT NULL , `first_name` VARCHAR(255) NOT NULL , `last_name` VARCHAR(255) NOT NULL , `phone` VARCHAR(255) NOT NULL , `password` VARCHAR(255) NOT NULL , `have_store` VARCHAR(255) NOT NULL , `visaName` VARCHAR(255) NOT NULL , `visaNumber` VARCHAR(255) NOT NULL , `CVV` VARCHAR(255) NOT NULL , `visaDate` VARCHAR(255) NOT NULL , `image` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 // favorite table
 CREATE TABLE `gp`.`favoritetable` ( `userID` VARCHAR(255) NOT NULL , `orderID` VARCHAR(255) NOT NULL , `cateID` VARCHAR(255) NOT NULL ) ENGINE = InnoDB; 
 // Category table
@@ -8,4 +8,8 @@ CREATE TABLE `gp`.`category_table` ( `cateID` INT NOT NULL AUTO_INCREMENT , `cat
 ALTER TABLE `users` ADD `deliveryOrCustomer` VARCHAR(255) NOT NULL AFTER `have_store`; 
 // favorite cate
 CREATE TABLE `gp`.`favorite_cate` ( `cateID` VARCHAR(255) NOT NULL , `userID` VARCHAR(255) NOT NULL , `cateName` VARCHAR(255) NOT NULL ) ENGINE = InnoDB; 
+// customer info table
+CREATE TABLE `gp`.`customer_info` ( `city` VARCHAR(255) NOT NULL , `town` VARCHAR(255) NOT NULL , `street` VARCHAR(255) NOT NULL , `userID` VARCHAR(255) NOT NULL ) ENGINE = InnoDB; 
+// delivery info table
+CREATE TABLE `gp`.`delivery_info` ( `city` VARCHAR(255) NOT NULL , `carModel` VARCHAR(255) NOT NULL , `carNumber` VARCHAR(255) NOT NULL , `deliveryID` VARCHAR(255) NOT NULL ) ENGINE = InnoDB; 
 //

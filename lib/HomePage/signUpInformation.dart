@@ -118,15 +118,6 @@ class _afterSignupState extends State<afterSignup> {
             } else {
               await chooseDirection();
             }
-            // else if (radioChoiceValue == "Delivery") {
-            //   Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-            //     return afterChooseDelivery();
-            //   })));
-            // } else if (radioChoiceValue == "Customer") {
-            //   Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-            //     return afterChooseCustomer();
-            //   })));
-            // }
           },
           color: basicColor,
           textColor: Colors.white,
