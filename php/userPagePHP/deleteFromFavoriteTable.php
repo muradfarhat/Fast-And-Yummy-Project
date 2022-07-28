@@ -1,8 +1,8 @@
 <?php
 include "../connect.php";
-$userID = filtterreq("userID");
+$id = filtterreq("id");
 
-$delete = $con ->prepare("DELETE FROM `favorite_cate` WHERE `userID` = '".$userID."'");
+$delete = $con ->prepare("DELETE FROM `favoritetable` WHERE `id` = '$id'");
 $delete->execute(); 
 $count=$delete->rowCount();
 

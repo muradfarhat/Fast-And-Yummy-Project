@@ -12,4 +12,8 @@ CREATE TABLE `gp`.`favorite_cate` ( `cateID` VARCHAR(255) NOT NULL , `userID` VA
 CREATE TABLE `gp`.`customer_info` ( `city` VARCHAR(255) NOT NULL , `town` VARCHAR(255) NOT NULL , `street` VARCHAR(255) NOT NULL , `userID` VARCHAR(255) NOT NULL ) ENGINE = InnoDB; 
 // delivery info table
 CREATE TABLE `gp`.`delivery_info` ( `userID` VARCHAR(255) NOT NULL ,`city` VARCHAR(255) NOT NULL , `carModel` VARCHAR(255) NOT NULL , `carNumber` VARCHAR(255) NOT NULL , `deliveryID` VARCHAR(255) NOT NULL ) ENGINE = InnoDB; 
+// cate table for each cate
+CREATE TABLE `gp`.`sweet` ( `productID` INT NOT NULL AUTO_INCREMENT , `productName` VARCHAR(255) NOT NULL , `storeName` VARCHAR(255) NOT NULL , `rate` VARCHAR(255) NOT NULL , `userID` VARCHAR(255) NOT NULL , `price` VARCHAR(255) NOT NULL , `totalBuy` INT(255) NOT NULL , `image` VARCHAR(255) NOT NULL , PRIMARY KEY (`productID`)) ENGINE = InnoDB; 
+// edit in favoritetable
+ALTER TABLE `favoritetable` ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`); 
 //

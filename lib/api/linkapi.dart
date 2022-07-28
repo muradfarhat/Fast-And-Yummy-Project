@@ -25,3 +25,14 @@ const String imageULink = "$linkServer/userinfo/uploadImage.php";
 const String policy =
     "If your website/app reaches users around the world, regardless of where you're located or headquartered, you'll need to make sure you follow privacy laws in all applicable countries you reach.While data protection and privacy laws differ from region to region, a Privacy Policy must comprehensively inform its users about how their data will be used. For example, the GDPR is currently the most robust privacy legislation in the world and one of its main requirements for any business that falls under its jurisdiction is to have a GDPR-compliant Privacy Policy that contains some very specific information and is written in an easy-to-understand way.";
 const String imageRoot = "http://10.0.2.2/Graduation-Project/php/images";
+// ignore: slash_for_doc_comments
+/***************************** Start user pages links ********************** */
+const String bringUserFavProducts = "$linkServer/userPagePHP/userFavorite.php";
+const String bringProducts =
+    "$linkServer/userPagePHP/bringProductFromCategory.php";
+const String bringNameOfCate = "$linkServer/userPagePHP/bringcateName.php";
+const String deleteFromUserFavoriteTable =
+    "$linkServer/userPagePHP/deleteFromFavoriteTable.php";
+const String addToUserFavoriteTable =
+    "$linkServer/userPagePHP/addTofavoriteTable.php";
+/***************************** End user pages links ********************** */

@@ -1,8 +1,10 @@
 <?php
 include "../connect.php";
 $userID = filtterreq("userID");
+$orderID = filtterreq("orderID");
+$cateID = filtterreq("cateID");
 
-$delete = $con ->prepare("DELETE FROM `favorite_cate` WHERE `userID` = '".$userID."'");
+$delete = $con ->prepare("INSERT INTO `favoritetable`(`userID`, `orderID`, `cateID`) VALUES ('$userID','$orderID','$cateID')");
 $delete->execute(); 
 $count=$delete->rowCount();
 

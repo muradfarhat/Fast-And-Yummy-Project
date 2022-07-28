@@ -1,5 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:fast_and_yummy/api/api.dart';
+import 'package:fast_and_yummy/api/linkapi.dart';
+import 'package:fast_and_yummy/main.dart';
 import 'package:flutter/material.dart';
 
 class favorite extends StatefulWidget {
@@ -10,29 +13,71 @@ class favorite extends StatefulWidget {
 }
 
 class _favoriteState extends State<favorite> {
-  List<Map> myFav = [
-    {
-      "foodName": "KFC",
-      "storeName": "Food For You",
-      "rate": "4.0",
-      "image": "images/kfc.png",
-      "fav": true
-    },
-    {
-      "foodName": "Burger",
-      "storeName": "Food For You",
-      "rate": "4.0",
-      "image": "images/burger.jpg",
-      "fav": true
-    },
-    {
-      "foodName": "Pizza", // 12 char just
-      "storeName": "Food For You",
-      "rate": "4.0",
-      "image": "images/pizza.jpg",
-      "fav": true
-    },
-  ];
+  List<dynamic> myFav = [];
+  List<dynamic> favList = [];
+/********************** Start Api Functions ********************************* */
+  Api api = Api(); // Create API SELECT SCOPE_IDENTITY()
+
+  bringAllFavorites() async {
+    var response = await api
+        .postReq(bringUserFavProducts, {"id": sharedPref.getString("id")});
+    if (response['status'] == "suc") {
+      setState(() {
+        favList = response['data'];
+      });
+      forLoopForProducts();
+    }
+  }
+
+  bringProductFromCate(String cateID, String productID) async {
+    var resp = await api.postReq(bringNameOfCate, {"cateID": cateID});
+
+    String? cateName;
+    if (resp['status'] == "suc") {
+      cateName = resp['data'];
+    }
+    cateName = cateName!.toLowerCase();
+
+    var response = await api
+        .postReq(bringProducts, {"id": productID, "cateName": cateName});
+    if (response['status'] == "suc") {
+      setState(() {
+        myFav.add({
+          "productID": response['data'][0]['productID'],
+          "foodName": response['data'][0]['productName'],
+          "storeName": response['data'][0]['storeName'],
+          "rate": response['data'][0]['rate'],
+          "image": "php/images/${response['data'][0]['image']}",
+          "userID": response['data'][0]['userID'],
+          "price": response['data'][0]['price'],
+          "totalBuy": response['data'][0]['totalBuy'],
+          "fav": true
+        });
+      });
+    }
+  }
+
+  forLoopForProducts() {
+    for (int i = 0; i < favList.length; i++) {
+      bringProductFromCate(favList[i]['cateID'], favList[i]['orderID']);
+    }
+  }
+
+  deleteFavoriteFromFavTable(String id) async {
+    var response = await api.postReq(deleteFromUserFavoriteTable, {"id": id});
+  }
+
+  addFavoriteToFavTable(String userID, String orderID, String cateID) async {
+    var resp = await api.postReq(addToUserFavoriteTable,
+        {"userID": userID, "orderID": orderID, "cateID": cateID});
+  }
+
+/********************** End Api Functions ********************************* */
+  @override
+  void initState() {
+    bringAllFavorites();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,8 +194,14 @@ class _favoriteState extends State<favorite> {
                                 setState(() {
                                   if (myFav[i]["fav"] == false) {
                                     myFav[i]["fav"] = true;
+                                    addFavoriteToFavTable(
+                                        favList[i]['userID'],
+                                        favList[i]['orderID'],
+                                        favList[i]['cateID']);
                                   } else {
                                     myFav[i]["fav"] = false;
+                                    deleteFavoriteFromFavTable(
+                                        favList[i]['id']);
                                   }
                                 });
                               },
