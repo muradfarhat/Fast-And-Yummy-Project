@@ -36,3 +36,7 @@ const String deleteFromUserFavoriteTable =
 const String addToUserFavoriteTable =
     "$linkServer/userPagePHP/addTofavoriteTable.php";
 /***************************** End user pages links ********************** */
+
+const String updateTown = "$linkServer/auth/updateTown.php";
+
+const String haveStore = "$linkServer/userinfo/haveStore.php";

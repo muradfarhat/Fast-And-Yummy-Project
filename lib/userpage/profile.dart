@@ -49,6 +49,7 @@ class _ProfileState extends State<Profile> {
   String? cardDate;
   int? cardCVV;
   dynamic lis;
+  dynamic lis2;
   List<Map> personalInfo = [
     {"firstName": "Customer"},
     {"lastName": "Name"},
@@ -148,24 +149,31 @@ class _ProfileState extends State<Profile> {
     if (resp['status'] == "suc") {
       setState(() {
         lis = resp['data'];
+        lis2 = resp['data2'];
         loading = false;
       });
     } else {}
   }
 
   udpatePersonalData() async {
-    var resp = await api.postReq(updatePers, {
-      "password": pass,
-      "phone": phone,
+    await api.postReq(updateTown, {
       "city": city,
       "town": town,
       "street": street,
+      "userID": sharedPref.getString("id"),
+    });
+    getData();
+    var resp = await api.postReq(updatePers, {
+      "password": pass,
+      "phone": phone,
       "id": sharedPref.getString("id"),
     });
 
     if (resp['status'] == "suc") {
       getData();
       return true;
+    } else {
+      print("Error");
     }
   }
 
@@ -831,7 +839,7 @@ class _ProfileState extends State<Profile> {
                                 onSaved: (text) {
                                   city = text;
                                 },
-                                initialValue: "${lis?['city']}",
+                                initialValue: "${lis2?['city']}",
                                 enabled: notEnable,
                                 decoration: InputDecoration(
                                   labelText: "City",
@@ -854,7 +862,7 @@ class _ProfileState extends State<Profile> {
                                 onSaved: (text) {
                                   town = text;
                                 },
-                                initialValue: "${lis?['town']}",
+                                initialValue: "${lis2?['town']}",
                                 enabled: notEnable,
                                 decoration: InputDecoration(
                                   labelText: "Town",
@@ -877,7 +885,7 @@ class _ProfileState extends State<Profile> {
                                 onSaved: (text) {
                                   street = text;
                                 },
-                                initialValue: "${lis?['street']}",
+                                initialValue: "${lis2?['street']}",
                                 enabled: notEnable,
                                 decoration: InputDecoration(
                                   labelText: "Street",
@@ -1090,7 +1098,9 @@ class _ProfileState extends State<Profile> {
                                     ),
                                   ),
                                   Text(
-                                    "${lis?['visaDate']}",
+                                    lis?['visaDate'] == ""
+                                        ? "99/99"
+                                        : "${lis?['visaDate']}",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,
@@ -1106,7 +1116,9 @@ class _ProfileState extends State<Profile> {
                                     ),
                                   ),
                                   Text(
-                                    "${lis?['CVV']}",
+                                    lis?['CVV'] == ""
+                                        ? "999"
+                                        : "${lis?['CVV']}",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18,
@@ -1138,7 +1150,9 @@ class _ProfileState extends State<Profile> {
                                   onSaved: (text) {
                                     cardName = text;
                                   },
-                                  initialValue: lis?['visaName'],
+                                  initialValue: lis?['visaName'] == ""
+                                      ? "Visa Name"
+                                      : "${lis?['visaName']}",
                                   keyboardType: TextInputType.text,
                                   decoration: InputDecoration(
                                       icon: Icon(
@@ -1151,7 +1165,9 @@ class _ProfileState extends State<Profile> {
                                               255, 37, 179, 136))),
                                 ),
                                 TextFormField(
-                                  initialValue: lis?['visaNumber'],
+                                  initialValue: lis?['visaNumber'] == ""
+                                      ? "9999999999999999"
+                                      : "${lis?['visaNumber']}",
                                   validator: (value) {
                                     if (value!.isEmpty) {
                                       return null;
@@ -1190,7 +1206,9 @@ class _ProfileState extends State<Profile> {
                                         onSaved: (text) {
                                           cardDate = text;
                                         },
-                                        initialValue: lis?['visaDate'],
+                                        initialValue: lis?['visaDate'] == ""
+                                            ? "99/99"
+                                            : "${lis?['visaDate']}",
                                         keyboardType: TextInputType.datetime,
                                         decoration: InputDecoration(
                                             icon: Icon(
@@ -1217,7 +1235,9 @@ class _ProfileState extends State<Profile> {
                                         onSaved: (text) {
                                           cardCVV = int.parse(text!);
                                         },
-                                        initialValue: lis?['CVV'].toString(),
+                                        initialValue: lis?['CVV'] == ""
+                                            ? "999"
+                                            : lis?['CVV'].toString(),
                                         keyboardType: TextInputType.number,
                                         decoration: InputDecoration(
                                             icon: Icon(
@@ -1412,8 +1432,12 @@ class _ProfileState extends State<Profile> {
       margin: EdgeInsets.only(bottom: 15),
       child: Text(
         infoNum == 0
-            ? convertString("${lis?['visaNumber']}")
-            : "${lis?['visaName']}",
+            ? convertString(lis?['visaNumber'] == ""
+                ? "9999999999999999"
+                : "${lis?['visaNumber']}")
+            : lis?['visaName'] == ""
+                ? "Visa Name"
+                : "${lis?['visaName']}",
         style: TextStyle(
             color: Colors.white,
             fontSize: fontSize,
@@ -1568,7 +1592,6 @@ class _ProfileState extends State<Profile> {
       behavior: SnackBarBehavior.floating,
       backgroundColor: Colors.red.withOpacity(0.7),
       content: Row(
-        // ignore: prefer_const_literals_to_create_immutables
         children: [
           Container(
             margin: EdgeInsets.only(right: 15),

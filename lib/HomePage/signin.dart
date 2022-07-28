@@ -28,18 +28,18 @@ class _SignInState extends State<SignIn> {
 
   bool loading = false;
   login() async {
-    setState(() {
-      loading = true;
-    });
     if (formstate.currentState!.validate()) {
+      setState(() {
+        loading = true;
+      });
       var resp = await api.postReq(
         loginLink,
         {"email": email.text, "password": password.text},
       );
-      setState(() {
-        loading = false;
-      });
       if (resp['status'] == "suc") {
+        setState(() {
+          loading = false;
+        });
         sharedPref.setString("id", resp['data']['id'].toString());
         Navigator.pushReplacement(
           context,
