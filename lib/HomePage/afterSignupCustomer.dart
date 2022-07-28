@@ -1,4 +1,4 @@
-import 'package:fast_and_yummy/HomePage/insertCreditCard.dart';
+import 'package:fast_and_yummy/HomePage/personalInfoAfterSignup.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +73,7 @@ class _afterChooseCustomerState extends State<afterChooseCustomer> {
               }
               showSuccessSnackBarMSG();
               Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-                return insertCreditCard(widget.userID);
+                return personalInfo(widget.userID);
               })));
             }
           },

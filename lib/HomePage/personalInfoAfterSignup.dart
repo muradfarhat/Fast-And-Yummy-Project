@@ -1,7 +1,6 @@
-import 'package:fast_and_yummy/HomePage/homepage.dart';
+import 'package:fast_and_yummy/HomePage/insertCreditCard.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
-import 'package:fast_and_yummy/userpage/basic_user.dart';
 import 'package:flutter/material.dart';
 
 class personalInfo extends StatefulWidget {
@@ -33,7 +32,7 @@ class _personalInfoState extends State<personalInfo> {
     if (response['status'] == "suc") {
       showSuccessSnackBarMSG();
       Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-        return HomePage();
+        return insertCreditCard(widget.userID);
       })));
     }
   }
@@ -221,7 +220,7 @@ class _personalInfoState extends State<personalInfo> {
                           onPressed: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: ((context) {
-                              return HomePage();
+                              return insertCreditCard(widget.userID);
                             })));
                           },
                           child: Text("Skip",

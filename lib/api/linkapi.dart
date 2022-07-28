@@ -14,6 +14,8 @@ const String updateNameLink = "$linkServer/auth/updateName.php";
 const String insertCreditCardInfo = "$linkServer/auth/insertCreditCard.php";
 const String personalDataAfterSignup =
     "$linkServer/auth/personalDataAfterSignup.php";
+const String deliveryPersonalDataAfterSignup =
+    "$linkServer/auth/deliveryPersonalData.php";
 const String getfavlink = "$linkServer/userinfo/getfav.php";
 const String visaLink = "$linkServer/userinfo/visa.php";
 

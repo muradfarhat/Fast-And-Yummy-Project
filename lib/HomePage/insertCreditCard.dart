@@ -1,4 +1,4 @@
-import 'package:fast_and_yummy/HomePage/personalInfoAfterSignup.dart';
+import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +34,7 @@ class _insertCreditCardState extends State<insertCreditCard> {
     if (response['status'] == "suc") {
       showSuccessSnackBarMSG();
       Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-        return personalInfo(widget.userID);
+        return HomePage();
       })));
     }
   }
@@ -251,7 +251,7 @@ class _insertCreditCardState extends State<insertCreditCard> {
                     onPressed: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: ((context) {
-                        return personalInfo(widget.userID);
+                        return HomePage();
                       })));
                     },
                     child: Text("Skip",

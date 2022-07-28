@@ -1,7 +1,11 @@
+import 'package:fast_and_yummy/HomePage/insertCreditCard.dart';
+import 'package:fast_and_yummy/api/api.dart';
+import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:flutter/material.dart';
 
 class afterChooseDelivery extends StatefulWidget {
-  afterChooseDelivery({Key? key}) : super(key: key);
+  String userID;
+  afterChooseDelivery(this.userID, {Key? key}) : super(key: key);
 
   @override
   State<afterChooseDelivery> createState() => _afterChooseDeliveryState();
@@ -14,15 +18,34 @@ class _afterChooseDeliveryState extends State<afterChooseDelivery> {
   String? idNumber;
   String? driverCity;
 
+  List<String> data = [];
+
   GlobalKey<ScaffoldState> scaffoldKey =
       new GlobalKey<ScaffoldState>(); // For snackBar
+
+  Api _api = Api(); // Create API SELECT SCOPE_IDENTITY()
+
+  AddDeliveryPersonal() async {
+    var response = await _api.postReq(deliveryPersonalDataAfterSignup, {
+      "city": data[3],
+      "carModel": data[1],
+      "carNumber": data[0],
+      "deliveryID": data[2],
+      "id": widget.userID
+    });
+    print(response['status']);
+    if (response['status'] == "suc") {
+      showSuccessSnackBarMSG();
+      Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
+        return insertCreditCard(widget.userID);
+      })));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     GlobalKey<FormState> formStateForData =
         new GlobalKey<FormState>(); // For Text Filed in data Info
-
-    List<String> data = [];
 
     /*********************** Start Functions section ****************************** */
     bool EditData() {
@@ -47,9 +70,9 @@ class _afterChooseDeliveryState extends State<afterChooseDelivery> {
           margin: const EdgeInsets.symmetric(vertical: 30),
           child: MaterialButton(
             padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-            onPressed: () {
+            onPressed: () async {
               if (EditData()) {
-                showSuccessSnackBarMSG();
+                await AddDeliveryPersonal();
               }
             },
             color: basicColor,

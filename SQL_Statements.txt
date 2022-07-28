@@ -11,5 +11,5 @@ CREATE TABLE `gp`.`favorite_cate` ( `cateID` VARCHAR(255) NOT NULL , `userID` VA
 // customer info table
 CREATE TABLE `gp`.`customer_info` ( `city` VARCHAR(255) NOT NULL , `town` VARCHAR(255) NOT NULL , `street` VARCHAR(255) NOT NULL , `userID` VARCHAR(255) NOT NULL ) ENGINE = InnoDB; 
 // delivery info table
-CREATE TABLE `gp`.`delivery_info` ( `city` VARCHAR(255) NOT NULL , `carModel` VARCHAR(255) NOT NULL , `carNumber` VARCHAR(255) NOT NULL , `deliveryID` VARCHAR(255) NOT NULL ) ENGINE = InnoDB; 
+CREATE TABLE `gp`.`delivery_info` ( `userID` VARCHAR(255) NOT NULL ,`city` VARCHAR(255) NOT NULL , `carModel` VARCHAR(255) NOT NULL , `carNumber` VARCHAR(255) NOT NULL , `deliveryID` VARCHAR(255) NOT NULL ) ENGINE = InnoDB; 
 //
