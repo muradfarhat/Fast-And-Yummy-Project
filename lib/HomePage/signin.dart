@@ -36,17 +36,19 @@ class _SignInState extends State<SignIn> {
         loginLink,
         {"email": email.text, "password": password.text},
       );
-
+      setState(() {
+        loading = false;
+      });
       if (resp['status'] == "suc") {
-        setState(() {
-          loading = false;
-        });
         sharedPref.setString("id", resp['data']['id'].toString());
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => UserPage()),
         );
       } else {
+        setState(() {
+          loading = false;
+        });
         showFaildSnackBarMSG();
       }
     }

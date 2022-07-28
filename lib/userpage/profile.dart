@@ -49,8 +49,6 @@ class _ProfileState extends State<Profile> {
   String? cardDate;
   int? cardCVV;
   dynamic lis;
-
-  String image = "";
   List<Map> personalInfo = [
     {"firstName": "Customer"},
     {"lastName": "Name"},
@@ -73,7 +71,6 @@ class _ProfileState extends State<Profile> {
     {"expDate": '10/23'},
     {"cvv": 999}
   ];
-  String ff = "hello";
   Api api = Api();
   bool loading = false;
 /***************** Start To bring all categoryes in data base ********************** */
@@ -136,6 +133,9 @@ class _ProfileState extends State<Profile> {
   deleteFav() async {
     var response = await api
         .postReq(deleteFavorite, {"userID": sharedPref.getString("id")});
+    if (response['status'] == "suc") {
+      showSuccessSnackBarMSG();
+    } else {}
   }
 
 /***************** End To bring all categoryes in data base ********************** */
@@ -167,6 +167,18 @@ class _ProfileState extends State<Profile> {
       getData();
       return true;
     }
+  }
+
+  deleteImage() async {
+    var resp = await api.postReq(deleteILink, {
+      "id": sharedPref.getString("id"),
+      "imagename": lis?['image'],
+    });
+
+    if (resp['status'] == "suc") {
+      getData();
+      return true;
+    } else {}
   }
 
   udpateVisaData() async {
@@ -217,10 +229,12 @@ class _ProfileState extends State<Profile> {
     getData();
     bringUserFav();
     bringAllCatergorys();
+
     super.initState();
   }
 
   File? file;
+  bool bol = false;
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -335,258 +349,278 @@ class _ProfileState extends State<Profile> {
                                     showDialog(
                                         context: context,
                                         builder: (context) {
-                                          return AlertDialog(
-                                            title: Row(
-                                              children: [
-                                                Container(
-                                                    margin: EdgeInsets.only(
-                                                        right: 5),
-                                                    child: Icon(
-                                                      Icons.image_outlined,
-                                                      color: color,
-                                                    )),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text("Upload Image")
-                                              ],
-                                            ),
-                                            content: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Container(
-                                                  height: 220,
-                                                  width: 220,
-                                                  decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: lis?['image'] ==
-                                                                ""
-                                                            ? NetworkImage(
-                                                                "https://i.stack.imgur.com/l60Hf.png")
-                                                            : NetworkImage(
-                                                                "$imageRoot/${lis?['image']}"),
-                                                        fit: BoxFit.cover),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Color.fromARGB(
-                                                            255, 133, 133, 133),
-                                                        blurRadius: 2,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Container(
-                                                  margin:
-                                                      EdgeInsets.only(top: 20),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: [
-                                                      MaterialButton(
-                                                        color: Color.fromARGB(
-                                                            255, 179, 179, 189),
-                                                        onPressed: () async {
-                                                          XFile? xfile =
-                                                              await ImagePicker()
-                                                                  .pickImage(
-                                                                      source: ImageSource
-                                                                          .gallery);
-                                                          file =
-                                                              File(xfile!.path);
-                                                        },
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Icon(
-                                                                Icons
-                                                                    .photo_camera_front_outlined,
-                                                                color: Colors
-                                                                    .white),
-                                                            SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            Text(
-                                                              "Gallery",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      MaterialButton(
-                                                        color: Color.fromARGB(
-                                                            255, 179, 179, 189),
-                                                        onPressed: () async {
-                                                          XFile? xfile =
-                                                              await ImagePicker()
-                                                                  .pickImage(
-                                                                      source: ImageSource
-                                                                          .camera);
-                                                          file =
-                                                              File(xfile!.path);
-                                                        },
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceAround,
-                                                          children: [
-                                                            Icon(
-                                                                Icons
-                                                                    .camera_alt_outlined,
-                                                                color: Colors
-                                                                    .white),
-                                                            SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            Text(
-                                                              "Camera",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                Container(
-                                                  margin:
-                                                      EdgeInsets.only(top: 10),
-                                                  child: MaterialButton(
-                                                    color: color,
-                                                    onPressed: () {
-                                                      uploadImageF();
-                                                      Navigator.pop(context);
-                                                      showSuccessSnackBarMSG();
-                                                    },
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
+                                          return StatefulBuilder(
+                                              builder: (context, setState) =>
+                                                  AlertDialog(
+                                                    title: Row(
                                                       children: [
-                                                        Icon(Icons.save,
-                                                            color:
-                                                                Colors.white),
+                                                        Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    right: 5),
+                                                            child: Icon(
+                                                              Icons
+                                                                  .image_outlined,
+                                                              color: color,
+                                                            )),
                                                         SizedBox(
                                                           width: 10,
                                                         ),
-                                                        Text(
-                                                          "Save",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
+                                                        Text("Upload Image")
                                                       ],
                                                     ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  margin:
-                                                      EdgeInsets.only(top: 10),
-                                                  child: MaterialButton(
-                                                    color: Colors.red,
-                                                    onPressed: () {
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return AlertDialog(
-                                                              title: Text(
-                                                                  "Are you sure ?"),
-                                                              content: Column(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .min,
-                                                                children: [
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceAround,
-                                                                    children: [
-                                                                      MaterialButton(
-                                                                        color:
-                                                                            color,
-                                                                        onPressed:
-                                                                            () {
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        },
-                                                                        child:
-                                                                            Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.spaceBetween,
-                                                                          children: [
-                                                                            Icon(Icons.check,
-                                                                                color: Colors.white),
-                                                                            SizedBox(
-                                                                              width: 10,
-                                                                            ),
-                                                                            Text(
-                                                                              "Yes",
-                                                                              style: TextStyle(color: Colors.white),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      MaterialButton(
+                                                    content: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Container(
+                                                          height: 220,
+                                                          width: 220,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            image: DecorationImage(
+                                                                image: lis?['image'] ==
+                                                                        ""
+                                                                    ? NetworkImage(
+                                                                        "https://i.stack.imgur.com/l60Hf.png")
+                                                                    : NetworkImage(
+                                                                        "$imageRoot/${lis?['image']}"),
+                                                                fit: BoxFit
+                                                                    .cover),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        133,
+                                                                        133,
+                                                                        133),
+                                                                blurRadius: 2,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  top: 20),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceAround,
+                                                            children: [
+                                                              MaterialButton(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        179,
+                                                                        179,
+                                                                        189),
+                                                                onPressed:
+                                                                    () async {
+                                                                  XFile? xfile =
+                                                                      await ImagePicker().pickImage(
+                                                                          source:
+                                                                              ImageSource.gallery);
+                                                                  file = File(
+                                                                      xfile!
+                                                                          .path);
+                                                                },
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Icon(
+                                                                        Icons
+                                                                            .photo_camera_front_outlined,
                                                                         color: Colors
-                                                                            .red,
-                                                                        onPressed:
-                                                                            () {},
-                                                                        child:
-                                                                            Row(
+                                                                            .white),
+                                                                    SizedBox(
+                                                                      width: 10,
+                                                                    ),
+                                                                    Text(
+                                                                      "Gallery",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              MaterialButton(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        179,
+                                                                        179,
+                                                                        189),
+                                                                onPressed:
+                                                                    () async {
+                                                                  XFile? xfile =
+                                                                      await ImagePicker().pickImage(
+                                                                          source:
+                                                                              ImageSource.camera);
+                                                                  file = File(
+                                                                      xfile!
+                                                                          .path);
+                                                                },
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceAround,
+                                                                  children: [
+                                                                    Icon(
+                                                                        Icons
+                                                                            .camera_alt_outlined,
+                                                                        color: Colors
+                                                                            .white),
+                                                                    SizedBox(
+                                                                      width: 10,
+                                                                    ),
+                                                                    Text(
+                                                                      "Camera",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  top: 10),
+                                                          child: MaterialButton(
+                                                            color: color,
+                                                            onPressed: () {
+                                                              uploadImageF();
+                                                              Navigator.pop(
+                                                                  context);
+                                                              showSuccessSnackBarMSG();
+                                                            },
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Icon(Icons.save,
+                                                                    color: Colors
+                                                                        .white),
+                                                                SizedBox(
+                                                                  width: 10,
+                                                                ),
+                                                                Text(
+                                                                  "Save",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  top: 10),
+                                                          child: MaterialButton(
+                                                            color: Colors.red,
+                                                            onPressed: () {
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
+                                                                  return AlertDialog(
+                                                                    title: Text(
+                                                                        "Are you sure ?"),
+                                                                    content:
+                                                                        Column(
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .min,
+                                                                      children: [
+                                                                        Row(
                                                                           mainAxisAlignment:
                                                                               MainAxisAlignment.spaceAround,
                                                                           children: [
-                                                                            Icon(Icons.close,
-                                                                                color: Colors.white),
-                                                                            SizedBox(
-                                                                              width: 10,
+                                                                            MaterialButton(
+                                                                              color: color,
+                                                                              onPressed: () {
+                                                                                deleteImage();
+                                                                                Navigator.popUntil(context, (route) => route.isFirst);
+                                                                              },
+                                                                              child: Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                children: [
+                                                                                  Icon(Icons.check, color: Colors.white),
+                                                                                  SizedBox(
+                                                                                    width: 10,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    "Yes",
+                                                                                    style: TextStyle(color: Colors.white),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
                                                                             ),
-                                                                            Text(
-                                                                              "No",
-                                                                              style: TextStyle(color: Colors.white),
+                                                                            MaterialButton(
+                                                                              color: Colors.red,
+                                                                              onPressed: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                                                children: [
+                                                                                  Icon(Icons.close, color: Colors.white),
+                                                                                  SizedBox(
+                                                                                    width: 10,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    "No",
+                                                                                    style: TextStyle(color: Colors.white),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
                                                                             ),
                                                                           ],
                                                                         ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            );
-                                                          });
-                                                    },
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Icon(
-                                                            Icons
-                                                                .highlight_remove,
-                                                            color:
-                                                                Colors.white),
-                                                        SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Text(
-                                                          "Delete",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              );
+                                                            },
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Icon(
+                                                                    Icons
+                                                                        .highlight_remove,
+                                                                    color: Colors
+                                                                        .white),
+                                                                SizedBox(
+                                                                  width: 10,
+                                                                ),
+                                                                Text(
+                                                                  "Delete",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        )
                                                       ],
                                                     ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          );
+                                                  ));
                                         });
                                   },
                                 ),

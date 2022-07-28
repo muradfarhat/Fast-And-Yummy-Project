@@ -5,7 +5,10 @@ import 'package:fast_and_yummy/userpage/viewAllSugg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../api/api.dart';
+import '../api/linkapi.dart';
 import '../detialscreen.dart';
+import '../main.dart';
 
 class PageContent extends StatefulWidget {
   const PageContent({Key? key}) : super(key: key);
@@ -15,6 +18,30 @@ class PageContent extends StatefulWidget {
 }
 
 class _PageContentState extends State<PageContent> {
+  bool loading = false;
+  dynamic lis;
+  Api api = Api();
+  getData() async {
+    setState(() {
+      loading = true;
+    });
+    var resp =
+        await api.postReq(getInfoLink, {"id": sharedPref.getString("id")});
+
+    if (resp['status'] == "suc") {
+      setState(() {
+        lis = resp['data'];
+        loading = false;
+      });
+    } else {}
+  }
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
   List<Map> categories = [
     {"image": "images/food.jpg", "name": "Cate. Name"},
     {"image": "images/food.jpg", "name": "Cate. Name"},
