@@ -317,7 +317,7 @@ class _SignUpState extends State<SignUp> {
         break;
       case "phone":
         {
-          if (val.length != 9) {
+          if (val.length < 9) {
             return "Invalid phone, please check it again";
           }
         }

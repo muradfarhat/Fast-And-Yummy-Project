@@ -32,6 +32,7 @@ class _ProfileState extends State<Profile> {
   bool showFavEdit = false;
   bool showCardEdit = false;
   bool ifCall = false;
+  bool success = false;
 
 // variables for personal information
   String? firstName;
@@ -105,6 +106,36 @@ class _ProfileState extends State<Profile> {
       }
     }
     return ifFind;
+  }
+
+  bringUserFav() async {
+    var response =
+        await api.postReq(bringUserFavCate, {"id": sharedPref.getString("id")});
+    if (response['status'] == "suc") {
+      List<dynamic> value = response['data'];
+      int lengthOfValue = value.length;
+      for (int i = 0; i < lengthOfValue; i++) {
+        favorite.add({
+          "id": "${value[i]["cateID"]}",
+          "favName": "${value[i]['cateName']}"
+        });
+      }
+    }
+  }
+
+  addFavoriteToDB(String cate_id, String user_id, String cate_name) async {
+    var response = await api.postReq(afterSignupChooseFavorite,
+        {"cateID": cate_id, "userID": user_id, "cateName": cate_name});
+    if (response['status'] == "suc") {
+      success = true;
+    } else {
+      success = false;
+    }
+  }
+
+  deleteFav() async {
+    var response = await api
+        .postReq(deleteFavorite, {"userID": sharedPref.getString("id")});
   }
 
 /***************** End To bring all categoryes in data base ********************** */
@@ -184,6 +215,7 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     getData();
+    bringUserFav();
     bringAllCatergorys();
     super.initState();
   }
@@ -840,7 +872,8 @@ class _ProfileState extends State<Profile> {
                                             });
                                             showSuccessSnackBarMSG(); // a Function in Functions Section
                                           } else {
-                                            showFaildSnackBarMSG(); // a Function in Functions Section
+                                            showFaildSnackBarMSG(
+                                                "Not Saved"); // a Function in Functions Section
                                           }
                                         },
                                         child: Text(
@@ -917,7 +950,26 @@ class _ProfileState extends State<Profile> {
                                       Expanded(
                                         child: MaterialButton(
                                           color: color,
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            if (favorite.length >= 2) {
+                                              await deleteFav();
+                                              for (int i = 0;
+                                                  i < favorite.length;
+                                                  i++) {
+                                                await addFavoriteToDB(
+                                                    favorite[i]['id'],
+                                                    sharedPref.getString("id")!,
+                                                    favorite[i]['favName']);
+                                              }
+                                              showSuccessSnackBarMSG();
+                                            } else {
+                                              showFaildSnackBarMSG(
+                                                  "You must choose at least 2 favorites");
+                                            }
+                                            setState(() {
+                                              showFavEdit = false;
+                                            });
+                                          },
                                           child: Text(
                                             "Save",
                                             style:
@@ -1163,7 +1215,7 @@ class _ProfileState extends State<Profile> {
                                             });
                                             showSuccessSnackBarMSG();
                                           } else {
-                                            showFaildSnackBarMSG();
+                                            showFaildSnackBarMSG("Not Saved");
                                           }
                                         },
                                         child: Text(
@@ -1258,6 +1310,8 @@ class _ProfileState extends State<Profile> {
                         setState(() {
                           favorite.removeWhere((element) =>
                               element['id'] == favoriteCkeckBox[index]['id']);
+                          // favorite.removeWhere((element) =>
+                          //     element['id'] == favoriteCkeckBox[index]['id']);
                         });
                       } else {
                         setState(() {
@@ -1427,7 +1481,7 @@ class _ProfileState extends State<Profile> {
                         });
                       } else {
                         Navigator.of(context).pop();
-                        showFaildSnackBarMSG();
+                        showFaildSnackBarMSG("Not Saved");
                       }
                     },
                     child: Text(
@@ -1475,7 +1529,7 @@ class _ProfileState extends State<Profile> {
     ));
   }
 
-  showFaildSnackBarMSG() {
+  showFaildSnackBarMSG(String msg) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
       backgroundColor: Colors.red.withOpacity(0.7),
@@ -1491,7 +1545,7 @@ class _ProfileState extends State<Profile> {
             ),
           ),
           Text(
-            "Save Faild",
+            msg,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           )
         ],
