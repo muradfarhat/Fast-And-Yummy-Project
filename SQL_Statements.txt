@@ -16,4 +16,6 @@ CREATE TABLE `gp`.`delivery_info` ( `userID` VARCHAR(255) NOT NULL ,`city` VARCH
 CREATE TABLE `gp`.`sweet` ( `productID` INT NOT NULL AUTO_INCREMENT , `productName` VARCHAR(255) NOT NULL , `storeName` VARCHAR(255) NOT NULL , `rate` VARCHAR(255) NOT NULL , `userID` VARCHAR(255) NOT NULL , `price` VARCHAR(255) NOT NULL , `totalBuy` INT(255) NOT NULL , `image` VARCHAR(255) NOT NULL , PRIMARY KEY (`productID`)) ENGINE = InnoDB; 
 // edit in favoritetable
 ALTER TABLE `favoritetable` ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`); 
+// cart table
+CREATE TABLE `gp`.`cart_table` ( `id` INT NOT NULL AUTO_INCREMENT , `orderID` VARCHAR(255) NOT NULL , `cateID` VARCHAR(255) NOT NULL , `userID` VARCHAR(255) NOT NULL , `quantity` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB; 
 //

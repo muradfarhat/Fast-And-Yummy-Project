@@ -1,8 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:io';
+import 'package:fast_and_yummy/api/linkapi.dart';
+import 'package:fast_and_yummy/main.dart';
 import 'package:fast_and_yummy/userpage/oneOrader.dart';
 import 'package:flutter/material.dart';
+import 'package:fast_and_yummy/api/api.dart';
 
 class Cart extends StatefulWidget {
   const Cart({Key? key}) : super(key: key);
@@ -12,32 +15,79 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
-  List<Map> myCart = [
-    {
-      "foodName": "Burger",
-      "storeName": "My Food",
-      "price": 5.99,
-      "number": 2,
-      "rate": "5.0",
-      "image": "images/burger.jpg"
-    },
-    {
-      "foodName": "Pizza",
-      "storeName": "My Food",
-      "price": 10.00,
-      "number": 1,
-      "rate": "4.0",
-      "image": "images/pizza.jpg"
-    },
-    {
-      "foodName": "KFC",
-      "storeName": "My Food",
-      "price": 7.99,
-      "number": 3,
-      "rate": "4.0",
-      "image": "images/kfc.png"
+  List<dynamic> myCart = [];
+  List<dynamic> cartList = [];
+  // {
+  //     "foodName": "Burger",
+  //     "storeName": "My Food",
+  //     "price": 5.99,
+  //     "number": 2,
+  //     "rate": "5.0",
+  //     "image": "images/burger.jpg"
+  //   }
+  /********************** Start Api Functions ********************************* */
+  Api api = Api(); // Create API SELECT SCOPE_IDENTITY()
+  bringAllCart() async {
+    var response = await api
+        .postReq(bringUserCartProducts, {"id": sharedPref.getString("id")});
+    if (response['status'] == "suc") {
+      setState(() {
+        cartList = response['data'];
+      });
+      forLoopForProduct();
     }
-  ];
+  }
+
+  bringProductFromCate(String cateID, String productID, String quantity) async {
+    var resp = await api.postReq(bringNameOfCate, {"cateID": cateID});
+
+    String? cateName;
+    if (resp['status'] == "suc") {
+      cateName = resp['data'];
+    }
+    cateName = cateName!.toLowerCase();
+
+    var response = await api
+        .postReq(bringProducts, {"id": productID, "cateName": cateName});
+    if (response['status'] == "suc") {
+      setState(() {
+        myCart.add({
+          "productID": response['data'][0]['productID'],
+          "foodName": response['data'][0]['productName'],
+          "storeName": response['data'][0]['storeName'],
+          "rate": response['data'][0]['rate'],
+          "image": "php/images/${response['data'][0]['image']}",
+          "userID": response['data'][0]['userID'],
+          "price": double.parse(response['data'][0]['price']),
+          "totalBuy": response['data'][0]['totalBuy'],
+          "number": int.parse(quantity)
+        });
+      });
+    }
+  }
+
+  forLoopForProduct() {
+    for (int i = 0; i < cartList.length; i++) {
+      bringProductFromCate(cartList[i]['cateID'], cartList[i]['orderID'],
+          cartList[i]['quantity']);
+    }
+  }
+
+  deleteCartFromCartTable(String id) async {
+    var response = await api.postReq(deleteFromUserCartTable, {"id": id});
+  }
+
+  updateCartTable(String id, String quantity) async {
+    var response =
+        await api.postReq(updateToCartTable, {"id": id, "quantity": quantity});
+  }
+
+/********************** End Api Functions ********************************* */
+  @override
+  void initState() {
+    bringAllCart();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +155,7 @@ class _CartState extends State<Cart> {
                               child: InkWell(
                                 onTap: () {
                                   setState(() {
+                                    deleteCartFromCartTable(cartList[i]["id"]);
                                     myCart.removeAt(i);
                                   });
                                 },
@@ -270,6 +321,10 @@ class _CartState extends State<Cart> {
                                                 setState(() {
                                                   myCart[i]["number"]++;
                                                 });
+                                                updateCartTable(
+                                                    cartList[i]["id"],
+                                                    myCart[i]["number"]
+                                                        .toString());
                                               },
                                               icon: Icon(Icons.add)),
                                           Text("${myCart[i]["number"]}"),
@@ -282,6 +337,10 @@ class _CartState extends State<Cart> {
                                                     myCart[i]["number"]--;
                                                   }
                                                 });
+                                                updateCartTable(
+                                                    cartList[i]["id"],
+                                                    myCart[i]["number"]
+                                                        .toString());
                                               },
                                               icon: Icon(Icons.minimize))
                                         ],

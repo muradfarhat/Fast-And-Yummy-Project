@@ -28,13 +28,18 @@ const String imageRoot = "http://10.0.2.2/Graduation-Project/php/images";
 // ignore: slash_for_doc_comments
 /***************************** Start user pages links ********************** */
 const String bringUserFavProducts = "$linkServer/userPagePHP/userFavorite.php";
+const String bringUserCartProducts = "$linkServer/userPagePHP/userCart.php";
 const String bringProducts =
     "$linkServer/userPagePHP/bringProductFromCategory.php";
 const String bringNameOfCate = "$linkServer/userPagePHP/bringcateName.php";
 const String deleteFromUserFavoriteTable =
     "$linkServer/userPagePHP/deleteFromFavoriteTable.php";
+const String deleteFromUserCartTable =
+    "$linkServer/userPagePHP/deleteFromCartTable.php";
 const String addToUserFavoriteTable =
     "$linkServer/userPagePHP/addTofavoriteTable.php";
+const String updateToCartTable =
+    "$linkServer/userPagePHP/updateToCartTable.php";
 /***************************** End user pages links ********************** */
 
 const String updateTown = "$linkServer/auth/updateTown.php";
