@@ -18,4 +18,8 @@ CREATE TABLE `gp`.`sweet` ( `productID` INT NOT NULL AUTO_INCREMENT , `productNa
 ALTER TABLE `favoritetable` ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`); 
 // cart table
 CREATE TABLE `gp`.`cart_table` ( `id` INT NOT NULL AUTO_INCREMENT , `orderID` VARCHAR(255) NOT NULL , `cateID` VARCHAR(255) NOT NULL , `userID` VARCHAR(255) NOT NULL , `quantity` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB; 
+// myOrder table
+CREATE TABLE `gp`.`myorders_table` ( `id` INT NOT NULL AUTO_INCREMENT , `orderID` VARCHAR(255) NOT NULL , `cateID` VARCHAR(255) NOT NULL , `userID` VARCHAR(255) NOT NULL , `quantity` VARCHAR(255) NOT NULL , `status` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB; 
+// alert to my orders table
+ALTER TABLE `myorders_table` ADD `time` VARCHAR(255) NOT NULL AFTER `status`; 
 //

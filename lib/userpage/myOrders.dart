@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:fast_and_yummy/api/api.dart';
+import 'package:fast_and_yummy/api/linkapi.dart';
+import 'package:fast_and_yummy/main.dart';
 
 class MyOrders extends StatefulWidget {
   const MyOrders({Key? key}) : super(key: key);
@@ -10,41 +13,80 @@ class MyOrders extends StatefulWidget {
 }
 
 class _MyOrdersState extends State<MyOrders> {
-  List<Map> myOrder = [
-    {
-      "name": "Pizza",
-      "store": "Food Store",
-      "image": "images/pizza.jpg",
-      "price": 8.99,
-      "number": 1,
-      "delivery":
-          1, // if = 1 that mean deliverd , if = 2 that mean the order in way , if = 0 that mean not deliver yet
-      "cancel": false,
-      "time": "1-2 PM,Wen"
-    },
-    {
-      "name": "Burder",
-      "store": "My Food",
-      "image": "images/burger.jpg",
-      "price": 10.99,
-      "number": 2,
-      "delivery":
-          2, // if = 1 that mean deliverd , if = 2 that mean the order in way , if = 0 that mean not deliver yet
-      "cancel": false,
-      "time": "Now"
-    },
-    {
-      "name": "KFC",
-      "store": "My Food",
-      "image": "images/kfc.png",
-      "price": 7.99,
-      "number": 3,
-      "delivery":
-          0, // if = 1 that mean deliverd , if = 2 that mean the order in way , if = 0 that mean not deliver yet
-      "cancel": false,
-      "time": "Now"
+  List<dynamic> myOrder = [];
+  List<dynamic> myOrderList = [];
+  // {
+  //     "name": "Pizza",
+  //     "store": "Food Store",
+  //     "image": "images/pizza.jpg",
+  //     "price": 8.99,
+  //     "number": 1,
+  //     "delivery":
+  //         1, // if = 1 that mean deliverd , if = 2 that mean the order in way , if = 0 that mean not deliver yet
+  //     "cancel": false,
+  //     "time": "1-2 PM,Wen"
+  //   }
+  /********************** Start Api Functions ********************************* */
+  Api api = Api(); // Create API SELECT SCOPE_IDENTITY()
+  bringAllOrders() async {
+    var respo = await api
+        .postReq(bringUserMyOrdersProducts, {"id": sharedPref.getString("id")});
+    if (respo['status'] == "suc") {
+      setState(() {
+        myOrderList = respo['data'];
+      });
+      forLoopForBringProduct();
     }
-  ];
+  }
+
+  bringProductFromMyOrder(
+      String cateID, String productID, String quantity, String time) async {
+    var resp = await api.postReq(bringNameOfCate, {"cateID": cateID});
+
+    String? cateName;
+    if (resp['status'] == "suc") {
+      cateName = resp['data'];
+    }
+    cateName = cateName!.toLowerCase();
+
+    var response = await api
+        .postReq(bringProducts, {"id": productID, "cateName": cateName});
+    if (response['status'] == "suc") {
+      setState(() {
+        myOrder.add({
+          "productID": response['data'][0]['productID'],
+          "name": response['data'][0]['productName'],
+          "store": response['data'][0]['storeName'],
+          "rate": response['data'][0]['rate'],
+          "image": "php/images/${response['data'][0]['image']}",
+          "userID": response['data'][0]['userID'],
+          "price": double.parse(response['data'][0]['price']),
+          "totalBuy": response['data'][0]['totalBuy'],
+          "number": int.parse(quantity),
+          "time": time,
+          "cancel": false,
+        });
+      });
+    }
+  }
+
+  forLoopForBringProduct() {
+    for (int i = 0; i < myOrderList.length; i++) {
+      bringProductFromMyOrder(
+          myOrderList[i]['cateID'],
+          myOrderList[i]['orderID'],
+          myOrderList[i]['quantity'],
+          myOrderList[i]["time"]);
+    }
+  }
+
+/********************** End Api Functions ********************************* */
+
+  @override
+  void initState() {
+    bringAllOrders();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:io';
+
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/main.dart';
 import 'package:fast_and_yummy/userpage/oneOrader.dart';
@@ -17,14 +18,7 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   List<dynamic> myCart = [];
   List<dynamic> cartList = [];
-  // {
-  //     "foodName": "Burger",
-  //     "storeName": "My Food",
-  //     "price": 5.99,
-  //     "number": 2,
-  //     "rate": "5.0",
-  //     "image": "images/burger.jpg"
-  //   }
+
   /********************** Start Api Functions ********************************* */
   Api api = Api(); // Create API SELECT SCOPE_IDENTITY()
   bringAllCart() async {
@@ -357,7 +351,7 @@ class _CartState extends State<Cart> {
           ),
         ),
         Container(
-          alignment: Alignment.bottomRight,
+          alignment: Alignment.bottomLeft,
           margin: EdgeInsets.all(15),
           child: InkWell(
             onTap: () {},

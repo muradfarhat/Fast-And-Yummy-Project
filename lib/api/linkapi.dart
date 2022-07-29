@@ -29,6 +29,8 @@ const String imageRoot = "http://10.0.2.2/Graduation-Project/php/images";
 /***************************** Start user pages links ********************** */
 const String bringUserFavProducts = "$linkServer/userPagePHP/userFavorite.php";
 const String bringUserCartProducts = "$linkServer/userPagePHP/userCart.php";
+const String bringUserMyOrdersProducts =
+    "$linkServer/userPagePHP/userMyOrder.php";
 const String bringProducts =
     "$linkServer/userPagePHP/bringProductFromCategory.php";
 const String bringNameOfCate = "$linkServer/userPagePHP/bringcateName.php";
