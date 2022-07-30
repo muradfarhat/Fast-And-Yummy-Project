@@ -78,7 +78,6 @@ class _supportState extends State<support> {
               child: const Text(
                 "This section is for inquiries and complaints about the application and how to use it",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             const Divider(),
@@ -88,6 +87,8 @@ class _supportState extends State<support> {
                 validator: ((value) {
                   if (value!.isEmpty) {
                     return "You cannot send empty question !";
+                  } else if (value.length < 10) {
+                    return "invalid Question !";
                   } else {
                     return null;
                   }
