@@ -212,26 +212,19 @@ class _MyStoreState extends State<MyStore> {
                         children: [
                           Stack(
                             children: [
-                              Container(
-                                height: 200,
-                                width: size.width,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: "$lis2?['storeImage']" == ""
-                                          ? NetworkImage(
-                                              "https://themesfinity.com/wp-content/uploads/2018/02/default-placeholder.png")
-                                          : NetworkImage(
-                                              "$imageRoot/${lis2?['storeImage']}"),
-                                      fit: BoxFit.cover),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color:
-                                            Color.fromARGB(255, 133, 133, 133),
-                                        blurRadius: 8,
-                                        offset: Offset(0, 3))
-                                  ],
-                                ),
-                              ),
+                              lis2?['storeImage'] == ""
+                                  ? Image.network(
+                                      "https://themesfinity.com/wp-content/uploads/2018/02/default-placeholder.png",
+                                      width: size.width,
+                                      height: 200,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.network(
+                                      "$imageRoot/${lis2?['storeImage']}",
+                                      width: size.width,
+                                      height: 200,
+                                      fit: BoxFit.cover,
+                                    ),
                               Container(
                                 height: 200,
                                 width: size.width,
@@ -281,7 +274,7 @@ class _MyStoreState extends State<MyStore> {
                                   child: Icon(
                                     Icons.edit_note_sharp,
                                     color: Colors.white,
-                                    size: 25,
+                                    size: 30,
                                   ),
                                 ),
                               ),

@@ -118,6 +118,23 @@ class _EditStoreState extends State<EditStore> {
               scrollDirection: Axis.vertical,
               child: Column(
                 children: [
+                  SizedBox(
+                    height: 70,
+                  ),
+                  ListTile(
+                    title: Text(
+                      "Edit store",
+                      style: TextStyle(
+                          color: color,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    trailing: Icon(
+                      Icons.edit_note_sharp,
+                      size: 35,
+                      color: color,
+                    ),
+                  ),
                   Container(
                     width: size.width,
                     decoration: BoxDecoration(
@@ -129,7 +146,7 @@ class _EditStoreState extends State<EditStore> {
                             offset: Offset(0, 3))
                       ],
                     ),
-                    margin: EdgeInsets.symmetric(horizontal: 15, vertical: 140),
+                    margin: EdgeInsets.symmetric(horizontal: 15),
                     child: Form(
                       key: formStateForName,
                       child: Column(
@@ -167,29 +184,50 @@ class _EditStoreState extends State<EditStore> {
                                             height: 230,
                                             fit: BoxFit.cover,
                                           ),
-                                Positioned(
-                                    right: 10,
-                                    bottom: 10,
-                                    child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          visible = !visible;
-                                        });
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(50))),
-                                        child: Icon(
-                                          Icons.edit,
-                                          color: color,
-                                          size: 30,
-                                        ),
-                                      ),
-                                    ))
+                                // Positioned(
+                                //     right: 10,
+                                //     bottom: 10,
+                                //     child: InkWell(
+                                //       onTap: () {
+                                //         setState(() {
+                                //           visible = !visible;
+                                //         });
+                                //       },
+                                //       child: Container(
+                                //         padding: EdgeInsets.all(8),
+                                //         decoration: BoxDecoration(
+                                //             color: Colors.white,
+                                //             borderRadius: BorderRadius.all(
+                                //                 Radius.circular(50))),
+                                //         child: Icon(
+                                //           Icons.edit,
+                                //           color: color,
+                                //           size: 30,
+                                //         ),
+                                //       ),
+                                //     ))
                               ],
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                visible = !visible;
+                              });
+                            },
+                            child: ListTile(
+                              title: Text(
+                                "Change Image",
+                                style: TextStyle(
+                                    color: color,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              trailing: Icon(
+                                Icons.image_outlined,
+                                size: 35,
+                                color: color,
+                              ),
                             ),
                           ),
                           Visibility(
@@ -243,7 +281,7 @@ class _EditStoreState extends State<EditStore> {
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(20),
                             child: Column(
                               children: [
                                 TextFormField(
@@ -261,9 +299,8 @@ class _EditStoreState extends State<EditStore> {
                                   },
                                   initialValue: "${lis?['storeName']}",
                                   decoration: InputDecoration(
-                                    labelText: "Store",
+                                    labelText: "Store name",
                                     labelStyle: TextStyle(color: color),
-                                    icon: Icon(Icons.map, color: color),
                                   ),
                                 ),
                                 Container(
