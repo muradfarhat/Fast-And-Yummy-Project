@@ -32,4 +32,6 @@ ALTER TABLE `store` ADD FOREIGN KEY (`storeID`) REFERENCES `users`(`id`) ON DELE
 =======
 // Alert to myOrder table
 ALTER TABLE `myorders_table` ADD `storeID` VARCHAR(255) NOT NULL AFTER `userID`; 
+// support table
+CREATE TABLE `gp`.`support` ( `questionID` INT NOT NULL AUTO_INCREMENT , `userID` VARCHAR(255) NOT NULL , `question` VARCHAR(255) NOT NULL , `answer` VARCHAR(255) NOT NULL , PRIMARY KEY (`questionID`)) ENGINE = InnoDB; 
 //

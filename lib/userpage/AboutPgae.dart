@@ -11,6 +11,9 @@ class aboutPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: basicColor,
+        title: const Text("About Application"),
+        titleTextStyle:
+            const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
       ),
       body: SingleChildScrollView(
         child: Column(

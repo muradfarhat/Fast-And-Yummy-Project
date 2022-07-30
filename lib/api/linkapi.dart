@@ -27,6 +27,11 @@ const String policy =
 const String imageRoot = "http://10.0.2.2/Graduation-Project/php/images";
 // ignore: slash_for_doc_comments
 /***************************** Start user pages links ********************** */
+const String addSupportQuestion = "$linkServer/userPagePHP/addSupportQues.php";
+const String deleteSupportQues =
+    "$linkServer/userPagePHP/deleteSupportQuestion.php";
+const String bringSupportQuestions =
+    "$linkServer/userPagePHP/bringAllSupportQues.php";
 const String bringUserFavProducts = "$linkServer/userPagePHP/userFavorite.php";
 const String bringUserCartProducts = "$linkServer/userPagePHP/userCart.php";
 const String bringUserMyOrdersProducts =

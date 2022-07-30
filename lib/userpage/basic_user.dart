@@ -10,6 +10,7 @@ import 'package:fast_and_yummy/userpage/profile.dart';
 import 'package:fast_and_yummy/userpage/favorite.dart';
 import 'package:fast_and_yummy/userpage/cart.dart';
 import 'package:fast_and_yummy/userpage/myOrders.dart';
+import 'package:fast_and_yummy/userpage/supportPage.dart';
 import 'package:flutter/material.dart';
 
 import '../api/api.dart';
@@ -168,10 +169,16 @@ class _UserPageState extends State<UserPage> {
                           Icons.info,
                         )),
                     InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => support()));
+                        },
                         child: listTileDesgin(
-                      "Support",
-                      Icons.support,
-                    )),
+                          "Support",
+                          Icons.support,
+                        )),
                     InkWell(
                         onTap: () {
                           sharedPref.clear();
