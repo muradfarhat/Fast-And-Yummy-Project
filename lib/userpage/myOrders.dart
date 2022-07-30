@@ -16,17 +16,7 @@ class _MyOrdersState extends State<MyOrders> {
   Color basicColor = const Color.fromARGB(255, 37, 179, 136);
   List<dynamic> myOrder = [];
   List<dynamic> myOrderList = [];
-  // {
-  //     "name": "Pizza",
-  //     "store": "Food Store",
-  //     "image": "images/pizza.jpg",
-  //     "price": 8.99,
-  //     "number": 1,
-  //     "delivery":
-  //         1, // if = 1 that mean deliverd , if = 2 that mean the order on way , if = 0 that mean not deliver yet
-  //     "cancel": false,
-  //     "time": "1-2 PM,Wen"
-  //   }
+
   /********************** Start Api Functions ********************************* */
   Api api = Api(); // Create API SELECT SCOPE_IDENTITY()
   bringAllOrders() async {

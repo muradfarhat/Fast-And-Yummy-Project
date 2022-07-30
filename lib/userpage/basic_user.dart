@@ -3,6 +3,7 @@
 import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/main.dart';
 import 'package:fast_and_yummy/myStore.dart';
+import 'package:fast_and_yummy/userpage/AboutPgae.dart';
 
 import 'package:fast_and_yummy/userpage/pagecontent.dart';
 import 'package:fast_and_yummy/userpage/profile.dart';
@@ -156,10 +157,16 @@ class _UserPageState extends State<UserPage> {
                       Icons.store,
                     )),
                     InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => aboutPage()));
+                        },
                         child: listTileDesgin(
-                      "About",
-                      Icons.info,
-                    )),
+                          "About",
+                          Icons.info,
+                        )),
                     InkWell(
                         child: listTileDesgin(
                       "Support",
