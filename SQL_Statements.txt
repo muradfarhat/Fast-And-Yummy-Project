@@ -16,7 +16,6 @@ CREATE TABLE `gp`.`delivery_info` ( `userID` VARCHAR(255) NOT NULL ,`city` VARCH
 CREATE TABLE `gp`.`sweet` ( `productID` INT NOT NULL AUTO_INCREMENT , `productName` VARCHAR(255) NOT NULL , `storeName` VARCHAR(255) NOT NULL , `rate` VARCHAR(255) NOT NULL , `userID` VARCHAR(255) NOT NULL , `price` VARCHAR(255) NOT NULL , `totalBuy` INT(255) NOT NULL , `image` VARCHAR(255) NOT NULL , PRIMARY KEY (`productID`)) ENGINE = InnoDB; 
 // edit in favoritetable
 ALTER TABLE `favoritetable` ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`); 
-<<<<<<< Updated upstream
 // cart table
 CREATE TABLE `gp`.`cart_table` ( `id` INT NOT NULL AUTO_INCREMENT , `orderID` VARCHAR(255) NOT NULL , `cateID` VARCHAR(255) NOT NULL , `userID` VARCHAR(255) NOT NULL , `quantity` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB; 
 // myOrder table
@@ -25,9 +24,8 @@ CREATE TABLE `gp`.`myorders_table` ( `id` INT NOT NULL AUTO_INCREMENT , `orderID
 ALTER TABLE `myorders_table` ADD `time` VARCHAR(255) NOT NULL AFTER `status`; 
 //
 =======
-//
+// create store table
 
-
-CREATE TABLE `gp`.`customer_info` ( `storeID` INT NOT NULL , `storeName` VARCHAR(255) NOT NULL , `storeImage` VARCHAR(255) NOT NULL , `earrings`  INT NOT NULL) ENGINE = InnoDB; 
+CREATE TABLE `gp`.`store` ( `storeID` INT NOT NULL , `storeName` VARCHAR(255) NOT NULL , `storeImage` VARCHAR(255) NOT NULL , `earrings`  INT NOT NULL) ENGINE = InnoDB; 
 ALTER TABLE `store` ADD FOREIGN KEY (`storeID`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 >>>>>>> Stashed changes
