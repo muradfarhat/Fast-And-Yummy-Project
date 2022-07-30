@@ -38,6 +38,8 @@ const String deleteFromUserFavoriteTable =
     "$linkServer/userPagePHP/deleteFromFavoriteTable.php";
 const String deleteFromUserCartTable =
     "$linkServer/userPagePHP/deleteFromCartTable.php";
+const String deleteFromMyOrderTable =
+    "$linkServer/userPagePHP/deleteFromMyOrderTable.php";
 const String addToUserFavoriteTable =
     "$linkServer/userPagePHP/addTofavoriteTable.php";
 const String updateToCartTable =

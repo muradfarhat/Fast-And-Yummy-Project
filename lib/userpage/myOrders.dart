@@ -13,6 +13,7 @@ class MyOrders extends StatefulWidget {
 }
 
 class _MyOrdersState extends State<MyOrders> {
+  Color basicColor = const Color.fromARGB(255, 37, 179, 136);
   List<dynamic> myOrder = [];
   List<dynamic> myOrderList = [];
   // {
@@ -22,7 +23,7 @@ class _MyOrdersState extends State<MyOrders> {
   //     "price": 8.99,
   //     "number": 1,
   //     "delivery":
-  //         1, // if = 1 that mean deliverd , if = 2 that mean the order in way , if = 0 that mean not deliver yet
+  //         1, // if = 1 that mean deliverd , if = 2 that mean the order on way , if = 0 that mean not deliver yet
   //     "cancel": false,
   //     "time": "1-2 PM,Wen"
   //   }
@@ -39,8 +40,8 @@ class _MyOrdersState extends State<MyOrders> {
     }
   }
 
-  bringProductFromMyOrder(
-      String cateID, String productID, String quantity, String time) async {
+  bringProductFromMyOrder(String cateID, String productID, String quantity,
+      String time, int delivery) async {
     var resp = await api.postReq(bringNameOfCate, {"cateID": cateID});
 
     String? cateName;
@@ -65,6 +66,7 @@ class _MyOrdersState extends State<MyOrders> {
           "number": int.parse(quantity),
           "time": time,
           "cancel": false,
+          "delivery": delivery
         });
       });
     }
@@ -76,8 +78,25 @@ class _MyOrdersState extends State<MyOrders> {
           myOrderList[i]['cateID'],
           myOrderList[i]['orderID'],
           myOrderList[i]['quantity'],
-          myOrderList[i]["time"]);
+          myOrderList[i]["time"],
+          ifDelivery(myOrderList[i]['status']));
     }
+  }
+
+  deleteFromMyOrder(String ProductID) async {
+    var resp = await api.postReq(deleteFromMyOrderTable, {"id": ProductID});
+  }
+
+  int ifDelivery(String status) {
+    int state = 0;
+    if (status == "on way") {
+      state = 2;
+    } else if (status == "not") {
+      state = 0;
+    } else if (status == "deliverd") {
+      state = 1;
+    }
+    return state;
   }
 
 /********************** End Api Functions ********************************* */
@@ -154,12 +173,65 @@ class _MyOrdersState extends State<MyOrders> {
                             InkWell(
                               onTap: () {
                                 if (myOrder[i]["delivery"] == 1) {
-                                  cancelOrderMSG();
+                                  cancelOrderMSG(
+                                      "Cannot Cancel deliverd order");
                                 } else {
-                                  setState(() {
-                                    myOrder[i]["cancel"] = true;
-                                    myOrder.removeAt(i);
-                                  });
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text(
+                                              "Are you sure you want to cancel this order?"),
+                                          content: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Divider(),
+                                              Text(myOrder[i]["name"]),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                      "\$ ${clacEachOrderPrice(myOrder[i]["price"], myOrder[i]["number"]).toStringAsFixed(2)}"),
+                                                  Text(
+                                                      "  |  Quantity: ${myOrder[i]["number"]}"),
+                                                ],
+                                              ),
+                                              Text("At ${myOrder[i]["time"]}"),
+                                              Divider()
+                                            ],
+                                          ),
+                                          actions: [
+                                            MaterialButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  deleteFromMyOrder(
+                                                      myOrderList[i]['id']);
+                                                  myOrder[i]["cancel"] = true;
+                                                  myOrder.removeAt(i);
+                                                });
+                                                Navigator.of(context).pop();
+                                                cancelOrderMSG("Canceled");
+                                              },
+                                              color: Colors.red,
+                                              child: Text(
+                                                "Yes",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text(
+                                                  "No",
+                                                  style: TextStyle(
+                                                      color: Colors.red),
+                                                ))
+                                          ],
+                                        );
+                                      });
                                 }
                               },
                               child: Container(
@@ -331,7 +403,7 @@ class _MyOrdersState extends State<MyOrders> {
     }
   }
 
-  cancelOrderMSG() {
+  cancelOrderMSG(String msg) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
       backgroundColor: Color.fromARGB(255, 75, 75, 75).withOpacity(0.7),
@@ -347,7 +419,7 @@ class _MyOrdersState extends State<MyOrders> {
             ),
           ),
           Text(
-            "Cannot Cancel deliverd order",
+            msg,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           )
         ],
