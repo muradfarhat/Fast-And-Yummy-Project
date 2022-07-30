@@ -242,7 +242,6 @@ class _ProfileState extends State<Profile> {
   }
 
   File? file;
-  bool bol = false;
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;

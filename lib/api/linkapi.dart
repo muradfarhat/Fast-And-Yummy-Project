@@ -48,4 +48,7 @@ const String updateToCartTable =
 
 const String updateTown = "$linkServer/auth/updateTown.php";
 
-const String haveStore = "$linkServer/userinfo/haveStore.php";
+const String haveStore = "$linkServer/store/haveStore.php";
+const String storeInfo = "$linkServer/store/storeInfo.php";
+const String storeImageLink = "$linkServer/store/storeImage.php";
+const String storeNameLink = "$linkServer/store/storeName.php";
