@@ -204,6 +204,7 @@ class _SignInState extends State<SignIn> {
     }
     RegExp emailReg = RegExp(
         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    RegExp phoneReg = RegExp(r"[5][2345690][23456789][0-9]{6}$");
     switch (str) {
       case "email":
         {
@@ -234,8 +235,11 @@ class _SignInState extends State<SignIn> {
         break;
       case "phone":
         {
-          if (val.length != 10) {
-            return "Invalid phone, please check it again";
+          if (!phoneReg.hasMatch(val)) {
+            return "Invalid phone number,\nplease check that number start with 59[2:9],56[2:9] \nand have only digits";
+          }
+          if (val.length > 9) {
+            return "Invalid phone number, please check that have 9 digits";
           }
         }
         break;

@@ -796,10 +796,13 @@ class _ProfileState extends State<Profile> {
                               TextFormField(
                                 autovalidateMode: AutovalidateMode.always,
                                 validator: (phone) {
-                                  if (phone!.length < 9 || phone.length > 12) {
-                                    return "The phone number must be 10 digits";
-                                  } else {
-                                    return null;
+                                  RegExp phoneReg =
+                                      RegExp(r"[5][69][23456789][0-9]{6}$");
+                                  if (!phoneReg.hasMatch(phone!)) {
+                                    return "Invalid phone number,\nplease check that number start with 59[2:9],56[2:9] \nand have only digits";
+                                  }
+                                  if (phone.length > 9) {
+                                    return "Invalid phone number, please check that have 9 digits";
                                   }
                                 },
                                 onSaved: (text) {

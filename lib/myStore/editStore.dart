@@ -119,7 +119,7 @@ class _EditStoreState extends State<EditStore> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 70,
+                    height: 10,
                   ),
                   ListTile(
                     title: Text(
@@ -138,7 +138,7 @@ class _EditStoreState extends State<EditStore> {
                   Container(
                     width: size.width,
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 226, 226, 226),
+                      color: Color.fromARGB(255, 235, 235, 235),
                       boxShadow: [
                         BoxShadow(
                             color: Color.fromARGB(255, 133, 133, 133),
@@ -184,28 +184,7 @@ class _EditStoreState extends State<EditStore> {
                                             height: 230,
                                             fit: BoxFit.cover,
                                           ),
-                                // Positioned(
-                                //     right: 10,
-                                //     bottom: 10,
-                                //     child: InkWell(
-                                //       onTap: () {
-                                //         setState(() {
-                                //           visible = !visible;
-                                //         });
-                                //       },
-                                //       child: Container(
-                                //         padding: EdgeInsets.all(8),
-                                //         decoration: BoxDecoration(
-                                //             color: Colors.white,
-                                //             borderRadius: BorderRadius.all(
-                                //                 Radius.circular(50))),
-                                //         child: Icon(
-                                //           Icons.edit,
-                                //           color: color,
-                                //           size: 30,
-                                //         ),
-                                //       ),
-                                //     ))
+                          
                               ],
                             ),
                           ),
