@@ -212,19 +212,12 @@ class _MyStoreState extends State<MyStore> {
                         children: [
                           Stack(
                             children: [
-                              lis2?['storeImage'] == ""
-                                  ? Image.network(
-                                      "https://themesfinity.com/wp-content/uploads/2018/02/default-placeholder.png",
-                                      width: size.width,
-                                      height: 200,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.network(
-                                      "$imageRoot/${lis2?['storeImage']}",
-                                      width: size.width,
-                                      height: 200,
-                                      fit: BoxFit.cover,
-                                    ),
+                              Image.network(
+                                "https://themesfinity.com/wp-content/uploads/2018/02/default-placeholder.png",
+                                width: size.width,
+                                height: 200,
+                                fit: BoxFit.cover,
+                              ),
                               Container(
                                 height: 200,
                                 width: size.width,
@@ -334,7 +327,8 @@ class _MyStoreState extends State<MyStore> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AddPage(lis2?['storeName'])),
+              MaterialPageRoute(
+                  builder: (context) => AddPage(lis2?['storeName'])),
             ).then((value) => () {
                   getStoreData();
                 });
