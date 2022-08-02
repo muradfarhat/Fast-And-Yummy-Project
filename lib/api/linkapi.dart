@@ -12,6 +12,7 @@ const String bringUserFavCate = "$linkServer/auth/bringUserFav.php";
 const String deleteFavorite = "$linkServer/auth/deleteFav.php";
 const String getInfoLink = "$linkServer/userinfo/getinfo.php";
 const String getInfoLinkDelivery = "$linkServer/userinfo/getDeliveryInfo.php";
+const String getInfoFromUsers = "$linkServer/userinfo/getFromUserTable.php";
 const String updatePers = "$linkServer/auth/updateprofiledata.php";
 const String updateNameLink = "$linkServer/auth/updateName.php";
 const String insertCreditCardInfo = "$linkServer/auth/insertCreditCard.php";

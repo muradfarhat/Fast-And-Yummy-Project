@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last, must_be_immutable, use_build_context_synchronously
 
 import 'package:fast_and_yummy/HomePage/forgetandverf.dart';
+import 'package:fast_and_yummy/deliverySection/deliveryHomePage.dart';
 import 'package:flutter/material.dart';
 import '../api/api.dart';
 import '../api/linkapi.dart';
@@ -43,8 +44,17 @@ class _SignInState extends State<SignIn> {
         sharedPref.setString("id", resp['data']['id'].toString());
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => UserPage()),
+          MaterialPageRoute(
+            builder: (context) =>
+                resp['data']['deliveryOrCustomer'] == "Delivery"
+                    ? homePageDelivery()
+                    : UserPage(),
+          ),
         );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => UserPage()),
+        // );
       } else {
         setState(() {
           loading = false;

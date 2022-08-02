@@ -2,15 +2,37 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:fast_and_yummy/HomePage/homepage.dart';
+import 'package:fast_and_yummy/api/api.dart';
+import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/deliverySection/deliveryHomePage.dart';
 import 'package:fast_and_yummy/userpage/basic_user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 late SharedPreferences sharedPref;
+
+dynamic lis;
+bool loading = false;
+bool isTrue = false;
+Api api = Api();
+Future<bool> getDeliveryData() async {
+  loading = true;
+  if (sharedPref.getString("id") != null) {
+    var resp =
+        await api.postReq(getInfoFromUsers, {"id": sharedPref.getString("id")});
+    if (resp['status'] == "suc") {
+      lis = resp['data'];
+      loading = false;
+      isTrue = true;
+    }
+  }
+  return isTrue;
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   sharedPref = await SharedPreferences.getInstance();
+  await getDeliveryData();
   runApp(MyApp());
 }
 
@@ -27,8 +49,11 @@ class MyApp extends StatelessWidget {
 
       routes: {
         "home": (context) => HomePage(),
-        "userpage": (context) => UserPage(),
-        "deliveryProfile": (context) => homePageDelivery(),
+        "userpage": (context) => sharedPref.getString("id") != null &&
+                lis?['deliveryOrCustomer'] == "Delivery"
+            ? homePageDelivery()
+            : UserPage(), //UserPage(),
+        //"deliveryProfile": (context) => homePageDelivery(),
       },
     );
   }
