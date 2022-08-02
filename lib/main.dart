@@ -2,7 +2,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:fast_and_yummy/HomePage/homepage.dart';
-import 'package:fast_and_yummy/deliverySection/profilePage.dart';
+import 'package:fast_and_yummy/deliverySection/deliveryHomePage.dart';
 import 'package:fast_and_yummy/userpage/basic_user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,13 +22,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: sharedPref.getString("id") == null
-          ? "deliveryProfile"
-          : "deliveryProfile", // sharedPref.getString("id") == null ? "home" : "userpage" // sharedPref.getString("id") == null ? "deliveryProfile" : "deliveryProfile"
+          ? "home"
+          : "userpage", // sharedPref.getString("id") == null ? "home" : "userpage" // sharedPref.getString("id") == null ? "deliveryProfile" : "deliveryProfile"
 
       routes: {
         "home": (context) => HomePage(),
         "userpage": (context) => UserPage(),
-        "deliveryProfile": (context) => deliveryProfile(),
+        "deliveryProfile": (context) => homePageDelivery(),
       },
     );
   }

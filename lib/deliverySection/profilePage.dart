@@ -75,72 +75,7 @@ class _deliveryProfileState extends State<deliveryProfile> {
   ];
   Api api = Api();
   bool loading = false;
-/***************** Start To bring all categoryes in data base ********************** */
-  bringAllCatergorys() async {
-    var response = await api.getReq(bringAllCate);
-    if (response['status'] == "suc") {
-      List<dynamic> values = response['data'];
-      int lengthOfValue = values.length;
-      for (int i = 0; i < lengthOfValue; i++) {
-        setState(() {
-          favoriteCkeckBox.add({
-            "id": "${values[i]["cateID"]}",
-            "favName": "${values[i]['cateName']}",
-            "value": findFavorite(favorite, "${values[i]['cateName']}")
-          });
-        });
-        ifCall = true;
-        if (i == lengthOfValue) {
-          break;
-        }
-      }
-    }
-  }
 
-  findFavorite(List<dynamic> listChoose, String fav) {
-    bool ifFind = false;
-    for (int i = 0; i < listChoose.length; i++) {
-      if (listChoose[i]['favName'] == fav) {
-        ifFind = true;
-      }
-    }
-    return ifFind;
-  }
-
-  bringUserFav() async {
-    var response =
-        await api.postReq(bringUserFavCate, {"id": sharedPref.getString("id")});
-    if (response['status'] == "suc") {
-      List<dynamic> value = response['data'];
-      int lengthOfValue = value.length;
-      for (int i = 0; i < lengthOfValue; i++) {
-        favorite.add({
-          "id": "${value[i]["cateID"]}",
-          "favName": "${value[i]['cateName']}"
-        });
-      }
-    }
-  }
-
-  addFavoriteToDB(String cate_id, String user_id, String cate_name) async {
-    var response = await api.postReq(afterSignupChooseFavorite,
-        {"cateID": cate_id, "userID": user_id, "cateName": cate_name});
-    if (response['status'] == "suc") {
-      success = true;
-    } else {
-      success = false;
-    }
-  }
-
-  deleteFav() async {
-    var response = await api
-        .postReq(deleteFavorite, {"userID": sharedPref.getString("id")});
-    if (response['status'] == "suc") {
-      showSuccessSnackBarMSG();
-    } else {}
-  }
-
-/***************** End To bring all categoryes in data base ********************** */
   getData() async {
     setState(() {
       loading = true;
@@ -237,8 +172,6 @@ class _deliveryProfileState extends State<deliveryProfile> {
   @override
   void initState() {
     getData();
-    bringUserFav();
-    bringAllCatergorys();
 
     super.initState();
   }
@@ -289,709 +222,637 @@ class _deliveryProfileState extends State<deliveryProfile> {
 
 /********** End Function for edit personal information & Favorite & Card Information validation ************** */
 
-    return Scaffold(
-      drawer: Drawer(
+    return SingleChildScrollView(
+        key: scaffoldKey,
         child: loading
             ? SizedBox(
                 height: size.height,
                 width: size.width,
                 child: Center(
-                  child: CircularProgressIndicator(
-                      color: Color.fromARGB(255, 37, 179, 136)),
+                  child: CircularProgressIndicator(color: color),
                 ),
               )
-            : Column(
-                // ignore: prefer_const_literals_to_create_immutables
-                children: [
-                  UserAccountsDrawerHeader(
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 37, 179, 136),
-                      ),
-                      currentAccountPicture: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage: lis?['image'] == ""
-                            ? NetworkImage(
-                                "https://i.stack.imgur.com/l60Hf.png")
-                            : NetworkImage("$imageRoot/${lis?['image']}"),
-                      ),
-                      accountName:
-                          Text(lis?['first_name'] + " " + lis?['last_name']),
-                      accountEmail: Text(lis?['email'])),
-                ],
-              ),
-      ),
-      appBar: AppBar(
-        //toolbarHeight: 0,
-        backgroundColor: Color.fromARGB(255, 37, 179, 136),
-      ),
-      body: SingleChildScrollView(
-          key: scaffoldKey,
-          child: loading
-              ? SizedBox(
-                  height: size.height,
-                  width: size.width,
-                  child: Center(
-                    child: CircularProgressIndicator(color: color),
+            : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                /*************************************** Start header => User image and name *************************** */
+
+                Container(
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(100),
+                        bottomRight: Radius.circular(100)),
                   ),
-                )
-              : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  /*************************************** Start header => User image and name *************************** */
-                  Container(
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(100),
-                          bottomRight: Radius.circular(100)),
-                    ),
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Stack(
-                      children: [
-                        Column(children: [
-                          Stack(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(top: 30, bottom: 20),
-                                height: 150,
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.white, blurRadius: 4)
-                                  ],
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: lis?['image'] == ""
-                                          ? NetworkImage(
-                                              "https://i.stack.imgur.com/l60Hf.png")
-                                          : NetworkImage(
-                                              "$imageRoot/${lis?['image']}")),
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
+                  padding: EdgeInsets.only(bottom: 10),
+                  child: Stack(
+                    children: [
+                      Column(children: [
+                        Stack(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(top: 30, bottom: 20),
+                              height: 150,
+                              width: 150,
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(color: Colors.white, blurRadius: 4)
+                                ],
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: lis?['image'] == ""
+                                        ? NetworkImage(
+                                            "https://i.stack.imgur.com/l60Hf.png")
+                                        : NetworkImage(
+                                            "$imageRoot/${lis?['image']}")),
+                                borderRadius: BorderRadius.circular(100),
                               ),
-                              Positioned(
-                                bottom: 15,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(100)),
-                                  child: IconButton(
-                                    splashColor: Colors.white,
-                                    color: color,
-                                    iconSize: 20,
-                                    icon: Icon(Icons.camera_enhance),
-                                    onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return StatefulBuilder(
-                                                builder:
-                                                    (context, setState) =>
-                                                        AlertDialog(
-                                                          title: Row(
-                                                            children: [
-                                                              Container(
-                                                                  margin: EdgeInsets
-                                                                      .only(
-                                                                          right:
-                                                                              5),
-                                                                  child: Icon(
-                                                                    Icons
-                                                                        .image_outlined,
-                                                                    color:
-                                                                        color,
-                                                                  )),
-                                                              SizedBox(
-                                                                width: 10,
+                            ),
+                            Positioned(
+                              bottom: 15,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(100)),
+                                child: IconButton(
+                                  splashColor: Colors.white,
+                                  color: color,
+                                  iconSize: 20,
+                                  icon: Icon(Icons.camera_enhance),
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return StatefulBuilder(
+                                              builder: (context, setState) =>
+                                                  AlertDialog(
+                                                    title: Row(
+                                                      children: [
+                                                        Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    right: 5),
+                                                            child: Icon(
+                                                              Icons
+                                                                  .image_outlined,
+                                                              color: color,
+                                                            )),
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Text("Upload Image")
+                                                      ],
+                                                    ),
+                                                    content: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Container(
+                                                          height: 220,
+                                                          width: 220,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            image: DecorationImage(
+                                                                image: lis?['image'] ==
+                                                                        ""
+                                                                    ? NetworkImage(
+                                                                        "https://i.stack.imgur.com/l60Hf.png")
+                                                                    : NetworkImage(
+                                                                        "$imageRoot/${lis?['image']}"),
+                                                                fit: BoxFit
+                                                                    .cover),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        133,
+                                                                        133,
+                                                                        133),
+                                                                blurRadius: 2,
                                                               ),
-                                                              Text(
-                                                                  "Upload Image")
                                                             ],
                                                           ),
-                                                          content: Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
+                                                        ),
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  top: 20),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceAround,
                                                             children: [
-                                                              Container(
-                                                                height: 220,
-                                                                width: 220,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  image: DecorationImage(
-                                                                      image: lis?['image'] ==
-                                                                              ""
-                                                                          ? NetworkImage(
-                                                                              "https://i.stack.imgur.com/l60Hf.png")
-                                                                          : NetworkImage(
-                                                                              "$imageRoot/${lis?['image']}"),
-                                                                      fit: BoxFit
-                                                                          .cover),
-                                                                  boxShadow: [
-                                                                    BoxShadow(
-                                                                      color: Color.fromARGB(
-                                                                          255,
-                                                                          133,
-                                                                          133,
-                                                                          133),
-                                                                      blurRadius:
-                                                                          2,
+                                                              MaterialButton(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        179,
+                                                                        179,
+                                                                        189),
+                                                                onPressed:
+                                                                    () async {
+                                                                  XFile? xfile =
+                                                                      await ImagePicker().pickImage(
+                                                                          source:
+                                                                              ImageSource.gallery);
+                                                                  file = File(
+                                                                      xfile!
+                                                                          .path);
+                                                                },
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Icon(
+                                                                        Icons
+                                                                            .photo_camera_front_outlined,
+                                                                        color: Colors
+                                                                            .white),
+                                                                    SizedBox(
+                                                                      width: 10,
+                                                                    ),
+                                                                    Text(
+                                                                      "Gallery",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.white),
                                                                     ),
                                                                   ],
                                                                 ),
                                                               ),
-                                                              Container(
-                                                                margin: EdgeInsets
-                                                                    .only(
-                                                                        top:
-                                                                            20),
+                                                              MaterialButton(
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        179,
+                                                                        179,
+                                                                        189),
+                                                                onPressed:
+                                                                    () async {
+                                                                  XFile? xfile =
+                                                                      await ImagePicker().pickImage(
+                                                                          source:
+                                                                              ImageSource.camera);
+                                                                  file = File(
+                                                                      xfile!
+                                                                          .path);
+                                                                },
                                                                 child: Row(
                                                                   mainAxisAlignment:
                                                                       MainAxisAlignment
                                                                           .spaceAround,
                                                                   children: [
-                                                                    MaterialButton(
-                                                                      color: Color.fromARGB(
-                                                                          255,
-                                                                          179,
-                                                                          179,
-                                                                          189),
-                                                                      onPressed:
-                                                                          () async {
-                                                                        XFile?
-                                                                            xfile =
-                                                                            await ImagePicker().pickImage(source: ImageSource.gallery);
-                                                                        file = File(
-                                                                            xfile!.path);
-                                                                      },
-                                                                      child:
-                                                                          Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceBetween,
-                                                                        children: [
-                                                                          Icon(
-                                                                              Icons.photo_camera_front_outlined,
-                                                                              color: Colors.white),
-                                                                          SizedBox(
-                                                                            width:
-                                                                                10,
-                                                                          ),
-                                                                          Text(
-                                                                            "Gallery",
-                                                                            style:
-                                                                                TextStyle(color: Colors.white),
-                                                                          ),
-                                                                        ],
-                                                                      ),
+                                                                    Icon(
+                                                                        Icons
+                                                                            .camera_alt_outlined,
+                                                                        color: Colors
+                                                                            .white),
+                                                                    SizedBox(
+                                                                      width: 10,
                                                                     ),
-                                                                    MaterialButton(
-                                                                      color: Color.fromARGB(
-                                                                          255,
-                                                                          179,
-                                                                          179,
-                                                                          189),
-                                                                      onPressed:
-                                                                          () async {
-                                                                        XFile?
-                                                                            xfile =
-                                                                            await ImagePicker().pickImage(source: ImageSource.camera);
-                                                                        file = File(
-                                                                            xfile!.path);
-                                                                      },
-                                                                      child:
-                                                                          Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceAround,
-                                                                        children: [
-                                                                          Icon(
-                                                                              Icons.camera_alt_outlined,
-                                                                              color: Colors.white),
-                                                                          SizedBox(
-                                                                            width:
-                                                                                10,
-                                                                          ),
-                                                                          Text(
-                                                                            "Camera",
-                                                                            style:
-                                                                                TextStyle(color: Colors.white),
-                                                                          ),
-                                                                        ],
-                                                                      ),
+                                                                    Text(
+                                                                      "Camera",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.white),
                                                                     ),
                                                                   ],
                                                                 ),
                                                               ),
-                                                              Container(
-                                                                margin: EdgeInsets
-                                                                    .only(
-                                                                        top:
-                                                                            10),
-                                                                child:
-                                                                    MaterialButton(
-                                                                  color: color,
-                                                                  onPressed:
-                                                                      () {
-                                                                    uploadImageF();
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                    showSuccessSnackBarMSG();
-                                                                  },
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Icon(
-                                                                          Icons
-                                                                              .save,
-                                                                          color:
-                                                                              Colors.white),
-                                                                      SizedBox(
-                                                                        width:
-                                                                            10,
-                                                                      ),
-                                                                      Text(
-                                                                        "Save",
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.white),
-                                                                      ),
-                                                                    ],
-                                                                  ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  top: 10),
+                                                          child: MaterialButton(
+                                                            color: color,
+                                                            onPressed: () {
+                                                              uploadImageF();
+                                                              Navigator.pop(
+                                                                  context);
+                                                              showSuccessSnackBarMSG();
+                                                            },
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Icon(Icons.save,
+                                                                    color: Colors
+                                                                        .white),
+                                                                SizedBox(
+                                                                  width: 10,
                                                                 ),
-                                                              ),
-                                                              Container(
-                                                                margin: EdgeInsets
-                                                                    .only(
-                                                                        top:
-                                                                            10),
-                                                                child:
-                                                                    MaterialButton(
-                                                                  color: Colors
-                                                                      .red,
-                                                                  onPressed:
-                                                                      () {
-                                                                    showDialog(
-                                                                      context:
-                                                                          context,
-                                                                      builder:
-                                                                          (context) {
-                                                                        return AlertDialog(
-                                                                          title:
-                                                                              Text("Are you sure ?"),
-                                                                          content:
-                                                                              Column(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.min,
-                                                                            children: [
-                                                                              Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                                Text(
+                                                                  "Save",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  top: 10),
+                                                          child: MaterialButton(
+                                                            color: Colors.red,
+                                                            onPressed: () {
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
+                                                                  return AlertDialog(
+                                                                    title: Text(
+                                                                        "Are you sure ?"),
+                                                                    content:
+                                                                        Column(
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .min,
+                                                                      children: [
+                                                                        Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceAround,
+                                                                          children: [
+                                                                            MaterialButton(
+                                                                              color: color,
+                                                                              onPressed: () {
+                                                                                deleteImage();
+                                                                                Navigator.popUntil(context, (route) => route.isFirst);
+                                                                              },
+                                                                              child: Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                                 children: [
-                                                                                  MaterialButton(
-                                                                                    color: color,
-                                                                                    onPressed: () {
-                                                                                      deleteImage();
-                                                                                      Navigator.popUntil(context, (route) => route.isFirst);
-                                                                                    },
-                                                                                    child: Row(
-                                                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                      children: [
-                                                                                        Icon(Icons.check, color: Colors.white),
-                                                                                        SizedBox(
-                                                                                          width: 10,
-                                                                                        ),
-                                                                                        Text(
-                                                                                          "Yes",
-                                                                                          style: TextStyle(color: Colors.white),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
+                                                                                  Icon(Icons.check, color: Colors.white),
+                                                                                  SizedBox(
+                                                                                    width: 10,
                                                                                   ),
-                                                                                  MaterialButton(
-                                                                                    color: Colors.red,
-                                                                                    onPressed: () {
-                                                                                      Navigator.pop(context);
-                                                                                    },
-                                                                                    child: Row(
-                                                                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                                                      children: [
-                                                                                        Icon(Icons.close, color: Colors.white),
-                                                                                        SizedBox(
-                                                                                          width: 10,
-                                                                                        ),
-                                                                                        Text(
-                                                                                          "No",
-                                                                                          style: TextStyle(color: Colors.white),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
+                                                                                  Text(
+                                                                                    "Yes",
+                                                                                    style: TextStyle(color: Colors.white),
                                                                                   ),
                                                                                 ],
                                                                               ),
-                                                                            ],
-                                                                          ),
-                                                                        );
-                                                                      },
-                                                                    );
-                                                                  },
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Icon(
-                                                                          Icons
-                                                                              .highlight_remove,
-                                                                          color:
-                                                                              Colors.white),
-                                                                      SizedBox(
-                                                                        width:
-                                                                            10,
-                                                                      ),
-                                                                      Text(
-                                                                        "Delete",
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.white),
-                                                                      ),
-                                                                    ],
-                                                                  ),
+                                                                            ),
+                                                                            MaterialButton(
+                                                                              color: Colors.red,
+                                                                              onPressed: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                                                children: [
+                                                                                  Icon(Icons.close, color: Colors.white),
+                                                                                  SizedBox(
+                                                                                    width: 10,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    "No",
+                                                                                    style: TextStyle(color: Colors.white),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              );
+                                                            },
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Icon(
+                                                                    Icons
+                                                                        .highlight_remove,
+                                                                    color: Colors
+                                                                        .white),
+                                                                SizedBox(
+                                                                  width: 10,
                                                                 ),
-                                                              )
-                                                            ],
+                                                                Text(
+                                                                  "Delete",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ));
-                                          });
-                                    },
-                                  ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ));
+                                        });
+                                  },
                                 ),
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(child: Container()),
-                              Expanded(
-                                flex: 3,
-                                child: Container(
-                                  child: Text(
-                                      "${lis?['first_name']} ${lis?['last_name']}",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold)),
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  child: IconButton(
-                                    splashColor: Colors.white,
-                                    alignment: Alignment.centerLeft,
-                                    color: Colors.white,
-                                    iconSize: 20,
-                                    icon: Icon(Icons.edit),
-                                    onPressed: () {
-                                      editName();
-                                    },
-                                  ),
-                                ),
-                              )
-                            ],
-                          )
-                        ]),
-                      ],
-                    ),
-                  ),
-                  /*************************************** End header => User image and name *************************** */
-
-                  /*************************************** Start Personal Information ********************************** */
-                  Form(
-                    key: formStateForPersonal,
-                    child: Card(
-                      child: Column(
-                        children: [
-                          listTileInfo('Personal Information', 0),
-                          Container(
-                            margin: EdgeInsets.only(
-                                left: 15, bottom: 15, right: 15),
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  initialValue: "${lis?['email']}",
-                                  enabled: false,
-                                  decoration: InputDecoration(
-                                    suffixText: "Fixed",
-                                    labelText: "Email",
-                                    labelStyle: TextStyle(color: color),
-                                    icon: Icon(Icons.email, color: color),
-                                  ),
-                                ),
-                                Divider(
-                                  color: Colors.white,
-                                ),
-                                TextFormField(
-                                  autovalidateMode: AutovalidateMode.always,
-                                  validator: (pass) {
-                                    if (pass!.length < 8) {
-                                      return "It must be 8 or more characters";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  onSaved: (text) {
-                                    pass = text;
-                                  },
-                                  onChanged: (confirm) {
-                                    confirmValue = confirm;
-                                  },
-                                  initialValue: "${lis?['password']}",
-                                  enabled: notEnable,
-                                  obscureText: hidePass,
-                                  decoration: InputDecoration(
-                                    labelText: "Password",
-                                    labelStyle: TextStyle(color: color),
-                                    suffixIcon: Visibility(
-                                      visible: showSaveInfo,
-                                      child: IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              if (hidePass) {
-                                                hidePass = false;
-                                              } else {
-                                                hidePass = true;
-                                              }
-                                            });
-                                          },
-                                          icon: Icon(
-                                            hidePass
-                                                ? Icons.visibility_sharp
-                                                : Icons.visibility_off_sharp,
-                                            color: color,
-                                          )),
-                                    ),
-                                    icon: Icon(Icons.password, color: color),
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: showSaveInfo,
-                                  child: Column(
-                                    children: [
-                                      Divider(
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(child: Container()),
+                            Expanded(
+                              flex: 3,
+                              child: Container(
+                                child: Text(
+                                    "${lis?['first_name']} ${lis?['last_name']}",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
                                         color: Colors.white,
-                                      ),
-                                      TextFormField(
-                                        autovalidateMode:
-                                            AutovalidateMode.always,
-                                        validator: (text) {
-                                          if (confirmValue == null) {
-                                            return null;
-                                          } else if (text != confirmValue) {
-                                            return "Passwords are not the same";
-                                          } else {
-                                            return null;
-                                          }
-                                        },
-                                        enabled: notEnable,
-                                        obscureText: hidePass2,
-                                        decoration: InputDecoration(
-                                          suffixIcon: IconButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  if (hidePass2) {
-                                                    hidePass2 = false;
-                                                  } else {
-                                                    hidePass2 = true;
-                                                  }
-                                                });
-                                              },
-                                              icon: Icon(
-                                                hidePass2
-                                                    ? Icons.visibility_sharp
-                                                    : Icons
-                                                        .visibility_off_sharp,
-                                                color: Color.fromARGB(
-                                                    255, 37, 179, 136),
-                                              )),
-                                          labelText: "Confirm Password",
-                                          labelStyle: TextStyle(
-                                              color: Color.fromARGB(
-                                                  255, 37, 179, 136)),
-                                          icon: Icon(Icons.password,
-                                              color: Color.fromARGB(
-                                                  255, 37, 179, 136)),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Divider(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                child: IconButton(
+                                  splashColor: Colors.white,
+                                  alignment: Alignment.centerLeft,
                                   color: Colors.white,
-                                ),
-                                TextFormField(
-                                  autovalidateMode: AutovalidateMode.always,
-                                  validator: (phone) {
-                                    if (phone!.length < 9 ||
-                                        phone.length > 12) {
-                                      return "The phone number must be 10 digits";
-                                    } else {
-                                      return null;
-                                    }
+                                  iconSize: 20,
+                                  icon: Icon(Icons.edit),
+                                  onPressed: () {
+                                    editName();
                                   },
-                                  onSaved: (text) {
-                                    if (text!.startsWith("0")) {
-                                      text = text.substring(1);
-                                      phone = text;
-                                    } else {
-                                      phone = text;
-                                    }
-                                  },
-                                  initialValue: "${lis?['phone']}",
-                                  keyboardType: TextInputType.number,
-                                  enabled: notEnable,
-                                  decoration: InputDecoration(
-                                    labelText: "Phone Number",
-                                    labelStyle: TextStyle(color: color),
-                                    prefix: Text(
-                                      "+970 ",
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                    icon: Icon(Icons.phone, color: color),
-                                  ),
                                 ),
-                                Divider(
-                                  color: Colors.white,
+                              ),
+                            )
+                          ],
+                        )
+                      ]),
+                    ],
+                  ),
+                ),
+                /*************************************** End header => User image and name *************************** */
+
+                /*************************************** Start Personal Information ********************************** */
+                Form(
+                  key: formStateForPersonal,
+                  child: Card(
+                    child: Column(
+                      children: [
+                        listTileInfo('Personal Information', 0),
+                        Container(
+                          margin:
+                              EdgeInsets.only(left: 15, bottom: 15, right: 15),
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                initialValue: "${lis?['email']}",
+                                enabled: false,
+                                decoration: InputDecoration(
+                                  suffixText: "Fixed",
+                                  labelText: "Email",
+                                  labelStyle: TextStyle(color: color),
+                                  icon: Icon(Icons.email, color: color),
                                 ),
-                                TextFormField(
-                                  autovalidateMode: AutovalidateMode.always,
-                                  validator: (city) {
-                                    if (city!.length > 20 || city.length < 9) {
-                                      return "Invalid input";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  onSaved: (text) {
-                                    personID = text;
-                                  },
-                                  initialValue: "${lis2?['deliveryID']}",
-                                  enabled: notEnable,
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                    labelText: "Person ID",
-                                    labelStyle: TextStyle(color: color),
-                                    icon: Icon(Icons.map, color: color),
-                                  ),
-                                ),
-                                Divider(
-                                  color: Colors.white,
-                                ),
-                                TextFormField(
-                                  autovalidateMode: AutovalidateMode.always,
-                                  validator: (city) {
-                                    if (city!.length > 20 || city.length < 3) {
-                                      return "Invalid input";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  onSaved: (text) {
-                                    city = text;
-                                  },
-                                  initialValue: "${lis2?['city']}",
-                                  enabled: notEnable,
-                                  decoration: InputDecoration(
-                                    labelText: "City",
-                                    labelStyle: TextStyle(color: color),
-                                    icon: Icon(Icons.map, color: color),
-                                  ),
-                                ),
-                                Divider(
-                                  color: Colors.white,
-                                ),
-                                TextFormField(
-                                  autovalidateMode: AutovalidateMode.always,
-                                  validator: (city) {
-                                    if (city!.length > 20 || city.length < 3) {
-                                      return "Invalid input";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  onSaved: (text) {
-                                    carModel = text;
-                                  },
-                                  initialValue: "${lis2?['carModel']}",
-                                  enabled: notEnable,
-                                  decoration: InputDecoration(
-                                    labelText: "Car Model",
-                                    labelStyle: TextStyle(color: color),
-                                    icon: Icon(Icons.car_crash, color: color),
-                                  ),
-                                ),
-                                Divider(
-                                  color: Colors.white,
-                                ),
-                                TextFormField(
-                                  autovalidateMode: AutovalidateMode.always,
-                                  validator: (city) {
-                                    if (city!.length > 20 || city.length < 7) {
-                                      return "Invalid input";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  onSaved: (text) {
-                                    carID = text;
-                                  },
-                                  initialValue: "${lis2?['carNumber']}",
-                                  enabled: notEnable,
-                                  decoration: InputDecoration(
-                                    labelText: "Car Number",
-                                    labelStyle: TextStyle(color: color),
-                                    icon: Icon(Icons.car_rental, color: color),
-                                  ),
-                                ),
-                                Divider(
-                                  color: Colors.white,
-                                ),
-                                Visibility(
-                                  visible: showSaveInfo,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: MaterialButton(
-                                          color: color,
-                                          onPressed: () {
-                                            if (EditPersonalData()) {
-                                              setState(() {
-                                                notEnable = false;
-                                                showSaveInfo = false;
-                                                hidePass = true;
-                                                hidePass2 = true;
-                                                confirmValue = null;
-                                              });
-                                              showSuccessSnackBarMSG(); // a Function in Functions Section
+                              ),
+                              Divider(
+                                color: Colors.white,
+                              ),
+                              TextFormField(
+                                autovalidateMode: AutovalidateMode.always,
+                                validator: (pass) {
+                                  if (pass!.length < 8) {
+                                    return "It must be 8 or more characters";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                onSaved: (text) {
+                                  pass = text;
+                                },
+                                onChanged: (confirm) {
+                                  confirmValue = confirm;
+                                },
+                                initialValue: "${lis?['password']}",
+                                enabled: notEnable,
+                                obscureText: hidePass,
+                                decoration: InputDecoration(
+                                  labelText: "Password",
+                                  labelStyle: TextStyle(color: color),
+                                  suffixIcon: Visibility(
+                                    visible: showSaveInfo,
+                                    child: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            if (hidePass) {
+                                              hidePass = false;
                                             } else {
-                                              showFaildSnackBarMSG(
-                                                  "Not Saved"); // a Function in Functions Section
+                                              hidePass = true;
                                             }
-                                          },
-                                          child: Text(
-                                            "Save",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
+                                          });
+                                        },
+                                        icon: Icon(
+                                          hidePass
+                                              ? Icons.visibility_sharp
+                                              : Icons.visibility_off_sharp,
+                                          color: color,
+                                        )),
+                                  ),
+                                  icon: Icon(Icons.password, color: color),
+                                ),
+                              ),
+                              Visibility(
+                                visible: showSaveInfo,
+                                child: Column(
+                                  children: [
+                                    Divider(
+                                      color: Colors.white,
+                                    ),
+                                    TextFormField(
+                                      autovalidateMode: AutovalidateMode.always,
+                                      validator: (text) {
+                                        if (confirmValue == null) {
+                                          return null;
+                                        } else if (text != confirmValue) {
+                                          return "Passwords are not the same";
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      enabled: notEnable,
+                                      obscureText: hidePass2,
+                                      decoration: InputDecoration(
+                                        suffixIcon: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                if (hidePass2) {
+                                                  hidePass2 = false;
+                                                } else {
+                                                  hidePass2 = true;
+                                                }
+                                              });
+                                            },
+                                            icon: Icon(
+                                              hidePass2
+                                                  ? Icons.visibility_sharp
+                                                  : Icons.visibility_off_sharp,
+                                              color: Color.fromARGB(
+                                                  255, 37, 179, 136),
+                                            )),
+                                        labelText: "Confirm Password",
+                                        labelStyle: TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 37, 179, 136)),
+                                        icon: Icon(Icons.password,
+                                            color: Color.fromARGB(
+                                                255, 37, 179, 136)),
                                       ),
-                                      Expanded(
-                                        child: TextButton(
-                                          child: Text(
-                                            "Cancel",
-                                            style: TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 37, 179, 136)),
-                                          ),
-                                          onPressed: () {
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                color: Colors.white,
+                              ),
+                              TextFormField(
+                                autovalidateMode: AutovalidateMode.always,
+                                validator: (phone) {
+                                  if (phone!.length < 9 || phone.length > 12) {
+                                    return "The phone number must be 10 digits";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                onSaved: (text) {
+                                  if (text!.startsWith("0")) {
+                                    text = text.substring(1);
+                                    phone = text;
+                                  } else {
+                                    phone = text;
+                                  }
+                                },
+                                initialValue: "${lis?['phone']}",
+                                keyboardType: TextInputType.number,
+                                enabled: notEnable,
+                                decoration: InputDecoration(
+                                  labelText: "Phone Number",
+                                  labelStyle: TextStyle(color: color),
+                                  prefix: Text(
+                                    "+970 ",
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                  icon: Icon(Icons.phone, color: color),
+                                ),
+                              ),
+                              Divider(
+                                color: Colors.white,
+                              ),
+                              TextFormField(
+                                autovalidateMode: AutovalidateMode.always,
+                                validator: (city) {
+                                  if (city!.length > 20 || city.length < 9) {
+                                    return "Invalid input";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                onSaved: (text) {
+                                  personID = text;
+                                },
+                                initialValue: "${lis2?['deliveryID']}",
+                                enabled: notEnable,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  labelText: "Person ID",
+                                  labelStyle: TextStyle(color: color),
+                                  icon: Icon(Icons.map, color: color),
+                                ),
+                              ),
+                              Divider(
+                                color: Colors.white,
+                              ),
+                              TextFormField(
+                                autovalidateMode: AutovalidateMode.always,
+                                validator: (city) {
+                                  if (city!.length > 20 || city.length < 3) {
+                                    return "Invalid input";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                onSaved: (text) {
+                                  city = text;
+                                },
+                                initialValue: "${lis2?['city']}",
+                                enabled: notEnable,
+                                decoration: InputDecoration(
+                                  labelText: "City",
+                                  labelStyle: TextStyle(color: color),
+                                  icon: Icon(Icons.map, color: color),
+                                ),
+                              ),
+                              Divider(
+                                color: Colors.white,
+                              ),
+                              TextFormField(
+                                autovalidateMode: AutovalidateMode.always,
+                                validator: (city) {
+                                  if (city!.length > 20 || city.length < 3) {
+                                    return "Invalid input";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                onSaved: (text) {
+                                  carModel = text;
+                                },
+                                initialValue: "${lis2?['carModel']}",
+                                enabled: notEnable,
+                                decoration: InputDecoration(
+                                  labelText: "Car Model",
+                                  labelStyle: TextStyle(color: color),
+                                  icon: Icon(Icons.car_crash, color: color),
+                                ),
+                              ),
+                              Divider(
+                                color: Colors.white,
+                              ),
+                              TextFormField(
+                                autovalidateMode: AutovalidateMode.always,
+                                validator: (city) {
+                                  if (city!.length > 20 || city.length < 7) {
+                                    return "Invalid input";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                onSaved: (text) {
+                                  carID = text;
+                                },
+                                initialValue: "${lis2?['carNumber']}",
+                                enabled: notEnable,
+                                decoration: InputDecoration(
+                                  labelText: "Car Number",
+                                  labelStyle: TextStyle(color: color),
+                                  icon: Icon(Icons.car_rental, color: color),
+                                ),
+                              ),
+                              Divider(
+                                color: Colors.white,
+                              ),
+                              Visibility(
+                                visible: showSaveInfo,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: MaterialButton(
+                                        color: color,
+                                        onPressed: () {
+                                          if (EditPersonalData()) {
                                             setState(() {
                                               notEnable = false;
                                               showSaveInfo = false;
@@ -999,292 +860,308 @@ class _deliveryProfileState extends State<deliveryProfile> {
                                               hidePass2 = true;
                                               confirmValue = null;
                                             });
-                                          },
+                                            showSuccessSnackBarMSG(); // a Function in Functions Section
+                                          } else {
+                                            showFaildSnackBarMSG(
+                                                "Not Saved"); // a Function in Functions Section
+                                          }
+                                        },
+                                        child: Text(
+                                          "Save",
+                                          style: TextStyle(color: Colors.white),
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: TextButton(
+                                        child: Text(
+                                          "Cancel",
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 37, 179, 136)),
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            notEnable = false;
+                                            showSaveInfo = false;
+                                            hidePass = true;
+                                            hidePass2 = true;
+                                            confirmValue = null;
+                                          });
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  /*************************************** End Personal Information ********************************** */
+                ),
+                /*************************************** End Personal Information ********************************** */
 
-                  /*************************************** Satrt Visa Card Information ********************************** */
-                  Card(
-                    child: Column(children: [
-                      listTileInfo('Credit Card Information', 2),
-                      Container(
-                        margin:
-                            EdgeInsets.only(left: 10, right: 10, bottom: 15),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: Colors.blue[700],
-                            borderRadius: BorderRadius.circular(15)),
-                        // ignore: prefer_const_literals_to_create_immutables
-                        child: Column(children: [
-                          ListTile(
-                            textColor: Colors.white,
-                            leading: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage("images/master.jpg")),
-                              ),
-                              height: 40,
-                              width: 70,
+                /*************************************** Satrt Visa Card Information ********************************** */
+                Card(
+                  child: Column(children: [
+                    listTileInfo('Credit Card Information', 2),
+                    Container(
+                      margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: Colors.blue[700],
+                          borderRadius: BorderRadius.circular(15)),
+                      // ignore: prefer_const_literals_to_create_immutables
+                      child: Column(children: [
+                        ListTile(
+                          textColor: Colors.white,
+                          leading: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage("images/master.jpg")),
                             ),
-                            trailing: Transform.rotate(
-                              angle: 90 * math.pi / 180,
-                              child: Icon(
-                                Icons.wifi,
-                                size: 35,
-                                color: Colors.white,
-                              ),
+                            height: 40,
+                            width: 70,
+                          ),
+                          trailing: Transform.rotate(
+                            angle: 90 * math.pi / 180,
+                            child: Icon(
+                              Icons.wifi,
+                              size: 35,
+                              color: Colors.white,
                             ),
                           ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            width: double.infinity,
-                            margin: EdgeInsets.all(15),
-                            child: Column(
-                              children: [
-                                cardInfo('name', 1, 18),
-                                cardInfo('cardNumber', 0, 20),
-                                Container(
-                                  margin: EdgeInsets.only(bottom: 15),
-                                  width: double.infinity,
-                                  child: Row(children: [
-                                    Container(
-                                      margin: EdgeInsets.only(right: 10),
-                                      child: Text(
-                                        "Exp. Date",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 14),
-                                      ),
-                                    ),
-                                    Text(
-                                      lis?['visaDate'] == ""
-                                          ? "99/99"
-                                          : "${lis?['visaDate']}",
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          width: double.infinity,
+                          margin: EdgeInsets.all(15),
+                          child: Column(
+                            children: [
+                              cardInfo('name', 1, 18),
+                              cardInfo('cardNumber', 0, 20),
+                              Container(
+                                margin: EdgeInsets.only(bottom: 15),
+                                width: double.infinity,
+                                child: Row(children: [
+                                  Container(
+                                    margin: EdgeInsets.only(right: 10),
+                                    child: Text(
+                                      "Exp. Date",
                                       style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
+                                          color: Colors.white, fontSize: 14),
                                     ),
-                                    Spacer(),
-                                    Container(
-                                      margin: EdgeInsets.only(right: 10),
-                                      child: Text(
-                                        "cvv",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 14),
-                                      ),
-                                    ),
-                                    Text(
-                                      lis?['CVV'] == ""
-                                          ? "999"
-                                          : "${lis?['CVV']}",
+                                  ),
+                                  Text(
+                                    lis?['visaDate'] == ""
+                                        ? "99/99"
+                                        : "${lis?['visaDate']}",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Spacer(),
+                                  Container(
+                                    margin: EdgeInsets.only(right: 10),
+                                    child: Text(
+                                      "cvv",
                                       style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
+                                          color: Colors.white, fontSize: 14),
                                     ),
-                                  ]),
-                                )
-                              ],
-                            ),
-                          )
-                        ]),
-                      ),
-                      Visibility(
-                          visible: showCardEdit, // showCardEdit
-                          child: Form(
-                              key: formStateForCardInfo,
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                    left: 15, bottom: 15, right: 15),
-                                child: Column(children: [
-                                  TextFormField(
-                                    validator: (value) {
-                                      if (value!.length < 5) {
-                                        return "Invalid input";
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                    onSaved: (text) {
-                                      cardName = text;
-                                    },
-                                    initialValue: lis?['visaName'] == ""
-                                        ? "Visa Name"
-                                        : "${lis?['visaName']}",
-                                    keyboardType: TextInputType.text,
-                                    decoration: InputDecoration(
-                                        icon: Icon(
-                                          Icons.person,
-                                          color: color,
-                                        ),
-                                        labelText: "Person Name",
-                                        labelStyle: TextStyle(
-                                            color: Color.fromARGB(
-                                                255, 37, 179, 136))),
                                   ),
-                                  TextFormField(
-                                    initialValue: lis?['visaNumber'] == ""
-                                        ? "9999999999999999"
-                                        : "${lis?['visaNumber']}",
-                                    validator: (value) {
-                                      if (value!.isEmpty) {
-                                        return null;
-                                      } else if (value.length < 16) {
-                                        return "The card number must be just 16";
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                    onSaved: (text) {
-                                      cardNum = text;
-                                    },
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(
-                                        icon: Icon(
-                                          Icons.credit_card_outlined,
-                                          color: color,
-                                        ),
-                                        labelText: "Card Number",
-                                        labelStyle: TextStyle(
-                                            color: Color.fromARGB(
-                                                255, 37, 179, 136))),
-                                    maxLength: 16,
+                                  Text(
+                                    lis?['CVV'] == ""
+                                        ? "999"
+                                        : "${lis?['CVV']}",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextFormField(
-                                          validator: (value) {
-                                            if (value!.length < 4) {
-                                              return "Wrong Exp. Date";
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                          onSaved: (text) {
-                                            cardDate = text;
-                                          },
-                                          initialValue: lis?['visaDate'] == ""
-                                              ? "99/99"
-                                              : "${lis?['visaDate']}",
-                                          keyboardType: TextInputType.datetime,
-                                          decoration: InputDecoration(
-                                              icon: Icon(
-                                                Icons.date_range,
-                                                color: Color.fromARGB(
-                                                    255, 37, 179, 136),
-                                              ),
-                                              labelText: "Exp. Date",
-                                              labelStyle: TextStyle(
-                                                  color: Color.fromARGB(
-                                                      255, 37, 179, 136))),
-                                          maxLength: 5,
-                                        ),
+                                ]),
+                              )
+                            ],
+                          ),
+                        )
+                      ]),
+                    ),
+                    Visibility(
+                        visible: showCardEdit, // showCardEdit
+                        child: Form(
+                            key: formStateForCardInfo,
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                  left: 15, bottom: 15, right: 15),
+                              child: Column(children: [
+                                TextFormField(
+                                  validator: (value) {
+                                    if (value!.length < 5) {
+                                      return "Invalid input";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  onSaved: (text) {
+                                    cardName = text;
+                                  },
+                                  initialValue: lis?['visaName'] == ""
+                                      ? "Visa Name"
+                                      : "${lis?['visaName']}",
+                                  keyboardType: TextInputType.text,
+                                  decoration: InputDecoration(
+                                      icon: Icon(
+                                        Icons.person,
+                                        color: color,
                                       ),
-                                      Expanded(
-                                        child: TextFormField(
-                                          validator: (value) {
-                                            if (value!.length < 3) {
-                                              return "must be 3 numbers";
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                          onSaved: (text) {
-                                            cardCVV = int.parse(text!);
-                                          },
-                                          initialValue: lis?['CVV'] == ""
-                                              ? "999"
-                                              : lis?['CVV'].toString(),
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                              icon: Icon(
-                                                Icons.password,
-                                                color: Color.fromARGB(
-                                                    255, 37, 179, 136),
-                                              ),
-                                              labelText: "CVV",
-                                              labelStyle: TextStyle(
-                                                  color: Color.fromARGB(
-                                                      255, 37, 179, 136))),
-                                          maxLength: 3,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Divider(
-                                    color: Colors.white,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: MaterialButton(
-                                          color: color,
-                                          onPressed: () {
-                                            if (EditCardData()) {
-                                              setState(() {
-                                                showCardEdit = false;
-                                              });
-                                              showSuccessSnackBarMSG();
-                                            } else {
-                                              showFaildSnackBarMSG("Not Saved");
-                                            }
-                                          },
-                                          child: Text(
-                                            "Save",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
+                                      labelText: "Person Name",
+                                      labelStyle: TextStyle(
+                                          color: Color.fromARGB(
+                                              255, 37, 179, 136))),
+                                ),
+                                TextFormField(
+                                  initialValue: lis?['visaNumber'] == ""
+                                      ? "9999999999999999"
+                                      : "${lis?['visaNumber']}",
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return null;
+                                    } else if (value.length < 16) {
+                                      return "The card number must be just 16";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  onSaved: (text) {
+                                    cardNum = text;
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                      icon: Icon(
+                                        Icons.credit_card_outlined,
+                                        color: color,
                                       ),
-                                      Expanded(
-                                        child: TextButton(
-                                          child: Text(
-                                            "Cancel",
-                                            style: TextStyle(
+                                      labelText: "Card Number",
+                                      labelStyle: TextStyle(
+                                          color: Color.fromARGB(
+                                              255, 37, 179, 136))),
+                                  maxLength: 16,
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextFormField(
+                                        validator: (value) {
+                                          if (value!.length < 4) {
+                                            return "Wrong Exp. Date";
+                                          } else {
+                                            return null;
+                                          }
+                                        },
+                                        onSaved: (text) {
+                                          cardDate = text;
+                                        },
+                                        initialValue: lis?['visaDate'] == ""
+                                            ? "99/99"
+                                            : "${lis?['visaDate']}",
+                                        keyboardType: TextInputType.datetime,
+                                        decoration: InputDecoration(
+                                            icon: Icon(
+                                              Icons.date_range,
+                                              color: Color.fromARGB(
+                                                  255, 37, 179, 136),
+                                            ),
+                                            labelText: "Exp. Date",
+                                            labelStyle: TextStyle(
                                                 color: Color.fromARGB(
-                                                    255, 37, 179, 136)),
-                                          ),
-                                          onPressed: () {
+                                                    255, 37, 179, 136))),
+                                        maxLength: 5,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: TextFormField(
+                                        validator: (value) {
+                                          if (value!.length < 3) {
+                                            return "must be 3 numbers";
+                                          } else {
+                                            return null;
+                                          }
+                                        },
+                                        onSaved: (text) {
+                                          cardCVV = int.parse(text!);
+                                        },
+                                        initialValue: lis?['CVV'] == ""
+                                            ? "999"
+                                            : lis?['CVV'].toString(),
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                            icon: Icon(
+                                              Icons.password,
+                                              color: Color.fromARGB(
+                                                  255, 37, 179, 136),
+                                            ),
+                                            labelText: "CVV",
+                                            labelStyle: TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 37, 179, 136))),
+                                        maxLength: 3,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Divider(
+                                  color: Colors.white,
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: MaterialButton(
+                                        color: color,
+                                        onPressed: () {
+                                          if (EditCardData()) {
                                             setState(() {
                                               showCardEdit = false;
                                             });
-                                          },
+                                            showSuccessSnackBarMSG();
+                                          } else {
+                                            showFaildSnackBarMSG("Not Saved");
+                                          }
+                                        },
+                                        child: Text(
+                                          "Save",
+                                          style: TextStyle(color: Colors.white),
                                         ),
-                                      )
-                                    ],
-                                  )
-                                ]),
-                              )))
-                    ]),
-                  ),
-                  /*************************************** End Visa Card Information ********************************** */
-                ])),
-    );
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: TextButton(
+                                        child: Text(
+                                          "Cancel",
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 37, 179, 136)),
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            showCardEdit = false;
+                                          });
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                )
+                              ]),
+                            )))
+                  ]),
+                ),
+                /*************************************** End Visa Card Information ********************************** */
+              ]));
   }
 
 /************************************************ Start Functions Section *********************************** */
-  ListTile listTileDesgin(String name, IconData ic) {
-    return ListTile(
-      title: Text(name),
-      leading: Icon(
-        ic,
-        color: Color.fromARGB(255, 37, 179, 136),
-      ),
-    );
-  }
 
   Wrap wrapFavoriteContent() {
     return Wrap(
