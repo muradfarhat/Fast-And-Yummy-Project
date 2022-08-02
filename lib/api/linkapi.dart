@@ -57,3 +57,5 @@ const String haveStore = "$linkServer/store/haveStore.php";
 const String storeInfo = "$linkServer/store/storeInfo.php";
 const String storeImageLink = "$linkServer/store/storeImage.php";
 const String storeNameLink = "$linkServer/store/storeName.php";
+const String bringProdectLink = "$linkServer/store/bringProdect.php";
+const String addproductLink = "$linkServer/store/addproduct.php";

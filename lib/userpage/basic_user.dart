@@ -3,6 +3,7 @@
 import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/main.dart';
 import 'package:fast_and_yummy/myStore.dart';
+import 'package:fast_and_yummy/stores.dart';
 import 'package:fast_and_yummy/userpage/AboutPgae.dart';
 
 import 'package:fast_and_yummy/userpage/pagecontent.dart';
@@ -115,6 +116,7 @@ class _UserPageState extends State<UserPage> {
         /********************************* End Appbar ******************************* */
         /******************************* Start Drawer ******************************* */
         drawer: Drawer(
+          width: 280,
           child: loading
               ? SizedBox(
                   height: size.height,
@@ -146,17 +148,26 @@ class _UserPageState extends State<UserPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => MyStore()),
-                          );
+                          ).then((value) async {
+                            await getData();
+                          });
+                          ;
                         },
                         child: listTileDesgin(
                           "My Store",
                           Icons.store,
                         )),
                     InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Stores()));
+                        },
                         child: listTileDesgin(
-                      "Stores",
-                      Icons.store,
-                    )),
+                          "Stores",
+                          Icons.store,
+                        )),
                     InkWell(
                         onTap: () {
                           Navigator.push(

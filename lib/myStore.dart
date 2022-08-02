@@ -30,11 +30,12 @@ class _MyStoreState extends State<MyStore> {
       loading = true;
     });
     var resp = await api.postReq(storeInfo, {"id": sharedPref.getString("id")});
-
+    setState(() {
+      loading = false;
+    });
     if (resp['status'] == "suc") {
       setState(() {
         lis2 = resp['data'];
-        loading = false;
       });
     } else {}
   }
@@ -68,7 +69,6 @@ class _MyStoreState extends State<MyStore> {
   @override
   void initState() {
     getData();
-
     super.initState();
   }
 
@@ -324,7 +324,7 @@ class _MyStoreState extends State<MyStore> {
                               ],
                             ),
                           ),
-                          switchB ? InfoMyStore() : OrderMyStore(),
+                          switchB ? InfoMyStore(lis2) : OrderMyStore(),
                         ],
                       ),
       ),
@@ -334,8 +334,10 @@ class _MyStoreState extends State<MyStore> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AddPage()),
-            );
+              MaterialPageRoute(builder: (context) => AddPage(lis2?['storeName'])),
+            ).then((value) => () {
+                  getStoreData();
+                });
           },
           backgroundColor: color,
           child: Icon(

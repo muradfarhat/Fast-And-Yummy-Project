@@ -1,11 +1,15 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, list_remove_unrelated_type
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, list_remove_unrelated_type, must_be_immutable
 
+import 'package:fast_and_yummy/api/api.dart';
 import 'package:flutter/material.dart';
 
 import '../ProductInsideStore.dart';
+import '../api/linkapi.dart';
+import '../main.dart';
 
 class InfoMyStore extends StatefulWidget {
-  const InfoMyStore({Key? key}) : super(key: key);
+  dynamic lis;
+  InfoMyStore(this.lis, {Key? key}) : super(key: key);
 
   @override
   State<InfoMyStore> createState() => _InfoMyStoreState();
@@ -46,7 +50,54 @@ class _InfoMyStoreState extends State<InfoMyStore> {
     {"image": "images/drinks/sp.png", "name": "Sprite"},
     {"image": "images/drinks/fan.jpg", "name": "Fanta"},
   ];
-  List<Map> choice = [];
+
+  @override
+  void initState() {
+    getCate();
+    super.initState();
+  }
+
+  dynamic lis2;
+  dynamic productList;
+  Api api = Api();
+  dynamic choice = [];
+  bool loading = false;
+  bool find = false;
+  Color color = Color.fromARGB(255, 37, 179, 136);
+  getCate() async {
+    setState(() {
+      loading = true;
+    });
+    var resp = await api.postReq(bringAllCate, {});
+    setState(() {
+      loading = false;
+    });
+    if (resp['status'] == "suc") {
+      setState(() {
+        lis2 = resp['data'];
+      });
+    } else {}
+  }
+
+  bringProduct(String tabelName) async {
+    var resp = await api.postReq(bringProdectLink, {
+      "tableName": tabelName,
+      "userID": sharedPref.getString("id"),
+    });
+    if (resp['status'] == "suc") {
+      setState(() {
+        find = false;
+        productList = resp['data'];
+        choice = productList;
+      });
+    } else {
+      print(resp['status']);
+      setState(() {
+        find = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     String toSend = "";
@@ -59,167 +110,198 @@ class _InfoMyStoreState extends State<InfoMyStore> {
       padding: EdgeInsets.all(20),
       color: Color.fromARGB(255, 247, 247, 247),
       width: size.width,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 4,
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color.fromARGB(255, 218, 218, 218),
-                        blurRadius: 5,
-                        spreadRadius: 2,
-                      )
-                    ],
-                  ),
-                  height: 150,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "My Orders : $myorder",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "Order for delivery : $orderFdeliver",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "Ordar in wait : $orderInWait",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
+      child: loading
+          ? SizedBox(
+              height: size.height,
+              width: size.width,
+              child: Center(
+                child: CircularProgressIndicator(color: color),
               ),
-              SizedBox(
-                width: 20,
-              ),
-              Expanded(
-                flex: 3,
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color.fromARGB(255, 218, 218, 218),
-                        blurRadius: 5,
-                        spreadRadius: 2,
-                      )
-                    ],
-                  ),
-                  height: 150,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        "Total Earings ",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "$earings ₪",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Divider(
-            color: Colors.black,
-            height: 70,
-          ),
-          Container(
-            margin: EdgeInsets.only(bottom: 10),
-            alignment: Alignment.bottomLeft,
-            child: Text(
-              "Categories",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ),
-          SizedBox(
-            height: 130,
-            width: double.infinity,
-            child: ListView.builder(
-                itemCount: categories.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, i) {
-                  return MaterialButton(
-                    padding: EdgeInsets.all(8),
-                    onPressed: () {
-                      setState(() {
-                        toSend = categories[i]['name'];
-                        switch (toSend) {
-                          case "Soft drinks":
-                            choice = drinks;
-                            break;
-                          case "French fries":
-                            choice = fries;
-                            break;
-                          case "Fried chicken":
-                            choice = friedChicken;
-                            break;
-                          case "Desserts":
-                            choice = desserts;
-                            break;
-                        }
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              // ignore: prefer_const_literals_to_create_immutables
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Color.fromARGB(255, 197, 197, 197),
-                                    blurRadius: 4)
-                              ],
-                              border: Border.all(
-                                  color: Color.fromARGB(255, 197, 197, 197),
-                                  width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image:
-                                      AssetImage("${categories[i]['image']}"))),
-                          margin: EdgeInsets.only(bottom: 8),
-                          width: 80,
-                          height: 80,
+            )
+          : Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color.fromARGB(255, 218, 218, 218),
+                              blurRadius: 5,
+                              spreadRadius: 2,
+                            )
+                          ],
                         ),
-                        Text(
-                          "${categories[i]['name']}",
-                          style: TextStyle(fontSize: 12),
-                        )
-                      ],
+                        height: 150,
+                        child: loading
+                            ? SizedBox(
+                                height: size.height,
+                                width: size.width,
+                                child: Center(
+                                  child:
+                                      CircularProgressIndicator(color: color),
+                                ),
+                              )
+                            : Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "My Orders : $myorder",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    "Order for delivery : $orderFdeliver",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    "Ordar in wait : $orderInWait",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                      ),
                     ),
-                  );
-                }),
-          ),
-          Column(
-            children: listGenerate(toSend),
-          )
-        ],
-      ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color.fromARGB(255, 218, 218, 218),
+                              blurRadius: 5,
+                              spreadRadius: 2,
+                            )
+                          ],
+                        ),
+                        height: 150,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              "Total Earings ",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "${widget.lis?['earrings']} ₪",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Divider(
+                  color: Colors.black,
+                  height: 70,
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    "Categories",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                widget.lis?['category'] == ""
+                    ? Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: Text(
+                          "You didn't chose categories for your store yet, you can do that from go to store editing",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Color.fromARGB(255, 102, 102, 102),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : SizedBox(
+                        height: 130,
+                        width: double.infinity,
+                        child: ListView.builder(
+                            itemCount: lis2?.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, i) {
+                              return MaterialButton(
+                                padding: EdgeInsets.all(8),
+                                onPressed: () {
+                                  print(lis2?[i]["cateName"]);
+                                  bringProduct(lis2?[i]["cateName"]);
+                                },
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          // ignore: prefer_const_literals_to_create_immutables
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Color.fromARGB(
+                                                    255, 197, 197, 197),
+                                                blurRadius: 4)
+                                          ],
+                                          border: Border.all(
+                                              color: Color.fromARGB(
+                                                  255, 197, 197, 197),
+                                              width: 1),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: AssetImage(
+                                                  "${categories[i]['image']}"))),
+                                      margin: EdgeInsets.only(bottom: 8),
+                                      width: 80,
+                                      height: 80,
+                                    ),
+                                    Text(
+                                      "${lis2[i]['cateName']}",
+                                      style: TextStyle(fontSize: 12),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }),
+                      ),
+                find
+                    ? Container(
+                        margin: EdgeInsets.only(top: 15),
+                        child: Text(
+                          "There is no proudcts for this category in your store",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 121, 121, 121),
+                              fontSize: 13),
+                        ),
+                      )
+                    : Column(
+                        children: listGenerate(toSend),
+                      ),
+              ],
+            ),
     );
   }
 
@@ -246,7 +328,7 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                   borderRadius: BorderRadius.circular(15),
                   image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage(choice[index]['image']))),
+                      image: AssetImage("images/profile.jpg"))),
             ),
             SizedBox(
               width: 10,
@@ -258,7 +340,7 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    choice[index]['name'],
+                    productList[index]["productName"],
                     style: TextStyle(fontSize: 18),
                   ),
                   Text(
@@ -302,11 +384,12 @@ class _InfoMyStoreState extends State<InfoMyStore> {
               children: [
                 InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ProductInsideStore()),
-                    );
+                    print(productList[index]["productName"]);
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) => ProductInsideStore()),
+                    // );
                   },
                   child: Icon(
                     Icons.edit,
