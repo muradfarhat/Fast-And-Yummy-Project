@@ -11,6 +11,7 @@ const String bringAllCate = "$linkServer/auth/bringAllCate.php";
 const String bringUserFavCate = "$linkServer/auth/bringUserFav.php";
 const String deleteFavorite = "$linkServer/auth/deleteFav.php";
 const String getInfoLink = "$linkServer/userinfo/getinfo.php";
+const String getInfoLinkDelivery = "$linkServer/userinfo/getDeliveryInfo.php";
 const String updatePers = "$linkServer/auth/updateprofiledata.php";
 const String updateNameLink = "$linkServer/auth/updateName.php";
 const String insertCreditCardInfo = "$linkServer/auth/insertCreditCard.php";
@@ -52,6 +53,7 @@ const String updateToCartTable =
 /***************************** End user pages links ********************** */
 
 const String updateTown = "$linkServer/auth/updateTown.php";
+const String updateCar = "$linkServer/auth/updateDeliveryCar.php";
 
 const String haveStore = "$linkServer/store/haveStore.php";
 const String storeInfo = "$linkServer/store/storeInfo.php";
