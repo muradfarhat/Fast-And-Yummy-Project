@@ -386,7 +386,7 @@ class _AddPageState extends State<AddPage> {
     if (val.isEmpty) {
       return "Can't be empty";
     }
-    RegExp priceReg = RegExp(r"^\d+(,\d{1,2})?$");
+    RegExp priceReg = RegExp(r"^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$");
     switch (str) {
       case "ItemN":
         {
@@ -405,11 +405,8 @@ class _AddPageState extends State<AddPage> {
           if (!priceReg.hasMatch(val)) {
             return "Price should have only digits";
           }
-          if (val.length > min) {
-            return "Should be only 2 digits, please check it again";
-          }
 
-          if (int.parse(val) > max) {
+          if (double.parse(val) > max) {
             return "Should be less than \$$max";
           }
         }
@@ -424,6 +421,7 @@ class _AddPageState extends State<AddPage> {
     final String? Function(String?)? valid,
   ) {
     return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       cursorColor: Color.fromARGB(255, 21, 157, 117),
       controller: cont,
       validator: valid,

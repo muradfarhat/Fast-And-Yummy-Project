@@ -41,17 +41,18 @@ class _InfoMyStoreState extends State<InfoMyStore> {
 
   bringAllOrders() async {
     var respo = await api
-        .postReq(bringUserMyOrdersProducts, {"id": sharedPref.getString("id")});
+        .postReq(storeOrderLink, {"storeID": sharedPref.getString("id")});
     if (respo['status'] == "suc") {
       setState(() {
         myOrderList = respo['data'];
       });
+
       for (int i = 0; i < myOrderList.length; i++) {
-        if (myOrderList[i]['status'] == "wait") {
+        if (myOrderList[i]['status'] == "In wait") {
           setState(() {
             wait++;
           });
-        } else if (myOrderList[i]['status'] == "deliv") {
+        } else if (myOrderList[i]['status'] == "In delivery") {
           setState(() {
             deliv++;
           });
@@ -364,7 +365,7 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                     style: TextStyle(fontSize: 18),
                   ),
                   Text(
-                    "98 ₪",
+                    "${productList[index]['price']} \$",
                     style: TextStyle(fontSize: 18),
                   ),
                   Row(

@@ -19,23 +19,32 @@ class _OrderMyStoreState extends State<OrderMyStore> {
     bringAllOrders();
     super.initState();
   }
+
   Api api = Api();
   List<dynamic> myOrderList = [];
+  List<dynamic> products = [];
   bringAllOrders() async {
-  
     var respo = await api
-        .postReq(bringUserMyOrdersProducts, {"id": sharedPref.getString("id")});
+        .postReq(storeOrderLink, {"storeID": sharedPref.getString("id")});
     if (respo['status'] == "suc") {
       setState(() {
         myOrderList = respo['data'];
+        products = respo['products'];
       });
-      for (int i = 0; i < myOrderList.length; i++) {
-        if (myOrderList[i]['status'] == "wait") {
-          setState(() {});
-        } else if (myOrderList[i]['status'] == "deliv") {
-          setState(() {});
-        }
-      }
+    } else {}
+  }
+
+  reject(String orderN) async {
+    var respo = await api.postReq(rejectOrderLink, {"id": orderN});
+    if (respo['status'] == "suc") {
+      bringAllOrders();
+    } else {}
+  }
+
+  changeState(String orderN) async {
+    var respo = await api.postReq(orderStateLink, {"id": orderN});
+    if (respo['status'] == "suc") {
+      bringAllOrders();
     } else {}
   }
 
@@ -99,7 +108,7 @@ class _OrderMyStoreState extends State<OrderMyStore> {
   }
 
   listGenerate() {
-    return List.generate(myOrder.length, (index) {
+    return List.generate(myOrderList.length, (index) {
       return Stack(
         children: [
           Container(
@@ -109,7 +118,8 @@ class _OrderMyStoreState extends State<OrderMyStore> {
             decoration: BoxDecoration(
               image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: AssetImage(myOrder[index]['image'])),
+                  image:
+                      NetworkImage("$imageRoot/${products[index]['image']}")),
               border: Border.all(
                   color: Color.fromARGB(255, 197, 197, 197), width: 1),
               borderRadius: BorderRadius.circular(15),
@@ -120,9 +130,122 @@ class _OrderMyStoreState extends State<OrderMyStore> {
             children: [
               InkWell(
                 onTap: () {
-                  setState(() {
-                    myOrder.removeAt(index);
-                  });
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text("Do you want really to reject this order?"),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                MaterialButton(
+                                  color: Color.fromARGB(255, 37, 179, 136),
+                                  onPressed: () async {
+                                    setState(() {
+                                      if (myOrderList[index]['status'] !=
+                                          "In delivery") {
+                                        reject(myOrderList[index]['id']);
+                                        Navigator.pop(context);
+                                      } else {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                "You can't reject it, it's in delivery",
+                                                style: TextStyle(fontSize: 18),
+                                              ),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      MaterialButton(
+                                                        color: Colors.orange,
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            Navigator.pop(
+                                                                context);
+                                                          });
+                                                        },
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Icon(Icons.check,
+                                                                color: Colors
+                                                                    .white),
+                                                            SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            Text(
+                                                              "Ok",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      }
+                                    });
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Icon(Icons.check, color: Colors.white),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "Yes",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                MaterialButton(
+                                  color: Colors.red,
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Icon(Icons.close, color: Colors.white),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "No",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
                 },
                 child: Container(
                     margin: EdgeInsets.only(left: 40, top: 15),
@@ -139,9 +262,67 @@ class _OrderMyStoreState extends State<OrderMyStore> {
               ),
               InkWell(
                 onTap: () {
-                  setState(() {
-                    myOrder[index]['ready'] = true;
-                  });
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text("Is it ready ?"),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                MaterialButton(
+                                  color: Color.fromARGB(255, 37, 179, 136),
+                                  onPressed: () {
+                                    setState(() {
+                                      changeState(myOrderList[index]['id']);
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Icon(Icons.check, color: Colors.white),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "Yes",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                MaterialButton(
+                                  color: Colors.red,
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Icon(Icons.close, color: Colors.white),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "No",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
                 },
                 child: Container(
                     margin: EdgeInsets.only(right: 40, top: 15),
@@ -154,19 +335,18 @@ class _OrderMyStoreState extends State<OrderMyStore> {
                       children: [
                         Icon(
                           Icons.circle,
-                          color: myOrder[index]['ready']
-                              ? Colors.green
-                              : Colors.black,
+                          color: myOrderList[index]["status"] == "In wait"
+                              ? Colors.yellow
+                              : myOrderList[index]["status"] == "In delivery"
+                                  ? Colors.orange
+                                  : Colors.green,
                         ),
-                        Visibility(
-                          visible: myOrder[index]['ready'],
-                          child: Container(
-                              margin: EdgeInsets.only(left: 5),
-                              child: Text(
-                                "Ready to deliver",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )),
-                        )
+                        Container(
+                            margin: EdgeInsets.only(left: 5),
+                            child: Text(
+                              myOrderList[index]["status"],
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ))
                       ],
                     )),
               ),
@@ -195,7 +375,7 @@ class _OrderMyStoreState extends State<OrderMyStore> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Text(
-                          myOrder[index]['name'],
+                          products[index]['productName'],
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20),
                         ),
@@ -223,7 +403,7 @@ class _OrderMyStoreState extends State<OrderMyStore> {
                             width: double.infinity,
                             alignment: Alignment.center,
                             child: Text(
-                              "${myOrder[index]['price']} ₪",
+                              "${products[index]['price']} \$",
                               style: TextStyle(fontSize: 22),
                             ),
                           ),
@@ -231,7 +411,7 @@ class _OrderMyStoreState extends State<OrderMyStore> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Text("Quantity : "),
-                              Text("${myOrder[index]['number']}"),
+                              Text("${myOrderList[index]['quantity']}"),
                             ],
                           ),
                           Container(
@@ -243,7 +423,7 @@ class _OrderMyStoreState extends State<OrderMyStore> {
                                   "Order Time",
                                   style: TextStyle(color: Colors.green[800]),
                                 ),
-                                Text("${myOrder[index]['time']}",
+                                Text("${myOrderList[index]['time']}",
                                     style: TextStyle(color: Colors.green[800]))
                               ],
                             ),

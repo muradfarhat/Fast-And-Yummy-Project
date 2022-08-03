@@ -162,6 +162,7 @@ class _SignInState extends State<SignIn> {
       String hint,
       bool obscureTextState) {
     return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: valid,
       controller: cont,
       cursorColor: Color.fromARGB(255, 21, 157, 117),
