@@ -262,67 +262,70 @@ class _OrderMyStoreState extends State<OrderMyStore> {
               ),
               InkWell(
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text("Is it ready ?"),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                MaterialButton(
-                                  color: Color.fromARGB(255, 37, 179, 136),
-                                  onPressed: () {
-                                    setState(() {
-                                      changeState(myOrderList[index]['id']);
+                  if (myOrderList[index]['status'] != "In delivery") {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text("Is it ready ?"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  MaterialButton(
+                                    color: Color.fromARGB(255, 37, 179, 136),
+                                    onPressed: () {
+                                      setState(() {
+                                        changeState(myOrderList[index]['id']);
+                                        Navigator.pop(context);
+                                      });
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(Icons.check, color: Colors.white),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          "Yes",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  MaterialButton(
+                                    color: Colors.red,
+                                    onPressed: () {
                                       Navigator.pop(context);
-                                    });
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Icon(Icons.check, color: Colors.white),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        "Yes",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ],
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Icon(Icons.close, color: Colors.white),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          "No",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                MaterialButton(
-                                  color: Colors.red,
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Icon(Icons.close, color: Colors.white),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        "No",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
                 },
                 child: Container(
                     margin: EdgeInsets.only(right: 40, top: 15),
