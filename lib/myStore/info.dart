@@ -405,12 +405,12 @@ class _InfoMyStoreState extends State<InfoMyStore> {
               children: [
                 InkWell(
                   onTap: () {
-                    print(productList[index]["productName"]);
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) => ProductInsideStore()),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ProductInsideStore(productList)),
+                    );
                   },
                   child: Icon(
                     Icons.edit,

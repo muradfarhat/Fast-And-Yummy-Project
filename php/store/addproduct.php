@@ -9,7 +9,7 @@ $imagename = imageUpload('file');
 
 if ($imagename != 'Faild') {
     $stmt = $con->prepare("INSERT INTO `$tableName`(`productName`, `storeName`, `rate`, `userID`, `price`, `totalBuy`, `image`) VALUES (?,?,?,?,?,?,?)");
-    $stmt->execute(array($productName, $storeName, 0, $id, $price, 0,$imagename));
+    $stmt->execute(array($productName, $storeName, 0.0, $id, $price, 0.0,$imagename));
     $count = $stmt->rowCount();
 
     if ($count > 0) {

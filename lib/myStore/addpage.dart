@@ -60,9 +60,6 @@ class _AddPageState extends State<AddPage> {
       print("hello");
     } else {
       if (formstate.currentState!.validate()) {
-        if (price.text.startsWith("0")) {
-          price.text = price.text.substring(1);
-        }
         var resp = await api.postReqImage(
             addproductLink,
             {
@@ -219,6 +216,7 @@ class _AddPageState extends State<AddPage> {
                                         }).toList(),
                                         onChanged: (String? value) {
                                           setState(() {
+                                            print(dropdownvalue);
                                             dropdownvalue = value!;
                                           });
                                         },

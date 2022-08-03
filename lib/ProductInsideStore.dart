@@ -1,14 +1,21 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:flutter/material.dart';
 
 class ProductInsideStore extends StatefulWidget {
-  const ProductInsideStore({Key? key}) : super(key: key);
+  dynamic product;
+  ProductInsideStore(this.product, {Key? key}) : super(key: key);
 
   @override
   State<ProductInsideStore> createState() => _ProductInsideStoreState();
 }
 
 class _ProductInsideStoreState extends State<ProductInsideStore> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Color basicColor = Color.fromARGB(255, 37, 179, 136);
 
 // variables for name & price information
@@ -145,10 +152,10 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                 Colors.black.withOpacity(0.5),
                                 BlendMode.darken),
                             fit: BoxFit.cover,
-                            image: AssetImage("${product[0]["image"]}"))),
+                            image: NetworkImage(
+                                "$imageRoot/${widget.product[0]['image']}"))),
                     child: Text(
-                      "${product[0]["name"]}",
-                      // ignore: prefer_const_constructors
+                      "${widget.product[0]['productName']}",
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -156,7 +163,6 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                     ),
                   ),
                   IconButton(
-                    // ignore: prefer_const_constructors
                     icon: Icon(
                       Icons.arrow_back,
                       color: Colors.white,
@@ -177,7 +183,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                               Container(
                                 margin: EdgeInsets.only(right: 5),
                                 child: Text(
-                                  "${product[0]["rate"]}",
+                                  "${widget.product[0]['rate']}",
                                   // ignore: prefer_const_constructors
                                   style: TextStyle(
                                       color: Colors.white,
@@ -206,9 +212,9 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                                 autovalidateMode:
                                                     AutovalidateMode.always,
                                                 initialValue:
-                                                    "${product[0]["name"]}",
+                                                    "${widget.product[0]['productName']}",
                                                 validator: (productName) {
-                                                  if (productName!.length < 5) {
+                                                  if (productName!.length < 4) {
                                                     return "Invalid input";
                                                   } else {
                                                     return null;
@@ -517,7 +523,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                 },
                                 enabled: enableEdit,
                                 keyboardType: TextInputType.number,
-                                initialValue: product[0]["price"].toString(),
+                                initialValue: widget.product[0]['price'],
                                 decoration: InputDecoration(
                                     prefix: Container(
                                         margin: EdgeInsets.only(right: 5),
