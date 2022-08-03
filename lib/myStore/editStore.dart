@@ -97,6 +97,17 @@ class _EditStoreState extends State<EditStore> {
     }
   }
 
+  deleteStore() async {
+    var resp = await api.postReq(
+      deleteStoreLink,
+      {
+        "storeID": sharedPref.getString("id"),
+        "imagename": lis?['storeImage'],
+      },
+    );
+    if (resp['status'] == "suc") {}
+  }
+
   Color color = Color.fromARGB(255, 37, 179, 136);
   @override
   Widget build(BuildContext context) {
@@ -342,6 +353,136 @@ class _EditStoreState extends State<EditStore> {
                                     ))
                               ],
                             ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Column(
+                              children: [
+                                Text("Are you sure to deactivate your store ?"),
+                                SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.warning_amber_rounded,
+                                      size: 20,
+                                      color: Colors.yellow,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Flexible(
+                                      child: Text(
+                                        "All proudcts and info will be deleted",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    MaterialButton(
+                                      color: color,
+                                      onPressed: () {
+                                        setState(() {
+                                          deleteStore();
+                                          Navigator.popUntil(context,
+                                              (route) => route.isFirst);
+                                        });
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Icon(Icons.check,
+                                              color: Colors.white),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            "Yes",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    MaterialButton(
+                                      color: Colors.red,
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Icon(Icons.close,
+                                              color: Colors.white),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            "No",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Color.fromARGB(255, 133, 133, 133),
+                              blurRadius: 8,
+                              offset: Offset(0, 3))
+                        ],
+                      ),
+                      margin: EdgeInsets.symmetric(horizontal: 15),
+                      width: size.width,
+                      height: 52,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.cancel_presentation,
+                              size: 30, color: Colors.white),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "Deactivate my store",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 20),
                           ),
                         ],
                       ),

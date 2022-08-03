@@ -424,7 +424,6 @@ class _AddPageState extends State<AddPage> {
     final String? Function(String?)? valid,
   ) {
     return TextFormField(
-      autovalidateMode: AutovalidateMode.always,
       cursorColor: Color.fromARGB(255, 21, 157, 117),
       controller: cont,
       validator: valid,

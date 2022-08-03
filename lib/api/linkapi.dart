@@ -64,3 +64,4 @@ const String bringProdectLink = "$linkServer/store/bringProdect.php";
 const String addproductLink = "$linkServer/store/addproduct.php";
 const String deleteproductLink = "$linkServer/store/deleteproduct.php";
 const String storesLink = "$linkServer/store/bringallstores.php";
+const String deleteStoreLink = "$linkServer/store/deleteStore.php";

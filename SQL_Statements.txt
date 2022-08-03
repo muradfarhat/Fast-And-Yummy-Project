@@ -37,3 +37,39 @@ CREATE TABLE `gp`.`support` ( `questionID` INT NOT NULL AUTO_INCREMENT , `userID
 //
 ALTER TABLE `store` ADD `numberOfProducts` INT NOT NULL AFTER `earrings`, ADD `rating` INT NOT NULL AFTER `numberOfProducts`;
 ALTER TABLE `store` ADD `feedBack` INT NOT NULL AFTER `rating`;
+
+
+//////////////////new statment////////////////////////
+////create store table
+CREATE TABLE `store` (
+  `storeID` int(11) NOT NULL AUTO_INCREMENT,
+  `storeName` varchar(255) NOT NULL,
+  `storeImage` varchar(255) NOT NULL,
+  `earrings` int(11) NOT NULL,
+  `numberOfProducts` int(11) NOT NULL,
+  `rating` int(11) NOT NULL,
+  `feedBack` int(11) NOT NULL,
+  PRIMARY KEY (`storeID`),
+  UNIQUE KEY `storeName` (`storeName`),
+  CONSTRAINT `store_ibfk_1` FOREIGN KEY (`storeID`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4
+/////
+////create cate table
+CREATE TABLE `cateName` (
+  `productID` int(11) NOT NULL AUTO_INCREMENT,
+  `productName` varchar(255) NOT NULL,
+  `storeName` varchar(255) NOT NULL,
+  `rate` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `price` int(11) NOT NULL,
+  `totalBuy` int(11) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  PRIMARY KEY (`productID`,`productName`,`userID`),
+  UNIQUE KEY `storeName` (`storeName`),
+  UNIQUE KEY `productName` (`productName`),
+  UNIQUE KEY `userID` (`userID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4
+
+ALTER TABLE `cateName` ADD FOREIGN KEY (`userID`) REFERENCES `store`(`storeID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `cateName` ADD FOREIGN KEY (`storeName`) REFERENCES `store`(`storeName`) ON DELETE CASCADE ON UPDATE CASCADE;
+////////////////
