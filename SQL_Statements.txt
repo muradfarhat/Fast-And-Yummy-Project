@@ -35,3 +35,5 @@ ALTER TABLE `myorders_table` ADD `storeID` VARCHAR(255) NOT NULL AFTER `userID`;
 // support table
 CREATE TABLE `gp`.`support` ( `questionID` INT NOT NULL AUTO_INCREMENT , `userID` VARCHAR(255) NOT NULL , `question` VARCHAR(255) NOT NULL , `answer` VARCHAR(255) NOT NULL , PRIMARY KEY (`questionID`)) ENGINE = InnoDB; 
 //
+ALTER TABLE `store` ADD `numberOfProducts` INT NOT NULL AFTER `earrings`, ADD `rating` INT NOT NULL AFTER `numberOfProducts`;
+ALTER TABLE `store` ADD `feedBack` INT NOT NULL AFTER `rating`;

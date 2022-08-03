@@ -22,38 +22,48 @@ class _InfoMyStoreState extends State<InfoMyStore> {
     {"image": "images/cat/des.jpeg", "name": "Desserts"},
     {"image": "images/cat/drink.jpg", "name": "Soft drinks"},
   ];
+  String? cateNAME;
+  deletePoduct(String number, String image) async {
+    var resp = await api.postReq(deleteproductLink, {
+      "tableName": cateNAME,
+      "productID": number,
+      "userID": sharedPref.getString("id"),
+      "imagename": image,
+    });
+    if (resp['status'] == "suc") {
+    } else {
+      setState(() {});
+    }
+  }
 
-  List<Map> friedChicken = [
-    {"image": "images/chk/fele.jpeg", "name": "Broasted fillet-fish"},
-    {"image": "images/chk/cris.jpg", "name": "Crispy"},
-    {"image": "images/chk/chf.jpg", "name": "Chicken Fingers"},
-  ];
-  List<Map> fries = [
-    {"image": "images/fries/st.jpg", "name": "Standerd"},
-    {"image": "images/fries/CP.jpg", "name": "Curly"},
-    {"image": "images/fries/ck.jpg", "name": "Crinkle"},
-    {"image": "images/fries/tat.jpg", "name": "Tater tots"},
-  ];
-  List<Map> desserts = [
-    {"image": "images/sweets/cookie.jpeg", "name": "Cookies"},
-    {"image": "images/sweets/creambrulee.jpeg", "name": "Cream Brulee"},
-    {"image": "images/sweets/cup.jpeg", "name": "Cupcake"},
-    {"image": "images/sweets/sundae.jpg", "name": "Sundae"},
-    {"image": "images/sweets/donut.jpg", "name": "Donut"},
-    {"image": "images/sweets/trifle.jpeg", "name": "Trifle"},
-  ];
-  List<Map> drinks = [
-    {"image": "images/drinks/pep.jpg", "name": "Pepsi"},
-    {"image": "images/drinks/cap.jpg", "name": "Cappy"},
-    {"image": "images/drinks/coc.png", "name": "Coca Cola"},
-    {"image": "images/drinks/dr.jpeg", "name": "Original"},
-    {"image": "images/drinks/sp.png", "name": "Sprite"},
-    {"image": "images/drinks/fan.jpg", "name": "Fanta"},
-  ];
+  int wait = 0, deliv = 0;
+  List<dynamic> myOrderList = [];
+
+  bringAllOrders() async {
+    var respo = await api
+        .postReq(bringUserMyOrdersProducts, {"id": sharedPref.getString("id")});
+    if (respo['status'] == "suc") {
+      setState(() {
+        myOrderList = respo['data'];
+      });
+      for (int i = 0; i < myOrderList.length; i++) {
+        if (myOrderList[i]['status'] == "wait") {
+          setState(() {
+            wait++;
+          });
+        } else if (myOrderList[i]['status'] == "deliv") {
+          setState(() {
+            deliv++;
+          });
+        }
+      }
+    } else {}
+  }
 
   @override
   void initState() {
     getCate();
+    bringAllOrders();
     super.initState();
   }
 
@@ -80,9 +90,15 @@ class _InfoMyStoreState extends State<InfoMyStore> {
   }
 
   bringProduct(String tabelName) async {
+    setState(() {
+      loading = true;
+    });
     var resp = await api.postReq(bringProdectLink, {
       "tableName": tabelName,
       "userID": sharedPref.getString("id"),
+    });
+    setState(() {
+      loading = false;
     });
     if (resp['status'] == "suc") {
       setState(() {
@@ -91,7 +107,6 @@ class _InfoMyStoreState extends State<InfoMyStore> {
         choice = productList;
       });
     } else {
-      print(resp['status']);
       setState(() {
         find = true;
       });
@@ -153,21 +168,21 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "My Orders : $myorder",
+                                    "My Orders : ${myOrderList.length}",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 17,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    "Order for delivery : $orderFdeliver",
+                                    "Order for delivery : $deliv",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 17,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    "Ordar in wait : $orderInWait",
+                                    "Ordar in wait : $wait",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 17,
@@ -250,14 +265,15 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                               return MaterialButton(
                                 padding: EdgeInsets.all(8),
                                 onPressed: () {
-                                  print(lis2?[i]["cateName"]);
+                                  setState(() {
+                                    cateNAME = lis2?[i]["cateName"];
+                                  });
                                   bringProduct(lis2?[i]["cateName"]);
                                 },
                                 child: Column(
                                   children: [
                                     Container(
                                       decoration: BoxDecoration(
-                                          // ignore: prefer_const_literals_to_create_immutables
                                           boxShadow: [
                                             BoxShadow(
                                                 color: Color.fromARGB(
@@ -300,6 +316,9 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                     : Column(
                         children: listGenerate(toSend),
                       ),
+                SizedBox(
+                  height: 40,
+                )
               ],
             ),
     );
@@ -328,7 +347,8 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                   borderRadius: BorderRadius.circular(15),
                   image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage("images/profile.jpg"))),
+                      image: NetworkImage(
+                          "$imageRoot/${productList[index]['image']}"))),
             ),
             SizedBox(
               width: 10,
@@ -397,9 +417,73 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                 ),
                 InkWell(
                   onTap: () {
-                    setState(() {
-                      choice.removeAt(index);
-                    });
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text("Are you sure ?"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  MaterialButton(
+                                    color: color,
+                                    onPressed: () {
+                                      setState(() {
+                                        deletePoduct(
+                                          productList[index]["productID"],
+                                          productList[index]["image"],
+                                        );
+
+                                        bringProduct(cateNAME!);
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(Icons.check, color: Colors.white),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          "Yes",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  MaterialButton(
+                                    color: Colors.red,
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Icon(Icons.close, color: Colors.white),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          "No",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
                   },
                   child: Icon(
                     Icons.delete_outline,

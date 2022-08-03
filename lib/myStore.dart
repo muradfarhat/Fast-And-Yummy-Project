@@ -212,12 +212,19 @@ class _MyStoreState extends State<MyStore> {
                         children: [
                           Stack(
                             children: [
-                              Image.network(
-                                "https://themesfinity.com/wp-content/uploads/2018/02/default-placeholder.png",
-                                width: size.width,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              ),
+                              lis2?['storeImage'] == ""
+                                  ? Image.network(
+                                      "https://user-images.githubusercontent.com/43302778/106805462-7a908400-6645-11eb-958f-cd72b74a17b3.jpg",
+                                      width: size.width,
+                                      height: 200,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.network(
+                                      "$imageRoot/${lis2?['storeImage']}",
+                                      width: size.width,
+                                      height: 200,
+                                      fit: BoxFit.cover,
+                                    ),
                               Container(
                                 height: 200,
                                 width: size.width,

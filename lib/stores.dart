@@ -3,6 +3,10 @@
 import 'package:fast_and_yummy/store_product.dart';
 import 'package:flutter/material.dart';
 
+import 'api/api.dart';
+import 'api/linkapi.dart';
+import 'main.dart';
+
 class Stores extends StatefulWidget {
   const Stores({Key? key}) : super(key: key);
 
@@ -50,149 +54,150 @@ class _StoresState extends State<Stores> {
       "icon": Icon(Icons.favorite_border_outlined),
     }
   ];
+  bool loading = false;
+  List<dynamic> allStores = [];
+  Api api = Api();
+  bringAllStores() async {
+    setState(() {
+      loading = true;
+    });
+    var respo = await api.postReq(storesLink, {});
+
+    if (respo['status'] == "suc") {
+      allStores = respo['data'];
+      setState(() {
+        loading = false;
+      });
+    } else {}
+  }
+
+  @override
+  void initState() {
+    bringAllStores();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
       appBar: appBarDesign(),
-      body: ListView.builder(
-          itemCount: 4,
-          scrollDirection: Axis.vertical,
-          itemBuilder: (context, i) {
-            return MaterialButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => StoreProduct(),
-                  ),
-                );
-              },
-              child: Container(
-                margin: EdgeInsets.all(10),
-                width: size.width,
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color.fromARGB(255, 179, 179, 179),
-                        blurRadius: 4)
-                  ],
-                  color: Color.fromARGB(255, 240, 240, 240),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 37, 179, 136),
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(15),
-                            topRight: Radius.circular(15)),
+      body: loading
+          ? SizedBox(
+              height: size.height,
+              width: size.width,
+              child: Center(
+                child: CircularProgressIndicator(color: color),
+              ),
+            )
+          : ListView.builder(
+              itemCount: allStores.length,
+              scrollDirection: Axis.vertical,
+              itemBuilder: (context, i) {
+                return MaterialButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => StoreProduct(),
                       ),
-                      child: Stack(
-                        children: [
-                          Container(
-                            height: 200,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(15),
-                                    topRight: Radius.circular(15)),
-                                image: DecorationImage(
-                                    image: AssetImage("${stores[i]['image']}"),
-                                    fit: BoxFit.cover)),
-                          ),
-                          Positioned(
-                            bottom: 5,
-                            right: 5,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(100),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Color.fromARGB(255, 133, 133, 133),
-                                      blurRadius: 4)
-                                ],
-                              ),
-                              child: IconButton(
-                                color: stores[i]["fav"] == false
-                                    ? Colors.black
-                                    : Colors.red,
-                                iconSize: 40,
-                                icon: stores[i]["icon"],
-                                onPressed: () {
-                                  setState(() {
-                                    if (stores[i]["fav"] == false) {
-                                      stores[i]["fav"] = true;
-                                      stores[i]["icon"] = Icon(Icons.favorite);
-                                    } else {
-                                      stores[i]["fav"] = false;
-                                      stores[i]["icon"] =
-                                          Icon(Icons.favorite_border_outlined);
-                                    }
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: EdgeInsets.all(10),
+                    width: size.width,
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color: Color.fromARGB(255, 179, 179, 179),
+                            blurRadius: 4)
+                      ],
+                      color: Color.fromARGB(255, 240, 240, 240),
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "${stores[i]['store']}",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22,
-                            ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 37, 179, 136),
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15)),
                           ),
-                          Row(
+                          child: Stack(
                             children: [
-                              iconDesign(1),
-                              iconDesign(1),
-                              iconDesign(1),
-                              iconDesign(1),
-                              iconDesign(0),
+                              Container(
+                                height: 200,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(15),
+                                        topRight: Radius.circular(15)),
+                                    image: DecorationImage(
+                                        image: allStores[i]['storeImage'] == ""
+                                            ? NetworkImage(
+                                                "https://user-images.githubusercontent.com/43302778/106805462-7a908400-6645-11eb-958f-cd72b74a17b3.jpg")
+                                            : NetworkImage(
+                                                "$imageRoot/${allStores[i]['storeImage']}"),
+                                        fit: BoxFit.cover)),
+                              ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "${stores[i]['product']}",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                            ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "${allStores[i]['storeName']}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22,
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  iconDesign(1),
+                                  iconDesign(1),
+                                  iconDesign(1),
+                                  iconDesign(1),
+                                  iconDesign(0),
+                                ],
+                              ),
+                            ],
                           ),
-                          Text(
-                            "${stores[i]['feedback']}",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                            ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "${allStores[i]['numberOfProducts']} Products",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              Text(
+                                "${allStores[i]['feedBack']} Feed Back",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            );
-          }),
+                  ),
+                );
+              }),
     );
   }
 

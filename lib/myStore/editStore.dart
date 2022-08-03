@@ -166,7 +166,7 @@ class _EditStoreState extends State<EditStore> {
                               children: [
                                 lis?['storeImage'] == "" && _image == null
                                     ? Image.network(
-                                        "https://themesfinity.com/wp-content/uploads/2018/02/default-placeholder.png",
+                                        "https://user-images.githubusercontent.com/43302778/106805462-7a908400-6645-11eb-958f-cd72b74a17b3.jpg",
                                         width: size.width,
                                         height: 230,
                                         fit: BoxFit.cover,
@@ -184,7 +184,6 @@ class _EditStoreState extends State<EditStore> {
                                             height: 230,
                                             fit: BoxFit.cover,
                                           ),
-                          
                               ],
                             ),
                           ),

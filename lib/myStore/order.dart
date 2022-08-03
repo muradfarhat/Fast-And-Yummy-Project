@@ -1,6 +1,10 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:fast_and_yummy/main.dart';
 import 'package:flutter/material.dart';
+
+import '../api/api.dart';
+import '../api/linkapi.dart';
 
 class OrderMyStore extends StatefulWidget {
   const OrderMyStore({Key? key}) : super(key: key);
@@ -10,6 +14,31 @@ class OrderMyStore extends StatefulWidget {
 }
 
 class _OrderMyStoreState extends State<OrderMyStore> {
+  @override
+  void initState() {
+    bringAllOrders();
+    super.initState();
+  }
+  Api api = Api();
+  List<dynamic> myOrderList = [];
+  bringAllOrders() async {
+  
+    var respo = await api
+        .postReq(bringUserMyOrdersProducts, {"id": sharedPref.getString("id")});
+    if (respo['status'] == "suc") {
+      setState(() {
+        myOrderList = respo['data'];
+      });
+      for (int i = 0; i < myOrderList.length; i++) {
+        if (myOrderList[i]['status'] == "wait") {
+          setState(() {});
+        } else if (myOrderList[i]['status'] == "deliv") {
+          setState(() {});
+        }
+      }
+    } else {}
+  }
+
   List<Map> myOrder = [
     {
       "name": "Chicken Fingers",
@@ -43,17 +72,30 @@ class _OrderMyStoreState extends State<OrderMyStore> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return Container(
-        padding: EdgeInsets.all(20),
-        color: Color.fromARGB(255, 247, 247, 247),
-        width: size.width,
-        height: 500,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: listGenerate(),
-          ),
-        ));
+    return myOrderList.isEmpty
+        ? SizedBox(
+            height: size.height / 2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "No order in your store",
+                  style: TextStyle(fontSize: 25, color: Colors.grey),
+                )
+              ],
+            ),
+          )
+        : Container(
+            padding: EdgeInsets.all(20),
+            color: Color.fromARGB(255, 247, 247, 247),
+            width: size.width,
+            height: 500,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: listGenerate(),
+              ),
+            ));
   }
 
   listGenerate() {

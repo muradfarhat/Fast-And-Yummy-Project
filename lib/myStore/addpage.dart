@@ -2,8 +2,11 @@
 
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
+import 'dart:io';
+
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../api/linkapi.dart';
 import '../main.dart';
@@ -21,11 +24,13 @@ class _AddPageState extends State<AddPage> {
   TextEditingController name = TextEditingController();
   TextEditingController price = TextEditingController();
   TextEditingController image = TextEditingController();
-
+  File? file;
+  bool visible = false;
   Color color = Color.fromARGB(255, 37, 179, 136);
   var selected = 0;
   var category = [''];
   dynamic lis;
+  bool skip = false;
   Api api = Api();
   bool loading = false;
   getCate() async {
@@ -51,19 +56,32 @@ class _AddPageState extends State<AddPage> {
   }
 
   addProduct() async {
-    if (formstate.currentState!.validate()) {
-      if (price.text.startsWith("0")) {
-        price.text = price.text.substring(1);
+    if (file == null) {
+      print("hello");
+    } else {
+      if (formstate.currentState!.validate()) {
+        if (price.text.startsWith("0")) {
+          price.text = price.text.substring(1);
+        }
+        var resp = await api.postReqImage(
+            addproductLink,
+            {
+              "tableName": dropdownvalue,
+              "productName": name.text,
+              "storeName": widget.storeName,
+              "userID": sharedPref.getString("id"),
+              "price": price.text,
+            },
+            file!);
+        if (resp['status'] == "suc") {
+          showSuccessSnackBarMSG();
+          setState(() {
+            skip = true;
+          });
+        } else {
+          print("faild");
+        }
       }
-      var resp = await api.postReq(addproductLink, {
-        "tableName": dropdownvalue,
-        "productName": name.text,
-        "storeName": widget.storeName,
-        "userID": sharedPref.getString("id"),
-        "price": price.text,
-      });
-      if (resp['status'] == "suc") {
-      } else {}
     }
   }
 
@@ -216,11 +234,88 @@ class _AddPageState extends State<AddPage> {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                textFieldDesign(
-                                    "Image Path", Icons.image, false, image,
-                                    (val) {
-                                  return validInput(val!, 0, 0, "image");
-                                }),
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      visible = !visible;
+                                    });
+                                  },
+                                  child: textFieldDesign(
+                                      "Image Path", Icons.image, false, image,
+                                      (val) {
+                                    return validInput(val!, 0, 0, "image");
+                                  }),
+                                ),
+                                Visibility(
+                                  visible: visible,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      MaterialButton(
+                                        color:
+                                            Color.fromARGB(255, 179, 179, 189),
+                                        onPressed: () async {
+                                          XFile? xfile = await ImagePicker()
+                                              .pickImage(
+                                                  source: ImageSource.gallery);
+                                          file = File(xfile!.path);
+                                          setState(() {
+                                            image.text = xfile.path;
+                                          });
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Icon(
+                                                Icons
+                                                    .photo_camera_front_outlined,
+                                                color: Colors.white),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              "Gallery",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      MaterialButton(
+                                        color:
+                                            Color.fromARGB(255, 179, 179, 189),
+                                        onPressed: () async {
+                                          XFile? xfile = await ImagePicker()
+                                              .pickImage(
+                                                  source: ImageSource.camera);
+
+                                          file = File(xfile!.path);
+                                          setState(() {
+                                            image.text = xfile.path;
+                                          });
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Icon(Icons.camera_alt_outlined,
+                                                color: Colors.white),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              "Camera",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 SizedBox(
                                   height: 20,
                                 ),
@@ -247,11 +342,16 @@ class _AddPageState extends State<AddPage> {
                                     ),
                                     InkWell(
                                       onTap: () async {
-                                        addProduct();
-                                        showSuccessSnackBarMSG();
-                                        await Future.delayed(
-                                            Duration(milliseconds: 400));
-                                        Navigator.pop(context);
+                                        await addProduct();
+                                        if (skip) {
+                                          setState(() {
+                                            skip = false;
+                                          });
+
+                                          Navigator.pop(context);
+                                        } else {
+                                          showFaildSnackBarMSG();
+                                        }
                                       },
                                       child: Container(
                                         alignment: Alignment.center,
@@ -367,13 +467,39 @@ class _AddPageState extends State<AddPage> {
             ),
           ),
           Text(
-            "Saved",
+            "The Product added",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           )
         ],
       ),
       duration: Duration(milliseconds: 400),
       margin: EdgeInsets.all(20),
+    ));
+  }
+
+  showFaildSnackBarMSG() {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.red.withOpacity(0.7),
+      content: Row(
+        // ignore: prefer_const_literals_to_create_immutables
+        children: [
+          Container(
+            margin: const EdgeInsets.only(right: 15),
+            child: const Icon(
+              Icons.close,
+              color: Colors.white,
+              size: 35,
+            ),
+          ),
+          const Text(
+            "Please chose image",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+      duration: const Duration(milliseconds: 400),
+      margin: const EdgeInsets.all(20),
     ));
   }
 }

@@ -214,7 +214,7 @@ class _SignInState extends State<SignIn> {
     }
     RegExp emailReg = RegExp(
         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-    RegExp phoneReg = RegExp(r"[5][2345690][23456789][0-9]{6}$");
+    RegExp phoneReg = RegExp(r"[5][69][23456789][0-9]{6}$");
     switch (str) {
       case "email":
         {
