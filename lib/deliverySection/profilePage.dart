@@ -1,11 +1,11 @@
 // ignore_for_file: prefer_const_constructors, non_constant_identifier_names, slash_for_doc_comments,prefer_const_literals_to_create_immutables
-import 'dart:convert';
-import 'dart:ffi';
+//import 'dart:convert';
+//import 'dart:ffi';
 import 'dart:io';
 
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
-import 'package:flutter/cupertino.dart';
+//mport 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:math' as math;
@@ -33,6 +33,7 @@ class _deliveryProfileState extends State<deliveryProfile> {
   bool showCardEdit = false;
   bool ifCall = false;
   bool success = false;
+  bool isLogin = false;
 
 // variables for personal information
   String? firstName;
@@ -123,7 +124,7 @@ class _deliveryProfileState extends State<deliveryProfile> {
     if (resp['status'] == "suc") {
       getData();
       return true;
-    } else {}
+    }
   }
 
   udpateVisaData() async {
@@ -138,7 +139,7 @@ class _deliveryProfileState extends State<deliveryProfile> {
     if (resp['status'] == "suc") {
       getData();
       return true;
-    } else {}
+    }
   }
 
   uploadImageF() async {
@@ -180,13 +181,10 @@ class _deliveryProfileState extends State<deliveryProfile> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    GlobalKey<FormState> formStateForPersonal =
+    GlobalKey<FormState> formStateForPersonalData =
         GlobalKey<FormState>(); // For Text Filed in Personal Info
 
-    GlobalKey<FormState> formStateForFavorite =
-        GlobalKey<FormState>(); // For Text Filed in Favorite
-
-    GlobalKey<FormState> formStateForCardInfo =
+    GlobalKey<FormState> formStateForCardInfoData =
         GlobalKey<FormState>(); // For Text Filed in Favorite
 
     GlobalKey<ScaffoldState> scaffoldKey =
@@ -194,8 +192,8 @@ class _deliveryProfileState extends State<deliveryProfile> {
 
 /********** Start Function for edit personal information & Favorite & Card Information validation ************** */
 
-    bool EditPersonalData() {
-      var formData = formStateForPersonal.currentState;
+    bool EditPersonal() {
+      var formData = formStateForPersonalData.currentState;
 
       if (formData!.validate()) {
         formData.save();
@@ -207,8 +205,8 @@ class _deliveryProfileState extends State<deliveryProfile> {
       }
     }
 
-    bool EditCardData() {
-      var formCardData = formStateForCardInfo.currentState;
+    bool EditCard() {
+      var formCardData = formStateForCardInfoData.currentState;
 
       if (formCardData!.validate()) {
         formCardData.save();
@@ -599,7 +597,7 @@ class _deliveryProfileState extends State<deliveryProfile> {
 
                 /*************************************** Start Personal Information ********************************** */
                 Form(
-                  key: formStateForPersonal,
+                  key: formStateForPersonalData,
                   child: Card(
                     child: Column(
                       children: [
@@ -852,7 +850,7 @@ class _deliveryProfileState extends State<deliveryProfile> {
                                       child: MaterialButton(
                                         color: color,
                                         onPressed: () {
-                                          if (EditPersonalData()) {
+                                          if (EditPersonal()) {
                                             setState(() {
                                               notEnable = false;
                                               showSaveInfo = false;
@@ -992,7 +990,7 @@ class _deliveryProfileState extends State<deliveryProfile> {
                     Visibility(
                         visible: showCardEdit, // showCardEdit
                         child: Form(
-                            key: formStateForCardInfo,
+                            key: formStateForCardInfoData,
                             child: Container(
                               margin: EdgeInsets.only(
                                   left: 15, bottom: 15, right: 15),
@@ -1121,7 +1119,7 @@ class _deliveryProfileState extends State<deliveryProfile> {
                                       child: MaterialButton(
                                         color: color,
                                         onPressed: () {
-                                          if (EditCardData()) {
+                                          if (EditCard()) {
                                             setState(() {
                                               showCardEdit = false;
                                             });
