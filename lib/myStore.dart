@@ -46,14 +46,15 @@ class _MyStoreState extends State<MyStore> {
     });
     var resp =
         await api.postReq(getInfoLink, {"id": sharedPref.getString("id")});
-
+    setState(() {
+      loading = false;
+    });
     if (resp['status'] == "suc") {
       setState(() {
         lis = resp['data'];
         if (lis?['have_store'] == "yes") {
           getStoreData();
         }
-        loading = false;
       });
     } else {}
   }
