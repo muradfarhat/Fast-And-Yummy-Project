@@ -101,7 +101,7 @@ class _UserPageState extends State<UserPage> {
   // ignore: slash_for_doc_comments
   /*************************************** Widget List For Pages ************************** */
   List<Widget> content = [
-    Profile(),
+    Profile("customer"),
     favorite(),
     PageContent(),
     MyOrders(),

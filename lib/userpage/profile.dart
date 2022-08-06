@@ -13,7 +13,8 @@ import 'dart:math' as math;
 import '../main.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  final String deliveryOrCustomerValue;
+  const Profile(this.deliveryOrCustomerValue, {Key? key}) : super(key: key);
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -33,6 +34,10 @@ class _ProfileState extends State<Profile> {
   bool showCardEdit = false;
   bool ifCall = false;
   bool success = false;
+  /*********** */
+  bool deliveryData = false;
+  bool customerData = false;
+  /*********** */
 
 // variables for personal information
   String? firstName;
@@ -43,6 +48,9 @@ class _ProfileState extends State<Profile> {
   String? city;
   String? town;
   String? street;
+  String? personID;
+  String? carModel;
+  String? carID;
 // variables for credit card
   String? cardName;
   String? cardNum;
@@ -155,6 +163,44 @@ class _ProfileState extends State<Profile> {
     } else {}
   }
 
+  getDataForDelivery() async {
+    setState(() {
+      loading = true;
+    });
+    var resp = await api
+        .postReq(getInfoLinkDelivery, {"id": sharedPref.getString("id")});
+    if (resp['status'] == "suc") {
+      setState(() {
+        lis = resp['data'];
+        lis2 = resp['data2'];
+        loading = false;
+      });
+    } else {}
+  }
+
+  udpatePersonalDataForDelivery() async {
+    await api.postReq(updateCar, {
+      "city": city,
+      "carModel": carModel,
+      "carNumber": carID,
+      "deliveryID": personID,
+      "userID": sharedPref.getString("id"),
+    });
+    getDataForDelivery();
+    var resp = await api.postReq(updatePers, {
+      "password": pass,
+      "phone": phone,
+      "id": sharedPref.getString("id"),
+    });
+
+    if (resp['status'] == "suc") {
+      getDataForDelivery();
+      return true;
+    } else {
+      print("Error");
+    }
+  }
+
   udpatePersonalData() async {
     await api.postReq(updateTown, {
       "city": city,
@@ -184,7 +230,11 @@ class _ProfileState extends State<Profile> {
     });
 
     if (resp['status'] == "suc") {
-      getData();
+      if (customerData) {
+        getData();
+      } else if (deliveryData) {
+        getDataForDelivery();
+      }
       return true;
     } else {}
   }
@@ -199,7 +249,11 @@ class _ProfileState extends State<Profile> {
     });
 
     if (resp['status'] == "suc") {
-      getData();
+      if (customerData) {
+        getData();
+      } else if (deliveryData) {
+        getDataForDelivery();
+      }
       return true;
     } else {}
   }
@@ -214,7 +268,11 @@ class _ProfileState extends State<Profile> {
           },
           file!);
       if (resp['status'] == "suc") {
-        getData();
+        if (customerData) {
+          getData();
+        } else if (deliveryData) {
+          getDataForDelivery();
+        }
         return true;
       }
     }
@@ -227,14 +285,33 @@ class _ProfileState extends State<Profile> {
       "id": sharedPref.getString("id"),
     });
     if (resp['status'] == "suc") {
-      getData();
+      if (customerData) {
+        getData();
+      } else if (deliveryData) {
+        getDataForDelivery();
+      }
       return true;
     }
   }
 
   @override
   void initState() {
-    getData();
+    if (widget.deliveryOrCustomerValue == "delivery") {
+      setState(() {
+        deliveryData = true;
+        customerData = false;
+      });
+    } else if (widget.deliveryOrCustomerValue == "customer") {
+      setState(() {
+        deliveryData = false;
+        customerData = true;
+      });
+    }
+    if (widget.deliveryOrCustomerValue == "customer") {
+      getData();
+    } else if (widget.deliveryOrCustomerValue == "delivery") {
+      getDataForDelivery();
+    }
     bringUserFav();
     bringAllCatergorys();
 
@@ -264,7 +341,11 @@ class _ProfileState extends State<Profile> {
 
       if (formData!.validate()) {
         formData.save();
-        udpatePersonalData();
+        if (customerData == true) {
+          udpatePersonalData();
+        } else if (deliveryData == true) {
+          udpatePersonalDataForDelivery();
+        }
 
         return true;
       } else {
@@ -309,16 +390,20 @@ class _ProfileState extends State<Profile> {
                   padding: EdgeInsets.only(bottom: 10),
                   child: Stack(
                     children: [
-                      Positioned(
-                        left: 10,
-                        top: 10,
-                        child: IconButton(
-                            onPressed: () => Scaffold.of(context).openDrawer(),
-                            icon: Icon(
-                              Icons.menu,
-                              color: Colors.white,
-                              size: 35,
-                            )),
+                      Visibility(
+                        visible: customerData,
+                        child: Positioned(
+                          left: 10,
+                          top: 10,
+                          child: IconButton(
+                              onPressed: () =>
+                                  Scaffold.of(context).openDrawer(),
+                              icon: Icon(
+                                Icons.menu,
+                                color: Colors.white,
+                                size: 35,
+                              )),
+                        ),
                       ),
                       Column(children: [
                         Stack(
@@ -801,7 +886,7 @@ class _ProfileState extends State<Profile> {
                                   if (!phoneReg.hasMatch(phone!)) {
                                     return "Invalid phone number,\nplease check that number start with 59[2:9],56[2:9] \nand have only digits";
                                   }
-                                  if (phone.length > 9) {
+                                  if (phone.length > 10) {
                                     return "Invalid phone number, please check that have 9 digits";
                                   }
                                 },
@@ -829,6 +914,36 @@ class _ProfileState extends State<Profile> {
                               Divider(
                                 color: Colors.white,
                               ),
+                              Visibility(
+                                visible: deliveryData,
+                                child: TextFormField(
+                                  autovalidateMode: AutovalidateMode.always,
+                                  validator: (city) {
+                                    if (city!.length > 20 || city.length < 9) {
+                                      return "Invalid input";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  onSaved: (text) {
+                                    personID = text;
+                                  },
+                                  initialValue: "${lis2?['deliveryID']}",
+                                  enabled: notEnable,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    labelText: "Person ID",
+                                    labelStyle: TextStyle(color: color),
+                                    icon: Icon(Icons.map, color: color),
+                                  ),
+                                ),
+                              ),
+                              Visibility(
+                                visible: deliveryData,
+                                child: Divider(
+                                  color: Colors.white,
+                                ),
+                              ),
                               TextFormField(
                                 autovalidateMode: AutovalidateMode.always,
                                 validator: (city) {
@@ -852,47 +967,107 @@ class _ProfileState extends State<Profile> {
                               Divider(
                                 color: Colors.white,
                               ),
-                              TextFormField(
-                                autovalidateMode: AutovalidateMode.always,
-                                validator: (city) {
-                                  if (city!.length > 20 || city.length < 3) {
-                                    return "Invalid input";
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                onSaved: (text) {
-                                  town = text;
-                                },
-                                initialValue: "${lis2?['town']}",
-                                enabled: notEnable,
-                                decoration: InputDecoration(
-                                  labelText: "Town",
-                                  labelStyle: TextStyle(color: color),
-                                  icon: Icon(Icons.location_city, color: color),
+                              Visibility(
+                                visible: deliveryData,
+                                child: TextFormField(
+                                  autovalidateMode: AutovalidateMode.always,
+                                  validator: (city) {
+                                    if (city!.length > 20 || city.length < 3) {
+                                      return "Invalid input";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  onSaved: (text) {
+                                    carModel = text;
+                                  },
+                                  initialValue: "${lis2?['carModel']}",
+                                  enabled: notEnable,
+                                  decoration: InputDecoration(
+                                    labelText: "Car Model",
+                                    labelStyle: TextStyle(color: color),
+                                    icon: Icon(Icons.car_crash, color: color),
+                                  ),
+                                ),
+                              ),
+                              Visibility(
+                                visible: deliveryData,
+                                child: Divider(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Visibility(
+                                visible: customerData,
+                                child: TextFormField(
+                                  autovalidateMode: AutovalidateMode.always,
+                                  validator: (city) {
+                                    if (city!.length > 20 || city.length < 3) {
+                                      return "Invalid input";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  onSaved: (text) {
+                                    town = text;
+                                  },
+                                  initialValue: "${lis2?['town']}",
+                                  enabled: notEnable,
+                                  decoration: InputDecoration(
+                                    labelText: "Town",
+                                    labelStyle: TextStyle(color: color),
+                                    icon:
+                                        Icon(Icons.location_city, color: color),
+                                  ),
+                                ),
+                              ),
+                              Visibility(
+                                visible: deliveryData,
+                                child: TextFormField(
+                                  autovalidateMode: AutovalidateMode.always,
+                                  validator: (city) {
+                                    if (city!.length > 20 || city.length < 7) {
+                                      return "Invalid input";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  onSaved: (text) {
+                                    carID = text;
+                                  },
+                                  initialValue: "${lis2?['carNumber']}",
+                                  enabled: notEnable,
+                                  decoration: InputDecoration(
+                                    labelText: "Car Number",
+                                    labelStyle: TextStyle(color: color),
+                                    icon: Icon(Icons.car_rental, color: color),
+                                  ),
                                 ),
                               ),
                               Divider(
                                 color: Colors.white,
                               ),
-                              TextFormField(
-                                autovalidateMode: AutovalidateMode.always,
-                                validator: (city) {
-                                  if (city!.length > 20 || city.length < 3) {
-                                    return "Invalid input";
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                onSaved: (text) {
-                                  street = text;
-                                },
-                                initialValue: "${lis2?['street']}",
-                                enabled: notEnable,
-                                decoration: InputDecoration(
-                                  labelText: "Street",
-                                  labelStyle: TextStyle(color: color),
-                                  icon: Icon(Icons.edit_location, color: color),
+                              Visibility(
+                                visible: customerData,
+                                child: TextFormField(
+                                  autovalidateMode: AutovalidateMode.always,
+                                  validator: (city) {
+                                    if (city!.length > 20 || city.length < 3) {
+                                      return "Invalid input";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  onSaved: (text) {
+                                    street = text;
+                                  },
+                                  initialValue: "${lis2?['street']}",
+                                  enabled: notEnable,
+                                  decoration: InputDecoration(
+                                    labelText: "Street",
+                                    labelStyle: TextStyle(color: color),
+                                    icon:
+                                        Icon(Icons.edit_location, color: color),
+                                  ),
                                 ),
                               ),
                               Divider(
@@ -958,90 +1133,94 @@ class _ProfileState extends State<Profile> {
                 /*************************************** End Personal Information ********************************** */
 
                 /*************************************** Start Favorite Information ********************************** */
-                Form(
-                  key: formStateForFavorite,
-                  child: Card(
-                    child: Column(
-                      children: [
-                        listTileInfo('Favorite Information',
-                            1), // a Function in Functions Section
-                        Container(
-                          child:
-                              wrapFavoriteContent(), // Wrap Function a Function in Functions Section
-                        ),
-                        Visibility(
-                            visible: showFavEdit,
-                            child: Column(
-                              children: [
-                                Divider(),
-                                ListTile(
-                                  title: Text(
-                                    "Choose your favorite",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
+                Visibility(
+                  visible: customerData,
+                  child: Form(
+                    key: formStateForFavorite,
+                    child: Card(
+                      child: Column(
+                        children: [
+                          listTileInfo('Favorite Information',
+                              1), // a Function in Functions Section
+                          Container(
+                            child:
+                                wrapFavoriteContent(), // Wrap Function a Function in Functions Section
+                          ),
+                          Visibility(
+                              visible: showFavEdit,
+                              child: Column(
+                                children: [
+                                  Divider(),
+                                  ListTile(
+                                    title: Text(
+                                      "Choose your favorite",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
-                                ),
-                                Container(
-                                  child:
-                                      wrapFavoriteContentCheckBox(), // Wrap Function a Function in Functions Section
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      right: 15, bottom: 15, left: 15),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: MaterialButton(
-                                          color: color,
-                                          onPressed: () async {
-                                            if (favorite.length >= 2) {
-                                              await deleteFav();
-                                              for (int i = 0;
-                                                  i < favorite.length;
-                                                  i++) {
-                                                await addFavoriteToDB(
-                                                    favorite[i]['id'],
-                                                    sharedPref.getString("id")!,
-                                                    favorite[i]['favName']);
+                                  Container(
+                                    child:
+                                        wrapFavoriteContentCheckBox(), // Wrap Function a Function in Functions Section
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(
+                                        right: 15, bottom: 15, left: 15),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: MaterialButton(
+                                            color: color,
+                                            onPressed: () async {
+                                              if (favorite.length >= 2) {
+                                                await deleteFav();
+                                                for (int i = 0;
+                                                    i < favorite.length;
+                                                    i++) {
+                                                  await addFavoriteToDB(
+                                                      favorite[i]['id'],
+                                                      sharedPref
+                                                          .getString("id")!,
+                                                      favorite[i]['favName']);
+                                                }
+                                                showSuccessSnackBarMSG();
+                                              } else {
+                                                showFaildSnackBarMSG(
+                                                    "You must choose at least 2 favorites");
                                               }
-                                              showSuccessSnackBarMSG();
-                                            } else {
-                                              showFaildSnackBarMSG(
-                                                  "You must choose at least 2 favorites");
-                                            }
-                                            setState(() {
-                                              showFavEdit = false;
-                                            });
-                                          },
-                                          child: Text(
-                                            "Save",
-                                            style:
-                                                TextStyle(color: Colors.white),
+                                              setState(() {
+                                                showFavEdit = false;
+                                              });
+                                            },
+                                            child: Text(
+                                              "Save",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: TextButton(
-                                          child: Text(
-                                            "Cancel",
-                                            style: TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 37, 179, 136)),
+                                        Expanded(
+                                          child: TextButton(
+                                            child: Text(
+                                              "Cancel",
+                                              style: TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 37, 179, 136)),
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                showFavEdit = false;
+                                              });
+                                            },
                                           ),
-                                          onPressed: () {
-                                            setState(() {
-                                              showFavEdit = false;
-                                            });
-                                          },
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ))
-                      ],
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ))
+                        ],
+                      ),
                     ),
                   ),
                 ),

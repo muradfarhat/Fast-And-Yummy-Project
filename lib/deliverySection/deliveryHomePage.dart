@@ -2,8 +2,8 @@ import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/deliverySection/orderMap.dart';
-import 'package:fast_and_yummy/deliverySection/profilePage.dart';
 import 'package:fast_and_yummy/main.dart';
+import 'package:fast_and_yummy/userpage/profile.dart';
 import 'package:flutter/material.dart';
 
 class homePageDelivery extends StatefulWidget {
@@ -88,7 +88,7 @@ class _homePageDeliveryState extends State<homePageDelivery> {
         //toolbarHeight: 0,
         backgroundColor: Color.fromARGB(255, 37, 179, 136),
       ),
-      body: orderMap(), //deliveryProfile(),
+      body: Profile("delivery"), //deliveryProfile(),
     );
   }
 

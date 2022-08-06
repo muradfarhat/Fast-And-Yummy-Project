@@ -44,6 +44,9 @@ class _orderMapState extends State<orderMap> {
       target: LatLng(cl.latitude, cl.longitude),
       zoom: 14.4746,
     );
+    setState(() {
+      currentLocation = cl;
+    });
     //return cl;
   }
 
@@ -54,7 +57,7 @@ class _orderMapState extends State<orderMap> {
     super.initState();
   }
 
-  Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController? gmc;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +75,7 @@ class _orderMapState extends State<orderMap> {
                       mapType: MapType.normal,
                       initialCameraPosition: _kGooglePlex!,
                       onMapCreated: (GoogleMapController controller) {
-                        _controller.complete(controller);
+                        gmc = controller;
                       },
                     ),
                   ),
@@ -82,18 +85,22 @@ class _orderMapState extends State<orderMap> {
               child: TextButton(
                 child: Text("Press"),
                 onPressed: () async {
-                  // var distance = Geolocator.distanceBetween(
-                  //     24.806681, 39.785371, 21.350781, 39.873319);
-                  // print("=========== values ===========");
-                  // print(distance / 1000.0);
+                  LatLng latlang = LatLng(24.806681, 39.785371);
+                  gmc!.animateCamera(CameraUpdate.newCameraPosition(
+                      CameraPosition(target: latlang, zoom: 10.0)));
 
-                  // currentLocation = await getLatAndLong();
-                  // print(currentLocation!.latitude);
-                  // print(currentLocation!.longitude);
-                  // List<Placemark> placemarks = await placemarkFromCoordinates(
-                  //     currentLocation!.latitude, currentLocation!.longitude);
-                  // print(placemarks[0].locality);
-                  // print("=========== values ===========");
+                  var distance = Geolocator.distanceBetween(
+                      24.806681, 39.785371, 21.350781, 39.873319);
+                  print("=========== values ===========");
+                  print(distance / 1000.0);
+
+                  //currentLocation = await getLatAndLong();
+                  print(currentLocation!.latitude);
+                  print(currentLocation!.longitude);
+                  List<Placemark> placemarks = await placemarkFromCoordinates(
+                      currentLocation!.latitude, currentLocation!.longitude);
+                  print(placemarks[0].locality);
+                  print("=========== values ===========");
                 },
               ),
             ),
