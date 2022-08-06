@@ -14,6 +14,12 @@ class homePageDelivery extends StatefulWidget {
 }
 
 class _homePageDeliveryState extends State<homePageDelivery> {
+  int selected = 1;
+  List<Widget> pagesContent = [
+    Profile("delivery"),
+    Text("Ready Orders"),
+    Text("Done Orders")
+  ];
   dynamic lis;
   bool loading = false;
   Api api = Api();
@@ -88,7 +94,25 @@ class _homePageDeliveryState extends State<homePageDelivery> {
         //toolbarHeight: 0,
         backgroundColor: Color.fromARGB(255, 37, 179, 136),
       ),
-      body: Profile("delivery"), //deliveryProfile(),
+      bottomNavigationBar: BottomNavigationBar(
+          onTap: (value) {
+            setState(() {
+              selected = value;
+            });
+          },
+          currentIndex: selected,
+          type: BottomNavigationBarType.fixed,
+          selectedIconTheme:
+              IconThemeData(color: Color.fromARGB(255, 37, 179, 136), size: 45),
+          selectedItemColor: Color.fromARGB(255, 37, 179, 136),
+          unselectedItemColor: Color.fromARGB(255, 157, 157, 157),
+          iconSize: 30,
+          items: [
+            bottomNavDesign("Profile", Icons.person),
+            bottomNavDesign("Ready Orders", Icons.map_outlined),
+            bottomNavDesign("Deliverd Orders", Icons.done),
+          ]),
+      body: pagesContent.elementAt(selected), //deliveryProfile(),
     );
   }
 
@@ -100,5 +124,13 @@ class _homePageDeliveryState extends State<homePageDelivery> {
         color: Color.fromARGB(255, 37, 179, 136),
       ),
     );
+  }
+
+  BottomNavigationBarItem bottomNavDesign(String name, IconData ic) {
+    return BottomNavigationBarItem(
+        icon: Icon(
+          ic,
+        ),
+        label: name);
   }
 }
