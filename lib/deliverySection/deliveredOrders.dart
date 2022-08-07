@@ -11,10 +11,13 @@ class doneOrders extends StatefulWidget {
 }
 
 class _doneOrdersState extends State<doneOrders> {
+  Color color = const Color.fromARGB(255, 37, 179, 136);
   List<dynamic> OrderData = [];
   List<dynamic> ready = [];
   List<dynamic> users = [];
   List<dynamic> productsInfo = [];
+
+  bool loading = true;
 
   Api api = Api();
   getOrderData() async {
@@ -70,6 +73,9 @@ class _doneOrdersState extends State<doneOrders> {
         });
       }
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -80,75 +86,86 @@ class _doneOrdersState extends State<doneOrders> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          ...List.generate(ready.length, (index) {
-            //ready.length
-            return Container(
-              width: double.infinity,
-              height: 220,
-              padding: const EdgeInsets.all(15),
-              margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              decoration: BoxDecoration(
-                border: Border.all(
-                    color: const Color.fromARGB(255, 197, 197, 197), width: 1),
-                borderRadius: BorderRadius.circular(15),
+      child: loading
+          ? SizedBox(
+              height: size.height,
+              width: size.width,
+              child: Center(
+                child: CircularProgressIndicator(color: color),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                      "From : ${productsInfo.length == 0 ? "Null" : productsInfo[index]['storeName']}  - At Location",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18)),
-                  Text(
-                      "To : ${users.length == 0 ? "Null" : users[index]['first_name']} ${users.length == 0 ? "Null" : users[index]['last_name']}  - At Location",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18)),
-                  Text(
-                      "Phone : 0${users.length == 0 ? "Null" : users[index]['phone']}",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18)),
-                  const Divider(),
-                  Row(
-                    children: [
-                      Text(
-                        "${productsInfo.length == 0 ? "Null" : productsInfo[index]['productName']}  |  ",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                      ),
-                      Text(
-                          "Quantity : ${ready.length == 0 ? "Null" : ready[index]['quantity']}")
-                    ],
-                  ),
-                  Text(
-                      "Price : \$ ${productsInfo.length == 0 ? "Null" : (double.parse(productsInfo[index]['price']) * double.parse(ready[index]['quantity']))}",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18)),
-                  Divider(),
-                  Container(
+            )
+          : Column(
+              children: [
+                ...List.generate(ready.length, (index) {
+                  //ready.length
+                  return Container(
                     width: double.infinity,
-                    height: 50,
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.only(left: 90),
-                    color: Colors.green[400],
-                    child: Row(
+                    height: 220,
+                    padding: const EdgeInsets.all(15),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 197, 197, 197),
+                          width: 1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Order Status : ${ready.length == 0 ? "Null" : ready[index]["status"]}",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
+                            "From : ${productsInfo.length == 0 ? "Null" : productsInfo[index]['storeName']}  - At Location",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18)),
+                        Text(
+                            "To : ${users.length == 0 ? "Null" : users[index]['first_name']} ${users.length == 0 ? "Null" : users[index]['last_name']}  - At Location",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18)),
+                        Text(
+                            "Phone : 0${users.length == 0 ? "Null" : users[index]['phone']}",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18)),
+                        const Divider(),
+                        Row(
+                          children: [
+                            Text(
+                              "${productsInfo.length == 0 ? "Null" : productsInfo[index]['productName']}  |  ",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                            Text(
+                                "Quantity : ${ready.length == 0 ? "Null" : ready[index]['quantity']}")
+                          ],
                         ),
+                        Text(
+                            "Price : \$ ${productsInfo.length == 0 ? "Null" : (double.parse(productsInfo[index]['price']) * double.parse(ready[index]['quantity']))}",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18)),
+                        Divider(),
+                        Container(
+                          width: double.infinity,
+                          height: 50,
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.only(left: 90),
+                          color: Colors.green[400],
+                          child: Row(
+                            children: [
+                              Text(
+                                "Order Status : ${ready.length == 0 ? "Null" : ready[index]["status"]}",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
-                  )
-                ],
-              ),
-            );
-          }),
-        ],
-      ),
+                  );
+                }),
+              ],
+            ),
     );
   }
 }
