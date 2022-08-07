@@ -1,9 +1,9 @@
 <?php
 include "../connect.php";
 $tableName = filtterreq("tableName");
-$id = filtterreq("userID");
-$stmt =$con ->prepare("SELECT * FROM `$tableName` WHERE `userID` = ?");
-$stmt->execute(array($id)); 
+$productID = filtterreq("productID");
+$stmt =$con ->prepare("SELECT * FROM `$tableName` WHERE `productID` = ?");
+$stmt->execute(array($productID)); 
 $data = $stmt->fetchAll(PDO::FETCH_ASSOC); 
 $count=$stmt->rowCount();
 

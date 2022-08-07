@@ -3,7 +3,7 @@
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:flutter/material.dart';
 
-import '../ProductInsideStore.dart';
+import '../productPages/ProductInsideStore.dart';
 import '../api/linkapi.dart';
 import '../main.dart';
 
@@ -117,10 +117,6 @@ class _InfoMyStoreState extends State<InfoMyStore> {
   @override
   Widget build(BuildContext context) {
     String toSend = "";
-    double earings = 300;
-    int myorder = 15;
-    int orderFdeliver = 3;
-    int orderInWait = 1;
     Size size = MediaQuery.of(context).size;
     return Container(
       padding: EdgeInsets.all(20),
@@ -296,7 +292,7 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                                       height: 80,
                                     ),
                                     Text(
-                                      "${lis2[i]['cateName']}",
+                                      "${lis2?[i]['cateName']}",
                                       style: TextStyle(fontSize: 12),
                                     )
                                   ],
@@ -408,8 +404,8 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              ProductInsideStore(productList)),
+                          builder: (context) => ProductInsideStore(
+                              productList?[index], cateNAME!)),
                     );
                   },
                   child: Icon(

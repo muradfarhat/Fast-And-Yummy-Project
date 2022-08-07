@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable, no_logic_in_create_state
 // ignore_for_file: prefer_const_literals_to_create_immutables
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 

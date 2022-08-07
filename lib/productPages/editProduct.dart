@@ -9,14 +9,16 @@ import '../api/api.dart';
 import '../api/linkapi.dart';
 import '../main.dart';
 
-class EditStore extends StatefulWidget {
-  const EditStore({Key? key}) : super(key: key);
+class EditProduct extends StatefulWidget {
+  String cat;
+  dynamic product;
+  EditProduct(this.product, this.cat, {Key? key}) : super(key: key);
 
   @override
-  State<EditStore> createState() => _EditStoreState();
+  State<EditProduct> createState() => _EditProductState();
 }
 
-class _EditStoreState extends State<EditStore> {
+class _EditProductState extends State<EditProduct> {
   GlobalKey<FormState> formStateForName = GlobalKey<FormState>();
   TextEditingController name = TextEditingController();
   File? file;
@@ -26,33 +28,19 @@ class _EditStoreState extends State<EditStore> {
   bool loading = false;
   Api api = Api();
   String? text;
-  String? storeName;
+  String? productName;
   bool visible = false;
   bool notEnable = false;
-  getStoreData() async {
+
+  editProductNaame() async {
     setState(() {
       loading = true;
     });
 
-    var resp = await api.postReq(storeInfo, {"id": sharedPref.getString("id")});
-    setState(() {
-      loading = false;
-    });
-    if (resp['status'] == "suc") {
-      setState(() {
-        lis = resp['data'];
-      });
-    } else {}
-  }
-
-  storeNameU() async {
-    setState(() {
-      loading = true;
-    });
-
-    var resp = await api.postReq(storeNameLink, {
-      "id": sharedPref.getString("id"),
-      "storeName": storeName,
+    var resp = await api.postReq(editProductNameLink, {
+      "productID": widget.product['productID'],
+      "tableName": widget.cat,
+      "productName": productName,
     });
     setState(() {
       loading = false;
@@ -66,7 +54,6 @@ class _EditStoreState extends State<EditStore> {
 
   @override
   void initState() {
-    getStoreData();
     super.initState();
   }
 
@@ -85,27 +72,16 @@ class _EditStoreState extends State<EditStore> {
     if (file == null) {
     } else {
       var resp = await api.postReqImage(
-          storeImageLink,
+          editProductImageLink,
           {
-            "id": sharedPref.getString("id"),
+            "id": widget.product['productID'],
+            "tableName": widget.cat,
           },
           _image!);
       if (resp['status'] == "suc") {
-        getStoreData();
         return true;
       }
     }
-  }
-
-  deleteStore() async {
-    var resp = await api.postReq(
-      deleteStoreLink,
-      {
-        "storeID": sharedPref.getString("id"),
-        "imagename": lis?['storeImage'],
-      },
-    );
-    if (resp['status'] == "suc") {}
   }
 
   Color color = Color.fromARGB(255, 37, 179, 136);
@@ -183,7 +159,7 @@ class _EditStoreState extends State<EditStore> {
                                         fit: BoxFit.cover,
                                       )
                                     : Image.network(
-                                        "$imageRoot/${lis?['storeImage']}",
+                                        "$imageRoot/${widget.product?['image']}",
                                         width: size.width,
                                         height: 230,
                                         fit: BoxFit.cover,
@@ -268,20 +244,21 @@ class _EditStoreState extends State<EditStore> {
                               children: [
                                 TextFormField(
                                   autovalidateMode: AutovalidateMode.always,
-                                  validator: (storeName) {
-                                    if (storeName!.length > 20 ||
-                                        storeName.length < 3) {
+                                  validator: (productName) {
+                                    if (productName!.length > 20 ||
+                                        productName.length < 3) {
                                       return "Invalid input";
                                     } else {
                                       return null;
                                     }
                                   },
                                   onSaved: (text) {
-                                    storeName = text;
+                                    productName = text;
                                   },
-                                  initialValue: "${lis?['storeName']}",
+                                  initialValue:
+                                      "${widget.product?['productName']}",
                                   decoration: InputDecoration(
-                                    labelText: "Store name",
+                                    labelText: "Product name",
                                     labelStyle: TextStyle(color: color),
                                   ),
                                 ),
@@ -315,12 +292,12 @@ class _EditStoreState extends State<EditStore> {
                                         MaterialButton(
                                           minWidth: 10,
                                           color: color,
-                                          onPressed: () {
+                                          onPressed: () async {
                                             var state =
                                                 formStateForName.currentState;
                                             state!.save();
-                                            uploadImageF();
-                                            storeNameU();
+                                            editProductNaame();
+                                            await uploadImageF();
                                             Navigator.pop(context);
                                             _image = null;
                                           },
@@ -353,133 +330,6 @@ class _EditStoreState extends State<EditStore> {
                   ),
                   SizedBox(
                     height: 30,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Column(
-                              children: [
-                                Text("Are you sure to deactivate your store ?"),
-                                SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.warning_amber_rounded,
-                                      size: 20,
-                                      color: Colors.yellow,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Flexible(
-                                      child: Text(
-                                        "All proudcts and info will be deleted",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    MaterialButton(
-                                      color: color,
-                                      onPressed: () {
-                                        setState(() {
-                                          deleteStore();
-                                          Navigator.popUntil(context,
-                                              (route) => route.isFirst);
-                                        });
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Icon(Icons.check,
-                                              color: Colors.white),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            "Yes",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    MaterialButton(
-                                      color: Colors.red,
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Icon(Icons.close,
-                                              color: Colors.white),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            "No",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color.fromARGB(255, 133, 133, 133),
-                              blurRadius: 8,
-                              offset: Offset(0, 3))
-                        ],
-                      ),
-                      margin: EdgeInsets.symmetric(horizontal: 15),
-                      width: size.width,
-                      height: 52,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.cancel_presentation,
-                              size: 30, color: Colors.white),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Deactivate my store",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: 20),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                 ],
               ),

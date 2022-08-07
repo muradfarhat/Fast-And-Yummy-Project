@@ -21,14 +21,20 @@ class AddPage extends StatefulWidget {
 
 class _AddPageState extends State<AddPage> {
   GlobalKey<FormState> formstate = GlobalKey();
+  GlobalKey<FormState> formstate2 = GlobalKey();
   TextEditingController name = TextEditingController();
   TextEditingController price = TextEditingController();
   TextEditingController image = TextEditingController();
+  TextEditingController description = TextEditingController();
+  TextEditingController addC = TextEditingController();
+  bool info = false;
+  bool cont = false;
   File? file;
   bool visible = false;
   Color color = Color.fromARGB(255, 37, 179, 136);
   var selected = 0;
   var category = [''];
+  List content = [];
   dynamic lis;
   bool skip = false;
   Api api = Api();
@@ -57,9 +63,20 @@ class _AddPageState extends State<AddPage> {
 
   addProduct() async {
     if (file == null) {
-      print("hello");
+      showFaildSnackBarMSG("Please chose image");
     } else {
-      if (formstate.currentState!.validate()) {
+      if (content.isEmpty) {
+        showFaildSnackBarMSG("You should add at least one content");
+      } else if (formstate.currentState!.validate()) {
+        String s = "";
+        setState(() {
+          for (int i = 0; i < content.length; i++) {
+            s += content[i];
+            if (i + 1 != content.length) {
+              s += " ";
+            }
+          }
+        });
         var resp = await api.postReqImage(
             addproductLink,
             {
@@ -68,16 +85,17 @@ class _AddPageState extends State<AddPage> {
               "storeName": widget.storeName,
               "userID": sharedPref.getString("id"),
               "price": price.text,
+              "description": description.text,
+              "content": s.toString()
             },
             file!);
+        content.clear();
         if (resp['status'] == "suc") {
           showSuccessSnackBarMSG();
           setState(() {
             skip = true;
           });
-        } else {
-          print("faild");
-        }
+        } else {}
       }
     }
   }
@@ -160,212 +178,380 @@ class _AddPageState extends State<AddPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ListTile(
-                            title: Text(
-                              "Add new product",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            trailing: Icon(
-                              Icons.edit_note_sharp,
-                              size: 30,
-                              color: Color.fromARGB(255, 37, 179, 136),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                info = !info;
+                              });
+                            },
+                            child: ListTile(
+                              title: Text(
+                                "Product Information",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              trailing: Icon(
+                                Icons.edit_note_sharp,
+                                size: 30,
+                                color: Color.fromARGB(255, 37, 179, 136),
+                              ),
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 15),
-                            width: size.width,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                textFieldDesign(
-                                    "Item product",
-                                    Icons.food_bank_outlined,
-                                    true,
-                                    name, (val) {
-                                  return validInput(val!, 4, 20, "ItemN");
-                                }),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Icon(
-                                      Icons.food_bank,
-                                      color: color,
-                                    ),
-                                    SizedBox(
-                                      width: 20,
-                                    ),
-                                    Flexible(
-                                      child: DropdownButton(
-                                        isExpanded: true,
-                                        value: dropdownvalue,
-                                        items: category.map((String items) {
-                                          return DropdownMenuItem(
-                                            value: items,
-                                            child: Text(
-                                              items,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                        onChanged: (String? value) {
-                                          setState(() {
-                                            print(dropdownvalue);
-                                            dropdownvalue = value!;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                textFieldDesign(
-                                    "Price", Icons.price_change, true, price,
-                                    (val) {
-                                  return validInput(val!, 3, 200, "price");
-                                }),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      visible = !visible;
-                                    });
-                                  },
-                                  child: textFieldDesign(
-                                      "Image Path", Icons.image, false, image,
-                                      (val) {
-                                    return validInput(val!, 0, 0, "image");
+                          Visibility(
+                            visible: info,
+                            child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 15),
+                              width: size.width,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  textFieldDesign(
+                                      "Item product",
+                                      Icons.food_bank_outlined,
+                                      true,
+                                      name, (val) {
+                                    return validInput(val!, 4, 20, "ItemN");
                                   }),
-                                ),
-                                Visibility(
-                                  visible: visible,
-                                  child: Row(
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      MaterialButton(
-                                        color:
-                                            Color.fromARGB(255, 179, 179, 189),
-                                        onPressed: () async {
-                                          XFile? xfile = await ImagePicker()
-                                              .pickImage(
-                                                  source: ImageSource.gallery);
-                                          file = File(xfile!.path);
-                                          setState(() {
-                                            image.text = xfile.path;
-                                          });
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Icon(
-                                                Icons
-                                                    .photo_camera_front_outlined,
-                                                color: Colors.white),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              "Gallery",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ],
-                                        ),
+                                      Icon(
+                                        Icons.food_bank,
+                                        color: color,
                                       ),
-                                      MaterialButton(
-                                        color:
-                                            Color.fromARGB(255, 179, 179, 189),
-                                        onPressed: () async {
-                                          XFile? xfile = await ImagePicker()
-                                              .pickImage(
-                                                  source: ImageSource.camera);
-
-                                          file = File(xfile!.path);
-                                          setState(() {
-                                            image.text = xfile.path;
-                                          });
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            Icon(Icons.camera_alt_outlined,
-                                                color: Colors.white),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              "Camera",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ],
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Flexible(
+                                        child: DropdownButton(
+                                          isExpanded: true,
+                                          value: dropdownvalue,
+                                          items: category.map((String items) {
+                                            return DropdownMenuItem(
+                                              value: items,
+                                              child: Text(
+                                                items,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              print(dropdownvalue);
+                                              dropdownvalue = value!;
+                                            });
+                                          },
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        height: 40,
-                                        width: 100,
-                                        color: Colors.white,
-                                        child: Text(
-                                          "Cancel",
-                                          style: TextStyle(color: color),
+                                  textFieldDesign(
+                                      "Price", Icons.price_change, true, price,
+                                      (val) {
+                                    return validInput(val!, 3, 200, "price");
+                                  }),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        visible = !visible;
+                                      });
+                                    },
+                                    child: textFieldDesign(
+                                        "Image Path", Icons.image, false, image,
+                                        (val) {
+                                      return validInput(val!, 0, 0, "image");
+                                    }),
+                                  ),
+                                  Visibility(
+                                    visible: visible,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        MaterialButton(
+                                          color: Color.fromARGB(
+                                              255, 179, 179, 189),
+                                          onPressed: () async {
+                                            XFile? xfile = await ImagePicker()
+                                                .pickImage(
+                                                    source:
+                                                        ImageSource.gallery);
+                                            file = File(xfile!.path);
+                                            setState(() {
+                                              image.text = xfile.path;
+                                            });
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Icon(
+                                                  Icons
+                                                      .photo_camera_front_outlined,
+                                                  color: Colors.white),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                "Gallery",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ],
+                                          ),
                                         ),
+                                        MaterialButton(
+                                          color: Color.fromARGB(
+                                              255, 179, 179, 189),
+                                          onPressed: () async {
+                                            XFile? xfile = await ImagePicker()
+                                                .pickImage(
+                                                    source: ImageSource.camera);
+
+                                            file = File(xfile!.path);
+                                            setState(() {
+                                              image.text = xfile.path;
+                                            });
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Icon(Icons.camera_alt_outlined,
+                                                  color: Colors.white),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                "Camera",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  TextFormField(
+                                    controller: description,
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
+                                    validator: ((value) {
+                                      if (value!.isEmpty) {
+                                        return "Cannot be empty !";
+                                      } else if (value.length < 10) {
+                                        return "Mustn't be less than 10 letter!";
+                                      } else {
+                                        return null;
+                                      }
+                                    }),
+                                    maxLines: 5,
+                                    maxLength: 150,
+                                    decoration: InputDecoration(
+                                      icon: Icon(
+                                        Icons.description,
+                                        color: color,
                                       ),
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1, color: color)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1, color: color)),
+                                      labelText: "Description",
+                                      labelStyle: TextStyle(color: color),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                cont = !cont;
+                              });
+                            },
+                            child: ListTile(
+                              title: Text(
+                                "Product Content",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              trailing: Icon(
+                                Icons.edit_note_sharp,
+                                size: 30,
+                                color: Color.fromARGB(255, 37, 179, 136),
+                              ),
+                            ),
+                          ),
+                          Form(
+                            key: formstate2,
+                            child: Visibility(
+                              visible: cont,
+                              child: Container(
+                                margin: EdgeInsets.symmetric(horizontal: 15),
+                                width: size.width,
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Flexible(
+                                          child: SizedBox(
+                                            width: size.width / 2,
+                                            child: TextFormField(
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return "Can't be empty";
+                                                }
+                                              },
+                                              maxLength: 10,
+                                              controller: addC,
+                                              cursorColor: Color.fromARGB(
+                                                  255, 21, 157, 117),
+                                              //controller: cont,
+                                              // validator: valid,
+                                              decoration: InputDecoration(
+                                                //  enabled: en,
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                focusedBorder:
+                                                    UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Color.fromARGB(
+                                                          255, 21, 157, 117)),
+                                                ),
+                                                enabledBorder:
+                                                    UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Color.fromARGB(
+                                                          255, 21, 157, 117)),
+                                                ),
+                                                //   hintText: hint,
+                                                fillColor: Colors.black,
+                                                hintStyle: TextStyle(
+                                                  fontFamily: "Prompt2",
+                                                ),
+                                                icon: Icon(
+                                                  Icons.content_paste_rounded,
+                                                  color: Color.fromARGB(
+                                                      255, 21, 157, 117),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          child: InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                if (formstate2.currentState!
+                                                    .validate()) {
+                                                  content.add(addC.text);
+                                                  addC.clear();
+                                                }
+                                              });
+                                            },
+                                            child: Icon(
+                                              Icons.add,
+                                              color: color,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     SizedBox(
-                                      width: 20,
+                                      height: 30,
                                     ),
-                                    InkWell(
-                                      onTap: () async {
-                                        await addProduct();
-                                        if (skip) {
-                                          setState(() {
-                                            skip = false;
-                                          });
-
-                                          Navigator.pop(context);
-                                        } else {
-                                          showFaildSnackBarMSG();
-                                        }
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        height: 40,
-                                        width: 100,
-                                        color: color,
-                                        child: Text(
-                                          "Save",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
+                                    content.isEmpty
+                                        ? Center(
+                                            child: Text(
+                                            "No content added",
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                          ))
+                                        : Wrap(
+                                            direction: Axis.horizontal,
+                                            children: listGenerate(),
+                                          ),
+                                    SizedBox(
+                                      height: 15,
                                     )
                                   ],
-                                )
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 40,
+                                    width: 100,
+                                    color: Colors.white,
+                                    child: Text(
+                                      "Cancel",
+                                      style: TextStyle(color: color),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    await addProduct();
+                                    if (skip) {
+                                      setState(() {
+                                        skip = false;
+                                      });
+
+                                      Navigator.pop(context);
+                                    }
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 40,
+                                    width: 100,
+                                    color: color,
+                                    child: Text(
+                                      "Save",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
+                          ),
+                          SizedBox(
+                            height: 40,
                           ),
                         ],
                       ),
@@ -375,6 +561,50 @@ class _AddPageState extends State<AddPage> {
               ),
             ),
     );
+  }
+
+  listGenerate() {
+    return List.generate(content.length, (index) {
+      return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  color: Color.fromARGB(255, 197, 197, 197), blurRadius: 4)
+            ],
+            borderRadius: BorderRadius.circular(30),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          margin: EdgeInsets.only(left: 5, bottom: 15, right: 5),
+          alignment: Alignment.center,
+          width: 150,
+          height: 40,
+          child: Row(
+            children: [
+              Expanded(child: Icon(Icons.fastfood)),
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                flex: 3,
+                child: Text(
+                  "${content[index]}", // ${favorite[index]['name']}
+                  textAlign: TextAlign.start,
+                  style: TextStyle(fontSize: 17),
+                ),
+              ),
+              Expanded(
+                  child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          content.removeAt(index);
+                        });
+                      },
+                      icon: Icon(Icons.close),
+                      splashColor: Colors.white))
+            ],
+          ));
+    });
   }
 
   validInput(String val, int min, int max, String str) {
@@ -472,12 +702,11 @@ class _AddPageState extends State<AddPage> {
     ));
   }
 
-  showFaildSnackBarMSG() {
+  showFaildSnackBarMSG(String text) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
       backgroundColor: Colors.red.withOpacity(0.7),
       content: Row(
-        // ignore: prefer_const_literals_to_create_immutables
         children: [
           Container(
             margin: const EdgeInsets.only(right: 15),
@@ -487,13 +716,13 @@ class _AddPageState extends State<AddPage> {
               size: 35,
             ),
           ),
-          const Text(
-            "Please chose image",
+          Text(
+            "$text",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           )
         ],
       ),
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(seconds: 1),
       margin: const EdgeInsets.all(20),
     ));
   }

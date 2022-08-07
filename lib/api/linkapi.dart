@@ -1,3 +1,5 @@
+// ignore_for_file: slash_for_doc_comments
+
 import 'package:flutter/cupertino.dart';
 
 const String linkServer = "http://10.0.2.2/Graduation-Project/php";
@@ -52,23 +54,28 @@ const String addToUserFavoriteTable =
 const String updateToCartTable =
     "$linkServer/userPagePHP/updateToCartTable.php";
 /***************************** End user pages links ********************** */
-
+///////////////store////////////////////
 const String updateTown = "$linkServer/auth/updateTown.php";
 const String updateCar = "$linkServer/auth/updateDeliveryCar.php";
-
 const String haveStore = "$linkServer/store/haveStore.php";
 const String storeInfo = "$linkServer/store/storeInfo.php";
 const String storeImageLink = "$linkServer/store/storeImage.php";
 const String storeNameLink = "$linkServer/store/storeName.php";
-const String bringProdectLink = "$linkServer/store/bringProdect.php";
-const String addproductLink = "$linkServer/store/addproduct.php";
-const String deleteproductLink = "$linkServer/store/deleteproduct.php";
 const String storesLink = "$linkServer/store/bringallstores.php";
 const String deleteStoreLink = "$linkServer/store/deleteStore.php";
 const String storeOrderLink = "$linkServer/store/storeOrder.php";
-
 const String rejectOrderLink = "$linkServer/store/rejectOrder.php";
 const String orderStateLink = "$linkServer/store/orderState.php";
+/////////////endstore///////////////////////
+///////////product///////////
+const String bringProdectLink = "$linkServer/product/bringProdect.php";
+const String addproductLink = "$linkServer/product/addproduct.php";
+const String deleteproductLink = "$linkServer/product/deleteproduct.php";
+const String editProductNameLink = "$linkServer/product/editProductName.php";
+const String bringProductLink = "$linkServer/product/BringProduct.php";
+const String editProductImageLink = "$linkServer/product/editProductImage.php";
+const String editDescLink = "$linkServer/product/editDesc.php";
+//////////////////////////////
 /******************************* Delivery page api ***************** */
 const String bringDeliveryReadyOrders =
     "$linkServer/deliveryPHP/bringOrders.php";

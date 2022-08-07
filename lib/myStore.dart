@@ -1,8 +1,11 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 // ignore_for_file: prefer_const_literals_to_create_immutables
+import 'dart:io';
+
 import 'package:fast_and_yummy/myStore/info.dart';
 import 'package:fast_and_yummy/myStore/order.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'api/api.dart';
 import 'api/linkapi.dart';
@@ -25,6 +28,7 @@ class _MyStoreState extends State<MyStore> {
   dynamic lis2;
   bool loading = false;
   Api api = Api();
+  File? file;
   getStoreData() async {
     setState(() {
       loading = true;
@@ -60,7 +64,8 @@ class _MyStoreState extends State<MyStore> {
   }
 
   changeHaveStore() async {
-    var resp = await api.postReq(haveStore, {"id": sharedPref.getString("id")});
+    var resp = await api.postReqImage(
+        haveStore, {"id": sharedPref.getString("id")}, file!);
 
     if (resp['status'] == "suc") {
       getData();
@@ -115,12 +120,19 @@ class _MyStoreState extends State<MyStore> {
                                         children: [
                                           MaterialButton(
                                             color: color,
-                                            onPressed: () {
-                                              setState(() {
-                                                changeHaveStore();
-                                                getStoreData();
-                                              });
-                                              Navigator.pop(context);
+                                            onPressed: () async {
+                                              XFile? xfile = await ImagePicker()
+                                                  .pickImage(
+                                                      source:
+                                                          ImageSource.gallery);
+                                              file = File(xfile!.path);
+                                              if (file != null) {
+                                                setState(() {
+                                                  changeHaveStore();
+                                                  getStoreData();
+                                                });
+                                                Navigator.pop(context);
+                                              }
                                             },
                                             child: Row(
                                               mainAxisAlignment:
@@ -213,19 +225,12 @@ class _MyStoreState extends State<MyStore> {
                         children: [
                           Stack(
                             children: [
-                              lis2?['storeImage'] == ""
-                                  ? Image.network(
-                                      "https://user-images.githubusercontent.com/43302778/106805462-7a908400-6645-11eb-958f-cd72b74a17b3.jpg",
-                                      width: size.width,
-                                      height: 200,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.network(
-                                      "$imageRoot/${lis2?['storeImage']}",
-                                      width: size.width,
-                                      height: 200,
-                                      fit: BoxFit.cover,
-                                    ),
+                              Image.network(
+                                "$imageRoot/${lis2?['storeImage']}",
+                                width: size.width,
+                                height: 200,
+                                fit: BoxFit.cover,
+                              ),
                               Container(
                                 height: 200,
                                 width: size.width,
@@ -289,8 +294,8 @@ class _MyStoreState extends State<MyStore> {
                                 InkWell(
                                   onTap: () {
                                     setState(() {
-                                      switchB = !switchB;
-                                      orderpage = !orderpage;
+                                      switchB = true;
+                                      orderpage = true;
                                     });
                                   },
                                   child: Text(
@@ -307,8 +312,8 @@ class _MyStoreState extends State<MyStore> {
                                 InkWell(
                                   onTap: () {
                                     setState(() {
-                                      orderpage = !orderpage;
-                                      switchB = !switchB;
+                                      orderpage = false;
+                                      switchB = false;
                                     });
                                   },
                                   child: Text(
