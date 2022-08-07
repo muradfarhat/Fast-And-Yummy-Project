@@ -10,7 +10,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class mapAfterSignup extends StatefulWidget {
-  mapAfterSignup({Key? key}) : super(key: key);
+  String id;
+  mapAfterSignup(this.id, {Key? key}) : super(key: key);
 
   @override
   State<mapAfterSignup> createState() => _mapAfterSignupState();
@@ -70,9 +71,9 @@ class _mapAfterSignupState extends State<mapAfterSignup> {
 
   saveLocation(double lat, double lng, String? cityL) async {
     var response = await _api.postReq(userMapSetLocation, {
-      "id": sharedPref.getString("id"),
-      "lat": lat,
-      "lng": lng,
+      "id": widget.id,
+      "lat": lat.toString(),
+      "lng": lng.toString(),
       "cityL": cityL
     });
     if (response['status'] == "suc") {

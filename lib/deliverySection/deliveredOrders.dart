@@ -29,6 +29,10 @@ class _doneOrdersState extends State<doneOrders> {
         OrderData = resp['data'];
       });
       getDeliveredOrders();
+    } else {
+      setState(() {
+        loading = false;
+      });
     }
   }
 

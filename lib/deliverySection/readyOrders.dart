@@ -30,6 +30,10 @@ class _readyOrderState extends State<readyOrder> {
         OrderData = resp['data'];
       });
       getReadyOrders();
+    } else {
+      setState(() {
+        loading = false;
+      });
     }
   }
 

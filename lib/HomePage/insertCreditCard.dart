@@ -35,7 +35,7 @@ class _insertCreditCardState extends State<insertCreditCard> {
     if (response['status'] == "suc") {
       showSuccessSnackBarMSG();
       Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-        return mapAfterSignup();
+        return mapAfterSignup(widget.userID);
       })));
     }
   }
@@ -252,7 +252,7 @@ class _insertCreditCardState extends State<insertCreditCard> {
                     onPressed: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: ((context) {
-                        return mapAfterSignup();
+                        return mapAfterSignup(widget.userID);
                       })));
                     },
                     child: Text("Skip",
