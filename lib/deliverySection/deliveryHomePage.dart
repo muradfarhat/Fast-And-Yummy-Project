@@ -2,6 +2,7 @@ import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/deliverySection/deliveredOrders.dart';
+import 'package:fast_and_yummy/deliverySection/mapAfterSignUp.dart';
 import 'package:fast_and_yummy/deliverySection/orderMap.dart';
 import 'package:fast_and_yummy/deliverySection/readyOrders.dart';
 import 'package:fast_and_yummy/main.dart';
@@ -17,7 +18,11 @@ class homePageDelivery extends StatefulWidget {
 
 class _homePageDeliveryState extends State<homePageDelivery> {
   int selected = 1;
-  List<Widget> pagesContent = [Profile("delivery"), readyOrder(), doneOrders()];
+  List<Widget> pagesContent = [
+    const Profile("delivery"),
+    readyOrder(),
+    doneOrders()
+  ];
   dynamic lis;
   bool loading = false;
   Api api = Api();
@@ -51,7 +56,7 @@ class _homePageDeliveryState extends State<homePageDelivery> {
             ? SizedBox(
                 height: size.height,
                 width: size.width,
-                child: Center(
+                child: const Center(
                   child: CircularProgressIndicator(
                       color: Color.fromARGB(255, 37, 179, 136)),
                 ),
@@ -60,13 +65,13 @@ class _homePageDeliveryState extends State<homePageDelivery> {
                 // ignore: prefer_const_literals_to_create_immutables
                 children: [
                   UserAccountsDrawerHeader(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Color.fromARGB(255, 37, 179, 136),
                       ),
                       currentAccountPicture: CircleAvatar(
                         backgroundColor: Colors.white,
                         backgroundImage: lis?['image'] == ""
-                            ? NetworkImage(
+                            ? const NetworkImage(
                                 "https://i.stack.imgur.com/l60Hf.png")
                             : NetworkImage("$imageRoot/${lis?['image']}"),
                       ),
@@ -78,7 +83,8 @@ class _homePageDeliveryState extends State<homePageDelivery> {
                         sharedPref.clear();
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
+                          MaterialPageRoute(
+                              builder: (context) => const HomePage()),
                         );
                       },
                       child: listTileDesgin(
@@ -90,7 +96,7 @@ class _homePageDeliveryState extends State<homePageDelivery> {
       ),
       appBar: AppBar(
         //toolbarHeight: 0,
-        backgroundColor: Color.fromARGB(255, 37, 179, 136),
+        backgroundColor: const Color.fromARGB(255, 37, 179, 136),
       ),
       bottomNavigationBar: BottomNavigationBar(
           onTap: (value) {
@@ -100,10 +106,10 @@ class _homePageDeliveryState extends State<homePageDelivery> {
           },
           currentIndex: selected,
           type: BottomNavigationBarType.fixed,
-          selectedIconTheme:
-              IconThemeData(color: Color.fromARGB(255, 37, 179, 136), size: 45),
-          selectedItemColor: Color.fromARGB(255, 37, 179, 136),
-          unselectedItemColor: Color.fromARGB(255, 157, 157, 157),
+          selectedIconTheme: const IconThemeData(
+              color: Color.fromARGB(255, 37, 179, 136), size: 45),
+          selectedItemColor: const Color.fromARGB(255, 37, 179, 136),
+          unselectedItemColor: const Color.fromARGB(255, 157, 157, 157),
           iconSize: 30,
           items: [
             bottomNavDesign("Profile", Icons.person),
@@ -119,7 +125,7 @@ class _homePageDeliveryState extends State<homePageDelivery> {
       title: Text(name),
       leading: Icon(
         ic,
-        color: Color.fromARGB(255, 37, 179, 136),
+        color: const Color.fromARGB(255, 37, 179, 136),
       ),
     );
   }

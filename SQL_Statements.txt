@@ -72,4 +72,6 @@ ALTER TABLE `cateName` ADD FOREIGN KEY (`storeName`) REFERENCES `store`(`storeNa
 ////////////////
 // Alert to myorders table
 ALTER TABLE `myorders_table` ADD `deliveryManID` VARCHAR(255) NOT NULL AFTER `storeID`; 
+// update users table
+ALTER TABLE `users` ADD `latitude` VARCHAR(255) NOT NULL AFTER `image`, ADD `longitude` VARCHAR(255) NOT NULL AFTER `latitude`, ADD `cityLocation` VARCHAR(255) NOT NULL AFTER `longitude`; 
 //

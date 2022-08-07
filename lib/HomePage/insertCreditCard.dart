@@ -1,6 +1,7 @@
 import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
+import 'package:fast_and_yummy/deliverySection/mapAfterSignUp.dart';
 import 'package:flutter/material.dart';
 
 class insertCreditCard extends StatefulWidget {
@@ -34,7 +35,7 @@ class _insertCreditCardState extends State<insertCreditCard> {
     if (response['status'] == "suc") {
       showSuccessSnackBarMSG();
       Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-        return HomePage();
+        return mapAfterSignup();
       })));
     }
   }
@@ -251,7 +252,7 @@ class _insertCreditCardState extends State<insertCreditCard> {
                     onPressed: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: ((context) {
-                        return HomePage();
+                        return mapAfterSignup();
                       })));
                     },
                     child: Text("Skip",

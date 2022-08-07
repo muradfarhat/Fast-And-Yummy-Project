@@ -102,14 +102,15 @@ class _doneOrdersState extends State<doneOrders> {
                   //ready.length
                   return Container(
                     width: double.infinity,
-                    height: 220,
+                    height: 225,
                     padding: const EdgeInsets.all(15),
                     margin: const EdgeInsets.symmetric(
                         horizontal: 15, vertical: 10),
                     decoration: BoxDecoration(
+                      color: Colors.white,
                       border: Border.all(
                           color: const Color.fromARGB(255, 197, 197, 197),
-                          width: 1),
+                          width: 2),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Column(
@@ -140,9 +141,8 @@ class _doneOrdersState extends State<doneOrders> {
                           ],
                         ),
                         Text(
-                            "Price : \$ ${productsInfo.length == 0 ? "Null" : (double.parse(productsInfo[index]['price']) * double.parse(ready[index]['quantity']))}",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18)),
+                            "Price : \$ ${productsInfo.length == 0 ? "Null" : (double.parse(productsInfo[index]['price']) * double.parse(ready[index]['quantity']))}  +  \$5.00  Delivery",
+                            style: const TextStyle(fontSize: 18)),
                         Divider(),
                         Container(
                           width: double.infinity,
