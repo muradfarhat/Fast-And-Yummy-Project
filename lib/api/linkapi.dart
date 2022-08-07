@@ -69,3 +69,9 @@ const String storeOrderLink = "$linkServer/store/storeOrder.php";
 
 const String rejectOrderLink = "$linkServer/store/rejectOrder.php";
 const String orderStateLink = "$linkServer/store/orderState.php";
+/******************************* Delivery page api ***************** */
+const String bringDeliveryReadyOrders =
+    "$linkServer/deliveryPHP/bringOrders.php";
+const String updateOrdersStatus =
+    "$linkServer/deliveryPHP/updateOrderStatus.php";
+/******************************* Delivery page api ***************** */

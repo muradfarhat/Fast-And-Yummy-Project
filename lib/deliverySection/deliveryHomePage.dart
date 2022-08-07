@@ -1,7 +1,9 @@
 import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
+import 'package:fast_and_yummy/deliverySection/deliveredOrders.dart';
 import 'package:fast_and_yummy/deliverySection/orderMap.dart';
+import 'package:fast_and_yummy/deliverySection/readyOrders.dart';
 import 'package:fast_and_yummy/main.dart';
 import 'package:fast_and_yummy/userpage/profile.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +17,7 @@ class homePageDelivery extends StatefulWidget {
 
 class _homePageDeliveryState extends State<homePageDelivery> {
   int selected = 1;
-  List<Widget> pagesContent = [
-    Profile("delivery"),
-    Text("Ready Orders"),
-    Text("Done Orders")
-  ];
+  List<Widget> pagesContent = [Profile("delivery"), readyOrder(), doneOrders()];
   dynamic lis;
   bool loading = false;
   Api api = Api();
