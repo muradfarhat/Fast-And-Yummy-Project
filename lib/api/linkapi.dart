@@ -75,6 +75,8 @@ const String editProductNameLink = "$linkServer/product/editProductName.php";
 const String bringProductLink = "$linkServer/product/BringProduct.php";
 const String editProductImageLink = "$linkServer/product/editProductImage.php";
 const String editDescLink = "$linkServer/product/editDesc.php";
+const String editContentLink = "$linkServer/product/editContent.php";
+const String priceLink = "$linkServer/product/editPrice.php";
 //////////////////////////////
 /******************************* Delivery page api ***************** */
 const String bringDeliveryReadyOrders =

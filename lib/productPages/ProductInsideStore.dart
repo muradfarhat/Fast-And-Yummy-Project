@@ -17,10 +17,6 @@ class ProductInsideStore extends StatefulWidget {
 class _ProductInsideStoreState extends State<ProductInsideStore> {
   @override
   void initState() {
-    var arr = widget.product['content'].split(" ");
-    for (int i = 0; i < arr.length; i++) {
-      content.add(arr[i]);
-    }
     bringProduct();
     super.initState();
   }
@@ -40,6 +36,11 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
     if (resp['status'] == "suc") {
       setState(() {
         list = resp['data'];
+        var arr = list[0]['content'].split(" ");
+        for (int i = 0; i < arr.length; i++) {
+          content.add(arr[i]);
+        }
+        contenttemp = content;
         print(list[0]['productName']);
       });
     } else {}
@@ -62,9 +63,58 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
     } else {}
   }
 
+  editPrice() async {
+    setState(() {
+      loading = true;
+    });
+
+    var resp = await api.postReq(priceLink, {
+      "tableName": widget.cat,
+      "productID": widget.product['productID'],
+      "price": newPrice.toString(),
+    });
+    setState(() {
+      loading = false;
+    });
+    if (resp['status'] == "suc") {
+    } else {}
+  }
+
+  editContent() async {
+    if (content.isEmpty) {
+      showFaildSnackBarMSG("Should be at least have one content");
+    } else {
+      setState(() {
+        loading = true;
+      });
+      String s = "";
+      setState(() {
+        for (int i = 0; i < content.length; i++) {
+          s += content[i];
+          if (i + 1 != content.length) {
+            s += " ";
+          }
+        }
+      });
+
+      showContentSave = false;
+      var resp = await api.postReq(editContentLink, {
+        "tableName": widget.cat,
+        "productID": widget.product['productID'],
+        "content": s.toString(),
+      });
+      setState(() {
+        loading = false;
+      });
+      if (resp['status'] == "suc") {
+      } else {}
+    }
+  }
+
   Color basicColor = Color.fromARGB(255, 37, 179, 136);
 
   List content = [];
+  List contenttemp = [];
   String? newName;
   String? newDesc;
   String? newContent;
@@ -134,7 +184,8 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
     if (formDescData!.validate()) {
       formDescData.save();
 
-      print(newDesc);
+      editDesc();
+      bringProduct();
       return true;
     } else {
       return false;
@@ -161,7 +212,9 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
     if (formContentData!.validate()) {
       formContentData.save();
 
-      productContent.add({"name": newContent});
+      setState(() {
+        content.add(newContent);
+      });
 
       return true;
     } else {
@@ -287,11 +340,22 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                           child: Column(
                             children: [
                               TextFormField(
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "must write description";
+                                  } else if (value.length < 25) {
+                                    return "Invalid input";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                onSaved: (value) {
+                                  newDesc = value;
+                                },
                                 enabled: enableDescEdit,
                                 maxLength: 150,
                                 maxLines: 4,
-                                initialValue:
-                                    "${widget.product["description"]}",
+                                initialValue: "${list[0]["description"]}",
                                 decoration: InputDecoration(
                                     hintText: "Add Description"),
                               ),
@@ -304,15 +368,17 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                       Expanded(
                                         child: MaterialButton(
                                           color: basicColor,
-                                          onPressed: () {
+                                          onPressed: () async {
                                             if (EditDescriptionData()) {
                                               setState(() {
                                                 showDescriptionSave = false;
                                                 enableDescEdit = false;
                                               });
+
                                               showSuccessSnackBarMSG();
                                             } else {
-                                              showFaildSnackBarMSG();
+                                              showFaildSnackBarMSG(
+                                                  "Save Faild");
                                             }
                                           },
                                           child: Text(
@@ -358,25 +424,43 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                           Visibility(
                             visible: showContentSave,
                             child: Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
+                              margin: EdgeInsets.symmetric(horizontal: 15),
                               child: Column(
                                 children: [
-                                  TextFormField(
-                                    validator: (value) {
-                                      if (value!.isEmpty) {
-                                        return "must write description";
-                                      } else if (value.length <= 2) {
-                                        return "Invalid input";
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                    onSaved: (value) {
-                                      newContent = value;
-                                    },
-                                    maxLength: 12,
-                                    decoration: InputDecoration(
-                                        hintText: "Add Content"),
+                                  Row(
+                                    children: [
+                                      Flexible(
+                                        child: TextFormField(
+                                          validator: (value) {
+                                            if (value!.isEmpty) {
+                                              return "must content";
+                                            } else if (value.length <= 2) {
+                                              return "Invalid input";
+                                            } else {
+                                              return null;
+                                            }
+                                          },
+                                          onSaved: (value) {
+                                            newContent = value;
+                                          },
+                                          maxLength: 12,
+                                          decoration: InputDecoration(
+                                              hintText: "Add Content"),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          EditContentData();
+                                        },
+                                        child: Icon(
+                                          Icons.add,
+                                          color: basicColor,
+                                        ),
+                                      )
+                                    ],
                                   ),
                                   Container(
                                     margin: EdgeInsets.only(
@@ -386,15 +470,8 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                         Expanded(
                                           child: MaterialButton(
                                             color: basicColor,
-                                            onPressed: () {
-                                              if (EditContentData()) {
-                                                setState(() {
-                                                  showContentSave = false;
-                                                });
-                                                showSuccessSnackBarMSG();
-                                              } else {
-                                                showFaildSnackBarMSG();
-                                              }
+                                            onPressed: () async {
+                                              editContent();
                                             },
                                             child: Text(
                                               "Save",
@@ -525,12 +602,13 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                     onPressed: () {
                                       if (EditPriceData()) {
                                         setState(() {
+                                          editPrice();
                                           showPriceSave = false;
                                           enableEdit = false;
                                         });
                                         showSuccessSnackBarMSG();
                                       } else {
-                                        showFaildSnackBarMSG();
+                                        showFaildSnackBarMSG("Save Faild");
                                       }
                                     },
                                     child: Text(
@@ -642,7 +720,13 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                   child: IconButton(
                       onPressed: () {
                         setState(() {
-                          productContent.removeAt(index);
+                          if (content.length - 1 != 0) {
+                            content.removeAt(index);
+                            editContent();
+                          } else {
+                            showFaildSnackBarMSG(
+                                "Cann't delete, it should have at least on contetn");
+                          }
                         });
                       },
                       icon: Icon(Icons.close),
@@ -694,7 +778,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
     ));
   }
 
-  showFaildSnackBarMSG() {
+  showFaildSnackBarMSG(String text) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
       backgroundColor: Colors.red.withOpacity(0.7),
@@ -709,9 +793,12 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
               size: 35,
             ),
           ),
-          Text(
-            "Save Faild",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          Flexible(
+            child: Text(
+              "$text",
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
           )
         ],
       ),
