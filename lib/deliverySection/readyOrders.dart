@@ -1,5 +1,6 @@
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
+import 'package:fast_and_yummy/deliverySection/orderMap.dart';
 import 'package:fast_and_yummy/main.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class _readyOrderState extends State<readyOrder> {
   List<dynamic> users = [];
   List<dynamic> productsInfo = [];
   List<dynamic> colors = [];
+  Set<String> storesLocation = {};
 
   bool loading = true;
 
@@ -78,11 +80,21 @@ class _readyOrderState extends State<readyOrder> {
         setState(() {
           productsInfo.add(respo["data"][0]);
         });
+        getStoreLocation(ready[i]["storeID"]);
       }
     }
     setState(() {
       loading = false;
     });
+  }
+
+  getStoreLocation(String store) async {
+    var response = await api.postReq(storeInfo, {"id": store});
+    if (response['status'] == "suc") {
+      setState(() {
+        storesLocation.add(response['data']["cityLocation"]);
+      });
+    }
   }
 
   changeOrderStatus(String id) async {
@@ -113,13 +125,14 @@ class _readyOrderState extends State<readyOrder> {
                   //ready.length
                   return InkWell(
                     onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text("Hi"),
-                            );
-                          });
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: ((context) {
+                        return orderMap(
+                            ready[index]['storeID'],
+                            ready[index]['latitude'],
+                            ready[index]['longitude'],
+                            ready[index]['cityLocation']);
+                      })));
                     },
                     child: Container(
                       width: double.infinity,
@@ -138,33 +151,33 @@ class _readyOrderState extends State<readyOrder> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                              "From : ${productsInfo.length == 0 ? "Null" : productsInfo[index]['storeName']}  - At Location",
+                              "From : ${productsInfo.isEmpty ? "Null" : productsInfo[index]['storeName']}  - ${storesLocation.elementAt(index)}",
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18)),
                           Text(
-                              "To : ${users.length == 0 ? "Null" : users[index]['first_name']} ${users.length == 0 ? "Null" : users[index]['last_name']}  - At Location",
+                              "To : ${users.isEmpty ? "Null" : users[index]['first_name']} ${users.isEmpty ? "Null" : users[index]['last_name']}  - ${ready[index]['cityLocation']}",
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18)),
                           Text(
-                              "Phone : 0${users.length == 0 ? "Null" : users[index]['phone']}",
+                              "Phone : 0${users.isEmpty ? "Null" : users[index]['phone']}",
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18)),
                           const Divider(),
                           Row(
                             children: [
                               Text(
-                                "${productsInfo.length == 0 ? "Null" : productsInfo[index]['productName']}  |  ",
+                                "${productsInfo.isEmpty ? "Null" : productsInfo[index]['productName']}  |  ",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                               Text(
-                                  "Quantity : ${ready.length == 0 ? "Null" : ready[index]['quantity']}")
+                                  "Quantity : ${ready.isEmpty ? "Null" : ready[index]['quantity']}")
                             ],
                           ),
                           Text(
-                              "Price : \$ ${productsInfo.length == 0 ? "Null" : (double.parse(productsInfo[index]['price']) * double.parse(ready[index]['quantity']))}  +  \$5.00  Delivery",
+                              "Price : \$ ${productsInfo.isEmpty ? "Null" : (double.parse(productsInfo[index]['price']) * double.parse(ready[index]['quantity']))}  +  \$5.00  Delivery",
                               style: const TextStyle(fontSize: 18)),
-                          Divider(),
+                          const Divider(),
                           InkWell(
                             onTap: () {
                               if (ready.length != 0) {
@@ -182,7 +195,7 @@ class _readyOrderState extends State<readyOrder> {
                               width: double.infinity,
                               height: 50,
                               alignment: Alignment.center,
-                              padding: EdgeInsets.only(left: 90),
+                              padding: const EdgeInsets.only(left: 90),
                               color: colors.length == 0
                                   ? Colors.yellow[600]
                                   : colors[index],
@@ -190,8 +203,8 @@ class _readyOrderState extends State<readyOrder> {
                                 children: [
                                   Text(
                                     "Order Status : ${ready.length == 0 ? "Null" : ready[index]["status"]}",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.center,
                                   ),
                                 ],
