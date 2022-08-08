@@ -82,5 +82,7 @@ const String bringDeliveryReadyOrders =
 const String updateOrdersStatus =
     "$linkServer/deliveryPHP/updateOrderStatus.php";
 const String userMapSetLocation = "$linkServer/userPagePHP/userMapLocation.php";
+const String storeMapSetLocation =
+    "$linkServer/userPagePHP/storeMapLocation.php";
 /******************************* Delivery page api ***************** */
 const String coomentLink = "$linkServer/userPagePHP/cooment.php";

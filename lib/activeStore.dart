@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 // ignore_for_file: prefer_const_literals_to_create_immutables
 import 'dart:io';
+import 'package:fast_and_yummy/myStore/setStoreLocation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -171,6 +172,11 @@ class _ActiveStoreState extends State<ActiveStore> {
                             );
                           } else {
                             /////////////////////////go to select location///////////////////////////
+                            //StoreLocation
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: ((context) {
+                              return StoreLocation();
+                            })));
                             showSuccessSnackBarMSG("Select location",
                                 Colors.orange, Icons.location_on);
                           }
