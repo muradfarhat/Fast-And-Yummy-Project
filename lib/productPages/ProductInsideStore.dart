@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, slash_for_doc_comments, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, slash_for_doc_comments, non_constant_identifier_names, must_be_immutable
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/productPages/editProduct.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +8,7 @@ import '../main.dart';
 class ProductInsideStore extends StatefulWidget {
   dynamic product;
   String cat;
+  bool flag = false;
   ProductInsideStore(this.product, this.cat, {Key? key}) : super(key: key);
 
   @override
@@ -34,47 +35,34 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
       loading = false;
     });
     if (resp['status'] == "suc") {
-      setState(() {
-        list = resp['data'];
-        var arr = list[0]['content'].split(" ");
-        for (int i = 0; i < arr.length; i++) {
-          content.add(arr[i]);
-        }
-        contenttemp = content;
-        print(list[0]['productName']);
-      });
+      if (!widget.flag) {
+        setState(() {
+          list = resp['data'];
+          var arr = list[0]['content'].split(" ");
+          for (int i = 0; i < arr.length; i++) {
+            content.add(arr[i]);
+          }
+        });
+        widget.flag = true;
+      }
     } else {}
   }
 
-  editDesc() async {
+  editDescContentPrice(String reqName, String value) async {
     setState(() {
       loading = true;
     });
 
-    var resp = await api.postReq(editDescLink, {
+    var resp = await api.postReq(editInfo, {
       "tableName": widget.cat,
       "productID": widget.product['productID'],
-      "description": newDesc,
+      "reqName": reqName.toString(),
+      "value": value
     });
     setState(() {
       loading = false;
-    });
-    if (resp['status'] == "suc") {
-    } else {}
-  }
 
-  editPrice() async {
-    setState(() {
-      loading = true;
-    });
-
-    var resp = await api.postReq(priceLink, {
-      "tableName": widget.cat,
-      "productID": widget.product['productID'],
-      "price": newPrice.toString(),
-    });
-    setState(() {
-      loading = false;
+      widget.flag = true;
     });
     if (resp['status'] == "suc") {
     } else {}
@@ -95,19 +83,13 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
             s += " ";
           }
         }
+        setState(() {
+          showContentSave = false;
+          widget.flag = false;
+        });
       });
 
-      showContentSave = false;
-      var resp = await api.postReq(editContentLink, {
-        "tableName": widget.cat,
-        "productID": widget.product['productID'],
-        "content": s.toString(),
-      });
-      setState(() {
-        loading = false;
-      });
-      if (resp['status'] == "suc") {
-      } else {}
+      editDescContentPrice("content", s.toString());
     }
   }
 
@@ -184,7 +166,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
     if (formDescData!.validate()) {
       formDescData.save();
 
-      editDesc();
+      editDescContentPrice("description", newDesc!);
       bringProduct();
       return true;
     } else {
@@ -198,8 +180,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
     if (formPriceData!.validate()) {
       formPriceData.save();
 
-      product[0]["price"] = newPrice;
-
+      bringProduct();
       return true;
     } else {
       return false;
@@ -572,14 +553,20 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                     child: Container(
                                   margin: EdgeInsets.only(right: 10),
                                   child: TextFormField(
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
                                     validator: (value) {
+                                      RegExp priceReg = RegExp(
+                                          r"^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$");
                                       if (value!.isEmpty) {
                                         return "you must add price";
-                                      } else if (double.parse(value) <= 0.0 ||
-                                          double.parse(value) > 150.0) {
-                                        return "invalid input";
-                                      } else {
-                                        return null;
+                                      }
+                                      if (!priceReg.hasMatch(value)) {
+                                        return "Price should\nhave only\n digits";
+                                      }
+
+                                      if (double.parse(value) > 200) {
+                                        return "Should be\nless than \$200";
                                       }
                                     },
                                     onSaved: (value) {
@@ -602,7 +589,9 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                     onPressed: () {
                                       if (EditPriceData()) {
                                         setState(() {
-                                          editPrice();
+                                          editDescContentPrice(
+                                              "price", newPrice.toString());
+                                          bringProduct();
                                           showPriceSave = false;
                                           enableEdit = false;
                                         });
@@ -637,9 +626,13 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                             ),
                           ),
                         ),
+                        SizedBox(
+                          height: 20,
+                        )
                       ],
                     ),
                   ),
+
                   /************************************ End Price Section ********************************* */
                 ],
               )),

@@ -37,10 +37,11 @@ class _EditProductState extends State<EditProduct> {
       loading = true;
     });
 
-    var resp = await api.postReq(editProductNameLink, {
-      "productID": widget.product['productID'],
+    var resp = await api.postReq(editInfo, {
       "tableName": widget.cat,
-      "productName": productName,
+      "productID": widget.product['productID'],
+      "reqName": "productName",
+      "value": productName
     });
     setState(() {
       loading = false;
