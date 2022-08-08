@@ -2,7 +2,7 @@
 
 import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/main.dart';
-import 'package:fast_and_yummy/myStore.dart';
+import 'package:fast_and_yummy/activeStore.dart';
 import 'package:fast_and_yummy/stores.dart';
 import 'package:fast_and_yummy/userpage/AboutPgae.dart';
 
@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 
 import '../api/api.dart';
 import '../api/linkapi.dart';
+import '../myStore/myStorePage.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({Key? key}) : super(key: key);
@@ -26,6 +27,7 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   dynamic lis;
+  dynamic lis2;
   bool loading = false;
   Api api = Api();
   getData() async {
@@ -39,6 +41,21 @@ class _UserPageState extends State<UserPage> {
       setState(() {
         lis = resp['data'];
         loading = false;
+      });
+    } else {}
+  }
+
+  getStoreData() async {
+    setState(() {
+      loading = true;
+    });
+    var resp = await api.postReq(storeInfo, {"id": sharedPref.getString("id")});
+    setState(() {
+      loading = false;
+    });
+    if (resp['status'] == "suc") {
+      setState(() {
+        lis2 = resp['data'];
       });
     } else {}
   }
@@ -144,14 +161,35 @@ class _UserPageState extends State<UserPage> {
                             Text(lis?['first_name'] + " " + lis?['last_name']),
                         accountEmail: Text(lis?['email'])),
                     InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => MyStore()),
-                          ).then((value) async {
-                            await getData();
-                          });
-                          ;
+                        onTap: () async {
+                          if (lis?['have_store'] == "yes") {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ActiveStore()),
+                            ).then((value) async {
+                              await getData();
+                            });
+                            getStoreData();
+                            if (lis2?['cityLocation'] == "") {
+                            } else {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MyStorePage()),
+                              ).then((value) async {
+                                await getData();
+                              });
+                            }
+                          } else {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ActiveStore()),
+                            ).then((value) async {
+                              await getData();
+                            });
+                          }
                         },
                         child: listTileDesgin(
                           "My Store",

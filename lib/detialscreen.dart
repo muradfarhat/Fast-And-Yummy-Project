@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable, no_logic_in_create_state
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
+import 'package:fast_and_yummy/api/api.dart';
 import 'package:flutter/material.dart';
 
 import 'api/linkapi.dart';
@@ -31,7 +32,6 @@ class _DetialscreenState extends State<Detialscreen> {
   ];
   @override
   void initState() {
-    print(widget.storeID);
     if (!widget.flag) {
       setState(() {
         var arr = widget.list['content'].split(",");
@@ -42,6 +42,14 @@ class _DetialscreenState extends State<Detialscreen> {
       });
     }
     super.initState();
+  }
+
+  Api api = Api();
+  addComment() async {
+    var resp = await api.postReq(coomentLink, {});
+
+    if (resp['status'] == "suc") {
+    } else {}
   }
 
   List content = [];
