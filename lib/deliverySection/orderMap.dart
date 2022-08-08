@@ -6,13 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 class orderMap extends StatefulWidget {
   String StoreID;
   String orderLat;
   String orderLng;
   String orderCity;
+  String orderName;
+  String phone;
+  String price;
   orderMap(this.StoreID, this.orderLat, this.orderLng, this.orderCity,
+      this.orderName, this.phone, this.price,
       {Key? key})
       : super(key: key);
 
@@ -28,6 +33,39 @@ class _orderMapState extends State<orderMap> {
   bool loading = true;
   Set<Marker> orderMark = {};
   Map storeInformation = {};
+
+  /********* For Line ***** */
+  Map<PolylineId, Polyline> polylines = {};
+  List<LatLng> polylineCoordinates = [];
+  PolylinePoints polylinePoints = PolylinePoints();
+
+  _addPolyLine() {
+    PolylineId id = PolylineId("poly");
+    Polyline polyline = Polyline(
+        width: 5,
+        polylineId: id,
+        color: basicColor,
+        points: polylineCoordinates);
+    polylines[id] = polyline;
+    setState(() {});
+  }
+
+  _getPolyline() async {
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      "AIzaSyDGsYZS1NKLmlMpI9ZyiNgzVeY_aZQXhAQ",
+      PointLatLng(double.parse(storeInformation['latitude']),
+          double.parse(storeInformation['longitude'])),
+      PointLatLng(double.parse(widget.orderLat), double.parse(widget.orderLng)),
+      travelMode: TravelMode.driving,
+    );
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    _addPolyLine();
+  }
+  /********* For line ***** */
 
   setMark() {
     setState(() {
@@ -91,6 +129,14 @@ class _orderMapState extends State<orderMap> {
     }
   }
 
+  calculateDistance(
+      double firstLat, double firstLng, double secondLat, double secondLng) {
+    var distance =
+        Geolocator.distanceBetween(firstLat, firstLng, secondLat, secondLng);
+
+    return (distance / 1000).toStringAsFixed(3);
+  }
+
   @override
   void initState() {
     getPosition();
@@ -120,24 +166,78 @@ class _orderMapState extends State<orderMap> {
             : Column(
                 children: [
                   _kGooglePlex == null
-                      ? CircularProgressIndicator()
+                      ? const CircularProgressIndicator()
                       : Container(
                           width: double.infinity,
                           height: 500,
                           child: GoogleMap(
+                            polylines: Set<Polyline>.of(polylines.values),
                             markers: orderMark,
                             myLocationEnabled: true,
                             mapType: MapType.normal,
                             initialCameraPosition: _kGooglePlex!,
                             onMapCreated: (GoogleMapController controller) {
                               gmc = controller;
+                              _getPolyline();
                             },
                           ),
                         ),
-                  Divider(),
+                  const Divider(),
                   Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(15),
                     child: Column(
-                      children: [],
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Expanded(
+                                child: Text(
+                              "Order Distance :",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )),
+                            Expanded(
+                                child: Text(
+                                    "${calculateDistance(double.parse(storeInformation['latitude']), double.parse(storeInformation['longitude']), double.parse(widget.orderLat), double.parse(widget.orderLng))} Km"))
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Expanded(
+                                child: Text("To :",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                            Expanded(child: Text("${widget.orderName}"))
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Expanded(
+                                child: Text("Phone :",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                            Expanded(child: Text("${widget.phone}"))
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Expanded(
+                                child: Text("At :",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                            Expanded(child: Text("${widget.orderCity}"))
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Expanded(
+                                child: Text("Price :",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold))),
+                            Expanded(child: Text("${widget.price}"))
+                          ],
+                        ),
+                      ],
                     ),
                   )
                   // Container(

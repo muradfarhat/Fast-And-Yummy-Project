@@ -131,7 +131,10 @@ class _readyOrderState extends State<readyOrder> {
                             ready[index]['storeID'],
                             ready[index]['latitude'],
                             ready[index]['longitude'],
-                            ready[index]['cityLocation']);
+                            ready[index]['cityLocation'],
+                            "${users[index]['first_name']} ${users[index]['last_name']}",
+                            users[index]['phone'],
+                            "\$${(double.parse(productsInfo[index]['price']) * double.parse(ready[index]['quantity']))}  +  \$5.00  Delivery");
                       })));
                     },
                     child: Container(
@@ -151,7 +154,7 @@ class _readyOrderState extends State<readyOrder> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                              "From : ${productsInfo.isEmpty ? "Null" : productsInfo[index]['storeName']}  - ${storesLocation.elementAt(index)}",
+                              "From : ${productsInfo.isEmpty ? "Null" : productsInfo[index]['storeName']}  - ${storesLocation.isEmpty ? "No Location" : storesLocation.elementAt(index)}",
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18)),
                           Text(
