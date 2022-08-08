@@ -1,37 +1,48 @@
-// ignore_for_file: prefer_const_constructors
-
-import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
+import 'package:fast_and_yummy/main.dart';
+import 'package:fast_and_yummy/userpage/oneOrader.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class mapAfterSignup extends StatefulWidget {
-  String id;
-  mapAfterSignup(this.id, {Key? key}) : super(key: key);
+class chooseLocation extends StatefulWidget {
+  String storeID;
+  String cateID;
+  String orderID;
+  String quantity;
+  chooseLocation(this.storeID, this.cateID, this.orderID, this.quantity,
+      {Key? key})
+      : super(key: key);
 
   @override
-  State<mapAfterSignup> createState() => _mapAfterSignupState();
+  State<chooseLocation> createState() => _chooseLocationState();
 }
 
-class _mapAfterSignupState extends State<mapAfterSignup> {
+class _chooseLocationState extends State<chooseLocation> {
   Color basicColor = const Color.fromARGB(255, 37, 179, 136);
   Position? currentLocation;
   LatLng? newLocation;
   CameraPosition? _kGooglePlex;
-  Api _api = Api();
+  GoogleMapController? gmc;
+  Map userInfo = {};
 
+  Api _api = Api();
   Set<Marker> myMark = {};
 
   setMark() {
     myMark.add(
       Marker(
-          markerId: MarkerId("Location"),
-          infoWindow: InfoWindow(title: "Your Location"),
-          position:
-              LatLng(currentLocation!.latitude, currentLocation!.longitude)),
+          markerId: const MarkerId("Location"),
+          infoWindow: const InfoWindow(title: "Your Location"),
+          position: LatLng(
+              userInfo.length == 0
+                  ? currentLocation!.latitude
+                  : double.parse(userInfo["latitude"]),
+              userInfo.length == 0
+                  ? currentLocation!.longitude
+                  : double.parse(userInfo["longitude"]))),
     );
   }
 
@@ -64,40 +75,33 @@ class _mapAfterSignupState extends State<mapAfterSignup> {
     setState(() {
       currentLocation = cl;
     });
-    setMark();
+
     //return cl;
   }
 
-  saveLocation(double lat, double lng, String? cityL) async {
-    var response = await _api.postReq(userMapSetLocation, {
-      "id": widget.id,
-      "lat": lat.toString(),
-      "lng": lng.toString(),
-      "cityL": cityL
-    });
+  getLocationFromDataBase() async {
+    var response =
+        await _api.postReq(getInfoLink, {"id": sharedPref.getString("id")});
     if (response['status'] == "suc") {
-      // Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
-      //   return HomePage();
-      // })));
-      Navigator.of(context).pushReplacementNamed("home");
+      setState(() {
+        userInfo = response['data'];
+      });
+      setMark();
     }
-  }
+  } //getInfoLink
 
   @override
   void initState() {
+    getLocationFromDataBase();
     getPosition();
     getLatAndLong();
     super.initState();
   }
 
-  GoogleMapController? gmc;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: basicColor,
-      ),
+      appBar: AppBar(backgroundColor: basicColor),
       body: SingleChildScrollView(
           child: Column(
         children: [
@@ -105,22 +109,25 @@ class _mapAfterSignupState extends State<mapAfterSignup> {
             alignment: Alignment.center,
             width: double.infinity,
             height: 70,
-            child: Text("Set Your Location.\nPut the red mark in your location",
-                style: TextStyle(fontSize: 18, color: Colors.grey),
+            child: const Text(
+                "Set Your Location.\nPut the red mark in your location",
+                style: const TextStyle(fontSize: 18, color: Colors.grey),
                 textAlign: TextAlign.center),
           ),
           _kGooglePlex == null
-              ? CircularProgressIndicator()
+              ? const CircularProgressIndicator()
               : Container(
                   width: double.infinity,
                   height: 500,
                   child: GoogleMap(
                     onTap: (LatLng t) {
                       setState(() {
-                        myMark.remove(Marker(markerId: MarkerId("Location")));
+                        myMark.remove(
+                            const Marker(markerId: MarkerId("Location")));
                         myMark.add(Marker(
-                            markerId: MarkerId("Location"),
-                            infoWindow: InfoWindow(title: "Your Location"),
+                            markerId: const MarkerId("Location"),
+                            infoWindow:
+                                const InfoWindow(title: "Your Location"),
                             position: t));
                         newLocation = t;
                       });
@@ -134,7 +141,7 @@ class _mapAfterSignupState extends State<mapAfterSignup> {
                     },
                   ),
                 ),
-          SizedBox(
+          const SizedBox(
             width: double.infinity,
             height: 20,
           ),
@@ -142,19 +149,35 @@ class _mapAfterSignupState extends State<mapAfterSignup> {
             color: basicColor,
             onPressed: () async {
               if (newLocation == null) {
-                List<Placemark> placemarks = await placemarkFromCoordinates(
-                    currentLocation!.latitude, currentLocation!.longitude);
-                await saveLocation(currentLocation!.latitude,
-                    currentLocation!.longitude, placemarks[0].locality);
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: ((context) {
+                  return OneOrder(
+                      widget.storeID,
+                      widget.cateID,
+                      widget.orderID,
+                      widget.quantity,
+                      double.parse(userInfo['latitude']),
+                      double.parse(userInfo['longitude']),
+                      userInfo['cityLocation']);
+                })));
               } else {
                 List<Placemark> placemarks = await placemarkFromCoordinates(
                     newLocation!.latitude, newLocation!.longitude);
-                await saveLocation(newLocation!.latitude,
-                    newLocation!.longitude, placemarks[0].locality);
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: ((context) {
+                  return OneOrder(
+                      widget.storeID,
+                      widget.cateID,
+                      widget.orderID,
+                      widget.quantity,
+                      newLocation!.latitude,
+                      newLocation!.longitude,
+                      placemarks[0].locality);
+                })));
               }
             },
-            child: Text(
-              "Save location and Continue",
+            child: const Text(
+              "Set Order Location",
               style: TextStyle(color: Colors.white),
             ),
           )
