@@ -69,9 +69,15 @@ CREATE TABLE `cateName` (
 
 ALTER TABLE `cateName` ADD FOREIGN KEY (`userID`) REFERENCES `store`(`storeID`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `cateName` ADD FOREIGN KEY (`storeName`) REFERENCES `store`(`storeName`) ON DELETE CASCADE ON UPDATE CASCADE;
-////////////////
+
+//////////////// New Sql Statements from Murad //////////////////////////
+
 // Alert to myorders table
 ALTER TABLE `myorders_table` ADD `deliveryManID` VARCHAR(255) NOT NULL AFTER `storeID`; 
 // update users table
 ALTER TABLE `users` ADD `latitude` VARCHAR(255) NOT NULL AFTER `image`, ADD `longitude` VARCHAR(255) NOT NULL AFTER `latitude`, ADD `cityLocation` VARCHAR(255) NOT NULL AFTER `longitude`; 
+// update store table for location
+ALTER TABLE `store` ADD `latitude` VARCHAR(255) NOT NULL AFTER `feedBack`, ADD `longitude` VARCHAR(255) NOT NULL AFTER `latitude`, ADD `cityLocation` VARCHAR(255) NOT NULL AFTER `longitude`; 
+// update my order table for location
+ALTER TABLE `myorders_table` ADD `latitude` VARCHAR(255) NOT NULL AFTER `time`, ADD `longitude` VARCHAR(255) NOT NULL AFTER `latitude`, ADD `cityLocation` VARCHAR(255) NOT NULL AFTER `longitude`; 
 //
