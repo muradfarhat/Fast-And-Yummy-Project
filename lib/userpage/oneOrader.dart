@@ -9,8 +9,8 @@ class OneOrder extends StatefulWidget {
   String cateID;
   String orderID;
   String quantity;
-  double latitude;
-  double lonitude;
+  double latitude; // .toString()
+  double lonitude; // .toString()
   String? cityLocation;
   OneOrder(this.storeID, this.cateID, this.orderID, this.quantity,
       this.latitude, this.lonitude, this.cityLocation,
