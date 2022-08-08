@@ -21,6 +21,7 @@ class _InfoMyStoreState extends State<InfoMyStore> {
     {"image": "images/cat/bot.jpg", "name": "French fries"},
     {"image": "images/cat/des.jpeg", "name": "Desserts"},
     {"image": "images/cat/drink.jpg", "name": "Soft drinks"},
+    {"image": "images/cat/drink.jpg", "name": "Soft drinks"},
   ];
   String? cateNAME;
   deletePoduct(String number, String image) async {

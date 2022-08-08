@@ -1,13 +1,13 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 //ignore_for_file: prefer_const_literals_to_create_immutables
+import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/detialscreen.dart';
 import 'package:flutter/material.dart';
 
 class ContDFSP extends StatelessWidget {
-  late String imags;
-  late String name;
-  late String price;
-  ContDFSP(this.imags, this.name, this.price, {Key? key}) : super(key: key);
+  dynamic product;
+  dynamic storeID;
+  ContDFSP(this.product, this.storeID, {Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -16,7 +16,7 @@ class ContDFSP extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Detialscreen(""),
+            builder: (context) => Detialscreen(product, storeID),
           ),
         );
       },
@@ -40,7 +40,8 @@ class ContDFSP extends StatelessWidget {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                   image: DecorationImage(
-                      fit: BoxFit.cover, image: NetworkImage(imags))),
+                      fit: BoxFit.cover,
+                      image: NetworkImage("$imageRoot/${product['image']}"))),
             ),
             Expanded(
               child: Container(
@@ -53,7 +54,7 @@ class ContDFSP extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            name,
+                            product['productName'],
                             overflow: TextOverflow.clip, // For text wraping
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
@@ -74,7 +75,7 @@ class ContDFSP extends StatelessWidget {
                       color: Colors.white,
                     ),
                     Text(
-                      "$price\$",
+                      "${product['price']}\$",
                       style: TextStyle(
                         color: Color.fromARGB(255, 37, 179, 136),
                         fontSize: 18,

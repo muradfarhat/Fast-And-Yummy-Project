@@ -26,6 +26,7 @@ class _StoreProductState extends State<StoreProduct> {
     {"image": "images/cat/bot.jpg", "name": "French fries"},
     {"image": "images/cat/des.jpeg", "name": "Desserts"},
     {"image": "images/cat/drink.jpg", "name": "Soft drinks"},
+    {"image": "images/cat/drink.jpg", "name": "Soft drinks"},
   ];
   dynamic lis2;
   String? cateNAME;
@@ -204,12 +205,7 @@ class _StoreProductState extends State<StoreProduct> {
       return Container(
         width: size.width,
         child: Column(
-          children: [
-            ContDFSP(
-                "$imageRoot/${productList[index]['image']}",
-                "${productList[index]['productName']}",
-                "${productList[index]['price']}"),
-          ],
+          children: [ContDFSP(productList[index],widget.storeData['storeID'])],
         ),
       );
     });

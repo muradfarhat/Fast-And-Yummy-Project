@@ -92,12 +92,12 @@ class _viewAllSuggState extends State<viewAllSugg> {
             return MaterialButton(
               padding: EdgeInsets.all(8),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          Detialscreen("${sugg[i]['image']}")),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) =>
+                //           Detialscreen()),
+                // );
               },
               child: Container(
                   padding: EdgeInsets.all(5),

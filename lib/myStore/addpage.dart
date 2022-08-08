@@ -243,8 +243,8 @@ class _AddPageState extends State<AddPage> {
                                           }).toList(),
                                           onChanged: (String? value) {
                                             setState(() {
-                                              print(dropdownvalue);
                                               dropdownvalue = value!;
+                                              print(dropdownvalue);
                                             });
                                           },
                                         ),
