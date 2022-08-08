@@ -240,66 +240,53 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
-                widget.lis?['category'] == ""
-                    ? Container(
-                        margin: EdgeInsets.only(top: 10),
-                        child: Text(
-                          "You didn't chose categories for your store yet, you can do that from go to store editing",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Color.fromARGB(255, 102, 102, 102),
+                SizedBox(
+                  height: 130,
+                  width: double.infinity,
+                  child: ListView.builder(
+                      itemCount: lis2?.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, i) {
+                        return MaterialButton(
+                          padding: EdgeInsets.all(8),
+                          onPressed: () {
+                            setState(() {
+                              cateNAME = lis2?[i]["cateName"];
+                            });
+                            bringProduct(lis2?[i]["cateName"]);
+                          },
+                          child: Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Color.fromARGB(
+                                              255, 197, 197, 197),
+                                          blurRadius: 4)
+                                    ],
+                                    border: Border.all(
+                                        color:
+                                            Color.fromARGB(255, 197, 197, 197),
+                                        width: 1),
+                                    borderRadius: BorderRadius.circular(15),
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: AssetImage(
+                                            "${categories[i]['image']}"))),
+                                margin: EdgeInsets.only(bottom: 8),
+                                width: 80,
+                                height: 80,
+                              ),
+                              Text(
+                                "${lis2?[i]['cateName']}",
+                                style: TextStyle(fontSize: 12),
+                              )
+                            ],
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      )
-                    : SizedBox(
-                        height: 130,
-                        width: double.infinity,
-                        child: ListView.builder(
-                            itemCount: lis2?.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, i) {
-                              return MaterialButton(
-                                padding: EdgeInsets.all(8),
-                                onPressed: () {
-                                  setState(() {
-                                    cateNAME = lis2?[i]["cateName"];
-                                  });
-                                  bringProduct(lis2?[i]["cateName"]);
-                                },
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Color.fromARGB(
-                                                    255, 197, 197, 197),
-                                                blurRadius: 4)
-                                          ],
-                                          border: Border.all(
-                                              color: Color.fromARGB(
-                                                  255, 197, 197, 197),
-                                              width: 1),
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: AssetImage(
-                                                  "${categories[i]['image']}"))),
-                                      margin: EdgeInsets.only(bottom: 8),
-                                      width: 80,
-                                      height: 80,
-                                    ),
-                                    Text(
-                                      "${lis2?[i]['cateName']}",
-                                      style: TextStyle(fontSize: 12),
-                                    )
-                                  ],
-                                ),
-                              );
-                            }),
-                      ),
+                        );
+                      }),
+                ),
                 find
                     ? Container(
                         margin: EdgeInsets.only(top: 15),
@@ -311,7 +298,7 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                         ),
                       )
                     : Column(
-                        children: listGenerate(toSend),
+                        children: listGenerate(),
                       ),
                 SizedBox(
                   height: 40,
@@ -321,7 +308,7 @@ class _InfoMyStoreState extends State<InfoMyStore> {
     );
   }
 
-  listGenerate(String s) {
+  listGenerate() {
     return List.generate(choice.length, (index) {
       return Container(
         padding: EdgeInsets.all(5),

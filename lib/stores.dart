@@ -100,7 +100,7 @@ class _StoresState extends State<Stores> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => StoreProduct(),
+                        builder: (context) => StoreProduct(allStores[i]),
                       ),
                     );
                   },
@@ -136,11 +136,8 @@ class _StoresState extends State<Stores> {
                                         topLeft: Radius.circular(15),
                                         topRight: Radius.circular(15)),
                                     image: DecorationImage(
-                                        image: allStores[i]['storeImage'] == ""
-                                            ? NetworkImage(
-                                                "https://user-images.githubusercontent.com/43302778/106805462-7a908400-6645-11eb-958f-cd72b74a17b3.jpg")
-                                            : NetworkImage(
-                                                "$imageRoot/${allStores[i]['storeImage']}"),
+                                        image: NetworkImage(
+                                            "$imageRoot/${allStores[i]['storeImage']}"),
                                         fit: BoxFit.cover)),
                               ),
                             ],

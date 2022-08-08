@@ -35,15 +35,17 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
       loading = false;
     });
     if (resp['status'] == "suc") {
+      setState(() {
+        list = resp['data'];
+      });
       if (!widget.flag) {
         setState(() {
-          list = resp['data'];
-          var arr = list[0]['content'].split(" ");
+          var arr = list[0]['content'].split(",");
           for (int i = 0; i < arr.length; i++) {
             content.add(arr[i]);
           }
+          widget.flag = true;
         });
-        widget.flag = true;
       }
     } else {}
   }
@@ -80,7 +82,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
         for (int i = 0; i < content.length; i++) {
           s += content[i];
           if (i + 1 != content.length) {
-            s += " ";
+            s += ",";
           }
         }
         setState(() {
@@ -168,6 +170,8 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
 
       editDescContentPrice("description", newDesc!);
       bringProduct();
+      print("he");
+
       return true;
     } else {
       return false;
@@ -180,6 +184,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
     if (formPriceData!.validate()) {
       formPriceData.save();
 
+      editDescContentPrice("price", newPrice.toString());
       bringProduct();
       return true;
     } else {
@@ -424,7 +429,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                           onSaved: (value) {
                                             newContent = value;
                                           },
-                                          maxLength: 12,
+                                          maxLength: 20,
                                           decoration: InputDecoration(
                                               hintText: "Add Content"),
                                         ),
@@ -574,7 +579,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                     },
                                     enabled: enableEdit,
                                     keyboardType: TextInputType.number,
-                                    initialValue: list[0]['price'],
+                                    initialValue: "${list[0]["price"]}",
                                     decoration: InputDecoration(
                                         prefix: Container(
                                             margin: EdgeInsets.only(right: 5),
@@ -586,12 +591,9 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                   visible: showPriceSave,
                                   child: MaterialButton(
                                     color: basicColor,
-                                    onPressed: () {
+                                    onPressed: () async {
                                       if (EditPriceData()) {
                                         setState(() {
-                                          editDescContentPrice(
-                                              "price", newPrice.toString());
-                                          bringProduct();
                                           showPriceSave = false;
                                           enableEdit = false;
                                         });
@@ -788,7 +790,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
           ),
           Flexible(
             child: Text(
-              "$text",
+              text,
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),

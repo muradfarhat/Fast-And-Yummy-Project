@@ -73,7 +73,7 @@ class _AddPageState extends State<AddPage> {
           for (int i = 0; i < content.length; i++) {
             s += content[i];
             if (i + 1 != content.length) {
-              s += " ";
+              s += ",";
             }
           }
         });
@@ -421,7 +421,7 @@ class _AddPageState extends State<AddPage> {
                                                   return "Can't be empty";
                                                 }
                                               },
-                                              maxLength: 10,
+                                              maxLength: 20,
                                               controller: addC,
                                               cursorColor: Color.fromARGB(
                                                   255, 21, 157, 117),

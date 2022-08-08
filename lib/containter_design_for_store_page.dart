@@ -40,7 +40,7 @@ class ContDFSP extends StatelessWidget {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                   image: DecorationImage(
-                      fit: BoxFit.cover, image: AssetImage(imags))),
+                      fit: BoxFit.cover, image: NetworkImage(imags))),
             ),
             Expanded(
               child: Container(
@@ -74,7 +74,7 @@ class ContDFSP extends StatelessWidget {
                       color: Colors.white,
                     ),
                     Text(
-                      price,
+                      "$price\$",
                       style: TextStyle(
                         color: Color.fromARGB(255, 37, 179, 136),
                         fontSize: 18,
