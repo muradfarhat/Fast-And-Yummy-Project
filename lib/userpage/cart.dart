@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/main.dart';
 import 'package:fast_and_yummy/userpage/oneOrader.dart';
+import 'package:fast_and_yummy/userpage/orderMapChoose.dart';
 import 'package:flutter/material.dart';
 import 'package:fast_and_yummy/api/api.dart';
 
@@ -258,7 +259,14 @@ class _CartState extends State<Cart> {
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
-                                                        OneOrder(),
+                                                        chooseLocation(
+                                                            myCart[i]['userID'],
+                                                            cartList[i]
+                                                                ['cateID'],
+                                                            myCart[i]
+                                                                ['productID'],
+                                                            cartList[i][
+                                                                'quantity']), //OneOrder(),
                                                   ),
                                                 );
                                               },

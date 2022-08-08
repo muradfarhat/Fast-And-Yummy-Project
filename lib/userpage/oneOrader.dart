@@ -5,7 +5,17 @@
 import 'package:flutter/material.dart';
 
 class OneOrder extends StatefulWidget {
-  const OneOrder({Key? key}) : super(key: key);
+  String storeID;
+  String cateID;
+  String orderID;
+  String quantity;
+  double latitude;
+  double lonitude;
+  String? cityLocation;
+  OneOrder(this.storeID, this.cateID, this.orderID, this.quantity,
+      this.latitude, this.lonitude, this.cityLocation,
+      {Key? key})
+      : super(key: key);
 
   @override
   State<OneOrder> createState() => _OneOrderState();
@@ -17,6 +27,19 @@ class _OneOrderState extends State<OneOrder> {
   double quantity = 2;
 
   double? ratio;
+
+  @override
+  void initState() {
+    print(widget.storeID);
+    print(widget.cateID);
+    print(widget.orderID);
+    print(widget.quantity);
+    print(widget.latitude);
+    print(widget.lonitude);
+    print(widget.cityLocation);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

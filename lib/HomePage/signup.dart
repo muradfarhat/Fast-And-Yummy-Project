@@ -322,7 +322,7 @@ class _SignUpState extends State<SignUp> {
           if (!phoneReg.hasMatch(val)) {
             return "Invalid phone number,\nplease check that number start with 59[2:9],56[2:9] \nand have only digits";
           }
-          if (val.length > 9) {
+          if (val.length > 10) {
             return "Invalid phone number, please check that have 9 digits";
           }
         }
