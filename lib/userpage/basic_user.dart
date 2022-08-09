@@ -161,7 +161,7 @@ class _UserPageState extends State<UserPage> {
                             Text(lis?['first_name'] + " " + lis?['last_name']),
                         accountEmail: Text(lis?['email'])),
                     InkWell(
-                        onTap: () {
+                        onTap: () async {
                           getData();
 
                           if (lis?['have_store'] == "yes") {
@@ -171,26 +171,20 @@ class _UserPageState extends State<UserPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ActiveStore()),
-                              ).then((value) async {
-                                await getData();
-                              });
+                              );
                             } else {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => MyStorePage()),
-                              ).then((value) async {
-                                await getData();
-                              });
+                              );
                             }
                           } else {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ActiveStore()),
-                            ).then((value) async {
-                              await getData();
-                            });
+                            );
                           }
                         },
                         child: listTileDesgin(

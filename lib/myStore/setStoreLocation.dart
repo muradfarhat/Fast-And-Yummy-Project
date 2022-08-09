@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/main.dart';
@@ -92,6 +94,7 @@ class _setStoreLocationState extends State<StoreLocation> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: basicColor,
