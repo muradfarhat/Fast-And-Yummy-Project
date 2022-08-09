@@ -75,7 +75,8 @@ class _setStoreLocationState extends State<StoreLocation> {
       "cityL": cityL
     });
     if (response['status'] == "suc") {
-      Navigator.of(context).push(MaterialPageRoute(builder: ((context) {
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: ((context) {
         return MyStorePage();
       })));
       // Navigator.of(context).pushReplacementNamed("home");
