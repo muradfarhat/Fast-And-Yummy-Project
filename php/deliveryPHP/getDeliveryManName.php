@@ -2,7 +2,7 @@
 include "../connect.php";
 $id = filtterreq("id");
 
-$stmt =$con ->prepare("SELECT `first_name`, `last_name` FROM `users` WHERE `id` = '".$id."'");
+$stmt =$con ->prepare("SELECT `first_name`, `last_name`, `phone` FROM `users` WHERE `id` = '".$id."'");
 $stmt->execute();     
 $user = $stmt->fetchAll(PDO::FETCH_ASSOC); 
 $count=$stmt->rowCount();

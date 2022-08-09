@@ -33,6 +33,7 @@ class _myOrderMapState extends State<myOrderMap> {
   Map deliveryInfo = {};
 
   String? deliveryManName;
+  String? phone;
 
   /********* For Line ***** */
   Map<PolylineId, Polyline> polylines = {};
@@ -152,6 +153,7 @@ class _myOrderMapState extends State<myOrderMap> {
       setState(() {
         deliveryManName =
             "${response['data'][0]["first_name"]} ${response['data'][0]["last_name"]}";
+        phone = response['data'][0]["phone"];
       });
     }
   }
@@ -238,6 +240,15 @@ class _myOrderMapState extends State<myOrderMap> {
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold))),
                               Expanded(child: Text("$deliveryManName"))
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Expanded(
+                                  child: Text("Phone :",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold))),
+                              Expanded(child: Text("$phone"))
                             ],
                           ),
                           Row(
