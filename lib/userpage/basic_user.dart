@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_new, slash_for_doc_comments, duplicate_ignore
+// ignore_for_file: prefer_const_constructors, unnecessary_new, slash_for_doc_comments, duplicate_ignore, use_build_context_synchronously
 
 import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/main.dart';
@@ -162,11 +162,11 @@ class _UserPageState extends State<UserPage> {
                         accountEmail: Text(lis?['email'])),
                     InkWell(
                         onTap: () async {
-                          getData();
-
+                          await getData();
+                          Future.delayed(Duration(seconds: 2));
                           if (lis?['have_store'] == "yes") {
                             getStoreData();
-                            if (lis2?['cityLocation'] == "") {
+                            if (lis2?['latitude'] == "") {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

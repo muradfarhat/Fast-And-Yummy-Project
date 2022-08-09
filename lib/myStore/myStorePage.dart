@@ -129,7 +129,8 @@ class _MyStorePageState extends State<MyStorePage> {
                         top: 10,
                         child: InkWell(
                           onTap: () {
-                            Navigator.pop(context);
+                            Navigator.popUntil(
+                                context, (route) => route.isFirst);
                           },
                           child: Icon(
                             Icons.arrow_back,
