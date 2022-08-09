@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:fast_and_yummy/userpage/myOrderMap.dart';
 import 'package:flutter/material.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
@@ -133,13 +134,23 @@ class _MyOrdersState extends State<MyOrders> {
                 itemBuilder: (context, i) {
                   return InkWell(
                     onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text("data $i"),
-                            );
-                          });
+                      if (myOrder[i]["delivery"] == 2) {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: ((context) {
+                          return myOrderMap(
+                              myOrder[i]['userID'],
+                              myOrderList[i]['deliveryManID'],
+                              myOrderList[i]['latitude'],
+                              myOrderList[i]['longitude'],
+                              myOrderList[i]['cityLocation'],
+                              myOrder[i]['name'],
+                              clacEachOrderPrice(
+                                      myOrder[i]["price"], myOrder[i]["number"])
+                                  .toStringAsFixed(2));
+                        })));
+                      } else {
+                        cancelOrderMSG("Order not on way !");
+                      }
                     },
                     child: Stack(
                       children: [
@@ -162,7 +173,8 @@ class _MyOrdersState extends State<MyOrders> {
                           children: [
                             InkWell(
                               onTap: () {
-                                if (myOrder[i]["delivery"] == 1) {
+                                if (myOrder[i]["delivery"] == 1 ||
+                                    myOrder[i]["delivery"] == 2) {
                                   cancelOrderMSG(
                                       "Cannot Cancel deliverd order");
                                 } else {
