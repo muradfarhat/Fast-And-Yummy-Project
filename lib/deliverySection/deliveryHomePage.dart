@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
@@ -8,6 +10,8 @@ import 'package:fast_and_yummy/deliverySection/readyOrders.dart';
 import 'package:fast_and_yummy/main.dart';
 import 'package:fast_and_yummy/userpage/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 class homePageDelivery extends StatefulWidget {
   homePageDelivery({Key? key}) : super(key: key);
@@ -40,10 +44,34 @@ class _homePageDeliveryState extends State<homePageDelivery> {
     } else {}
   }
 
+  setDeliveryLocation(String lat, String lng) async {
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(double.parse(lat), double.parse(lng));
+    var resp = await api.postReq(newLiveLocation, {
+      "id": sharedPref.getString("id"),
+      "lat": lat,
+      "lng": lng,
+      "cityL": placemarks[0].locality
+    });
+  }
+
   @override
   void initState() {
     getDeliveryData();
-
+    final LocationSettings locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 100,
+    );
+    StreamSubscription<Position> positionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((Position? position) {
+      setDeliveryLocation(
+          position!.latitude.toString(), position.longitude.toString());
+      print("Save Location");
+      print(position == null
+          ? 'Unknown'
+          : '${position.latitude.toString()}, ${position.longitude.toString()}');
+    });
     super.initState();
   }
 

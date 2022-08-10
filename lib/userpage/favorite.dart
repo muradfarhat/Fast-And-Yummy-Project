@@ -171,7 +171,7 @@ class _favoriteState extends State<favorite> {
                                     Container(
                                         margin: EdgeInsets.only(right: 3),
                                         child: Text(
-                                            "${myFav[i]["rate"].toString().substring(0, 3)}")),
+                                            "${myFav[i]["rate"].toString()}")), //.substring(0, 3)
                                     Icon(
                                       Icons.star,
                                       color: Colors.amberAccent,
