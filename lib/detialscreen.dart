@@ -121,8 +121,6 @@ class _DetialscreenState extends State<Detialscreen> {
     });
 
     bringRate();
-    if (resp['status'] == "suc") {
-    } else {}
   }
 
   bringRate() async {
@@ -174,7 +172,7 @@ class _DetialscreenState extends State<Detialscreen> {
       "userID": sharedPref.getString("id"),
       "cateID": widget.cateID.toString(),
       "orderID": widget.list['productID'],
-      "quantity": total.toString()
+      "quantity": count.toString()
     });
   }
 

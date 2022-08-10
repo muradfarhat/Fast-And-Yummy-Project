@@ -7,8 +7,8 @@ $rate = filtterreq('rate');
 $oldrate = filtterreq('oldrate');
 $cateID = filtterreq('cateID');
 
-$stmt = $con->prepare("SELECT * from `rating` where `userID`= ?");
-$stmt->execute(array($userID));
+$stmt = $con->prepare("SELECT * from `rating` where  `userID` = ? and `cateID` = ? and productID = ?");
+$stmt->execute(array($userID,$cateID,$productID));
 $count = $stmt->rowCount();
 
 
