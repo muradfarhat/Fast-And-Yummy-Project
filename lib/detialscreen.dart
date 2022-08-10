@@ -156,8 +156,6 @@ class _DetialscreenState extends State<Detialscreen> {
       loading3 = true;
     });
     var resp = await api.postReq(bringCommentLink, {
-      "userID": sharedPref.getString("id"),
-      "cateID": widget.cateID.toString(),
       "productID": widget.list['productID'],
     });
     setState(() {
@@ -614,6 +612,9 @@ class _DetialscreenState extends State<Detialscreen> {
                 ],
               ),
             ),
+            SizedBox(
+              height: 30,
+            )
           ],
         ),
       ),
