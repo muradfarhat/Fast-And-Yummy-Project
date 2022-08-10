@@ -42,6 +42,9 @@ class _SignInState extends State<SignIn> {
           loading = false;
         });
         sharedPref.setString("id", resp['data']['id'].toString());
+        sharedPref.setString(
+            "first_name", resp['data']['first_name'].toString());
+        sharedPref.setString("last_name", resp['data']['last_name'].toString());
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

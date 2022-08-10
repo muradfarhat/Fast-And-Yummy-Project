@@ -36,6 +36,7 @@ class _StoreProductState extends State<StoreProduct> {
   bool loading = false;
   bool find = false;
   Color color = Color.fromARGB(255, 37, 179, 136);
+  dynamic cateID;
   getCate() async {
     setState(() {
       loading = true;
@@ -129,6 +130,7 @@ class _StoreProductState extends State<StoreProduct> {
                             onPressed: () {
                               setState(() {
                                 cateNAME = lis2?[i]["cateName"];
+                                cateID = lis2?[i]["cateID"];
                               });
                               bringProduct(lis2?[i]["cateName"]);
                             },
@@ -205,7 +207,7 @@ class _StoreProductState extends State<StoreProduct> {
       return Container(
         width: size.width,
         child: Column(
-          children: [ContDFSP(productList[index],widget.storeData['storeID'])],
+          children: [ContDFSP(productList[index], widget.storeData['storeID'],cateID)],
         ),
       );
     });

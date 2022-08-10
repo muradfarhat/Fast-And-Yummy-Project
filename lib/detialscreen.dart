@@ -3,35 +3,40 @@
 
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'api/linkapi.dart';
-
-double count = 1.00;
-double price = 8.99;
-double total = price * count;
+import 'main.dart';
 
 class Detialscreen extends StatefulWidget {
   dynamic list;
   bool flag = false;
   dynamic storeID;
-  Detialscreen(this.list, this.storeID, {Key? key}) : super(key: key);
+  dynamic cateID;
+  Detialscreen(this.list, this.storeID, this.cateID, {Key? key})
+      : super(key: key);
 
   @override
   State<Detialscreen> createState() => _DetialscreenState();
 }
 
 class _DetialscreenState extends State<Detialscreen> {
+  double count = 1.00;
+  double total = 1.00;
   bool comment = false;
-  List<Map> feedback = [
-    {"name": "Murad Farhat", "comment": "Good Pizza"},
-    {"name": "Ra'ed Khwayreh", "comment": "Nice one"},
-    {"name": "Murad Farhat", "comment": "Good Pizza"},
-    {"name": "Ra'ed Khwayreh", "comment": "Nice one"},
-    {"name": "Murad Farhat", "comment": "Good Pizza"},
-    {"name": "Ra'ed Khwayreh", "comment": "Nice one"},
-  ];
+
+  List feedback = [];
+  bool enableRating = true;
+  double rate = 0.0;
+  double initalRate = 0.0;
+  dynamic feedBackList = [];
+  double? productRate;
+  bool? fav;
   @override
   void initState() {
+    total = double.parse(widget.list['price']) * count;
+    bringComments();
+    bringRate();
+    favourite();
     if (!widget.flag) {
       setState(() {
         var arr = widget.list['content'].split(",");
@@ -44,19 +49,145 @@ class _DetialscreenState extends State<Detialscreen> {
     super.initState();
   }
 
+  GlobalKey<FormState> formstate = GlobalKey();
+  TextEditingController commentField = TextEditingController();
   Api api = Api();
   addComment() async {
-    var resp = await api.postReq(coomentLink, {});
+    if (formstate.currentState!.validate()) {
+      String fullName =
+          "${sharedPref.getString("first_name")} ${sharedPref.getString("last_name")}";
 
+      var resp = await api.postReq(commentLink, {
+        "storeID": widget.storeID.toString(),
+        "userID": sharedPref.getString("id"),
+        "productID": widget.list['productID'],
+        "userName": fullName,
+        "comment": commentField.text,
+        "cateID": widget.cateID.toString(),
+      });
+
+      if (resp['status'] == "suc") {
+        setState(() {
+          commentField.clear();
+          comment = !comment;
+        });
+        bringComments();
+        showSuccessSnackBarMSG();
+      } else {}
+    }
+  }
+
+  setFav() async {
+    var resp = await api.postReq(setfavLink, {
+      "userID": sharedPref.getString("id"),
+      "orderID": widget.list['productID'],
+      "cateID": widget.cateID.toString(),
+    });
+
+    favourite();
+  }
+
+  favourite() async {
+    setState(() {
+      loading2 = true;
+    });
+    var resp = await api.postReq(favLink, {
+      "userID": sharedPref.getString("id"),
+      "orderID": widget.list['productID'],
+      "cateID": widget.cateID.toString(),
+    });
+    setState(() {
+      loading2 = false;
+    });
+    if (resp['status'] == "suc") {
+      setState(() {
+        fav = true;
+      });
+    } else {
+      setState(() {
+        fav = false;
+      });
+    }
+  }
+
+  rating() async {
+    var resp = await api.postReq(rateLink, {
+      "storeID": widget.storeID.toString(),
+      "userID": sharedPref.getString("id"),
+      "productID": widget.list['productID'],
+      "cateID": widget.cateID.toString(),
+      "rate": rate.toString(),
+      "oldrate": initalRate.toString()
+    });
+
+    bringRate();
     if (resp['status'] == "suc") {
     } else {}
   }
 
+  bringRate() async {
+    setState(() {
+      loading4 = true;
+    });
+    var resp = await api.postReq(bringRateLink, {
+      "userID": sharedPref.getString("id"),
+      "cateID": widget.cateID.toString(),
+      "productID": widget.list['productID'],
+    });
+    setState(() {
+      loading4 = false;
+    });
+    if (resp['status'] == "suc") {
+      setState(() {
+        initalRate = double.parse(resp['data']['rate']);
+        productRate = double.parse(resp["rate"]["rate"]);
+        String inString = productRate!.toStringAsFixed(2); // '2.35'
+        productRate = double.parse(inString);
+      });
+    } else {
+      productRate = double.parse(resp["rate"]["rate"]);
+      String inString = productRate!.toStringAsFixed(2); // '2.35'
+      productRate = double.parse(inString);
+    }
+  }
+
+  bringComments() async {
+    setState(() {
+      loading3 = true;
+    });
+    var resp = await api.postReq(bringCommentLink, {
+      "userID": sharedPref.getString("id"),
+      "cateID": widget.cateID.toString(),
+      "productID": widget.list['productID'],
+    });
+    setState(() {
+      loading3 = false;
+    });
+    if (resp['status'] == "suc") {
+      setState(() {
+        feedBackList = resp['data'];
+        feedback = feedBackList;
+      });
+    } else {}
+  }
+
+  addToCart() async {
+    var resp = await api.postReq(addToCartLink, {
+      "userID": sharedPref.getString("id"),
+      "cateID": widget.cateID.toString(),
+      "orderID": widget.list['productID'],
+      "quantity": total.toString()
+    });
+  }
+
   List content = [];
   bool visable = true;
-  Icon icone = Icon(Icons.favorite_border_outlined);
   bool love = false;
   Color color = Color.fromARGB(255, 37, 179, 136);
+  IconData icon = Icons.rate_review;
+  bool loading2 = false;
+  bool loading3 = false;
+  bool loading4 = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,9 +234,9 @@ class _DetialscreenState extends State<Detialscreen> {
                     Navigator.pop(context);
                   },
                 ),
-                Container(
-                  margin: EdgeInsets.only(
-                      left: 10, top: 150, right: 10, bottom: 10),
+                Positioned(
+                  left: 20,
+                  bottom: 15,
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -114,8 +245,7 @@ class _DetialscreenState extends State<Detialscreen> {
                             Container(
                               margin: EdgeInsets.only(right: 5),
                               child: Text(
-                                "${widget.list['rate']}",
-                                // ignore: prefer_const_constructors
+                                "$productRate",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold),
@@ -129,6 +259,32 @@ class _DetialscreenState extends State<Detialscreen> {
                         ),
                       ]),
                 ),
+                Positioned(
+                    right: 20,
+                    bottom: 15,
+                    child: loading2
+                        ? Center(
+                            child: CircularProgressIndicator(color: color),
+                          )
+                        : Container(
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(100))),
+                            child: InkWell(
+                              onTap: () {
+                                setFav();
+                              },
+                              child: Icon(
+                                fav!
+                                    ? Icons.favorite
+                                    : Icons.favorite_border_outlined,
+                                color: fav! ? Colors.red : Colors.black,
+                                size: 30,
+                              ),
+                            ),
+                          ))
               ],
             ),
             Container(
@@ -192,7 +348,6 @@ class _DetialscreenState extends State<Detialscreen> {
                     ),
                   ),
                   Card(
-                    // ignore: prefer_const_literals_to_create_immutables
                     child: Column(children: [
                       ListTile(
                         title: Text(
@@ -202,33 +357,86 @@ class _DetialscreenState extends State<Detialscreen> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(left: 10),
+                        margin: EdgeInsets.symmetric(horizontal: 15),
                         child: Row(
-                          children: [],
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            loading4
+                                ? Center(
+                                    child:
+                                        CircularProgressIndicator(color: color),
+                                  )
+                                : RatingBar.builder(
+                                    ignoreGestures: enableRating,
+                                    minRating: 0,
+                                    glow: false,
+                                    itemSize: 35,
+                                    initialRating: initalRate,
+                                    allowHalfRating: true,
+                                    itemBuilder: (context, _) => Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                    onRatingUpdate: (rating) {
+                                      rate = rating;
+                                    }),
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  enableRating
+                                      ? {enableRating = !enableRating}
+                                      : {
+                                          rating(),
+                                          enableRating = !enableRating
+                                        };
+                                });
+                              },
+                              child: Icon(
+                                enableRating ? Icons.rate_review : Icons.check,
+                                size: 30,
+                                color: color,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Container(
                         width: double.infinity,
                         height: 150,
                         margin: EdgeInsets.symmetric(horizontal: 10),
-                        child: ListView.builder(
-                            itemCount: feedback.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                  title: Text("${feedback[index]["name"]}"),
-                                  subtitle:
-                                      Text("${feedback[index]["comment"]}"),
-                                  leading: Container(
-                                    padding: EdgeInsets.all(15),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(30),
-                                        color: color),
-                                    child: Text("${index + 1}",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        )),
-                                  ));
-                            }),
+                        child: feedback.isEmpty
+                            ? Center(
+                                child: Text(
+                                  "No comment",
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.grey),
+                                ),
+                              )
+                            : loading3
+                                ? Center(
+                                    child:
+                                        CircularProgressIndicator(color: color),
+                                  )
+                                : ListView.builder(
+                                    itemCount: feedback.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                          title: Text(
+                                              "${feedBackList[index]["userName"]}"),
+                                          subtitle: Text(
+                                              "${feedBackList[index]["comment"]}"),
+                                          leading: Container(
+                                            padding: EdgeInsets.all(15),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                                color: color),
+                                            child: Text("${index + 1}",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                )),
+                                          ));
+                                    }),
                       ),
                       SizedBox(
                         height: 15,
@@ -266,31 +474,43 @@ class _DetialscreenState extends State<Detialscreen> {
                             SizedBox(
                               width: 10,
                             ),
-                            Visibility(
-                              visible: comment,
-                              child: Flexible(
-                                child: TextFormField(
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  cursorColor:
-                                      Color.fromARGB(255, 21, 157, 117),
-                                  decoration: InputDecoration(
-                                    hintText: "Add comment",
-                                    contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color.fromARGB(
-                                              255, 21, 157, 117)),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color.fromARGB(
-                                              255, 21, 157, 117)),
-                                    ),
-                                    fillColor: Colors.black,
-                                    hintStyle: TextStyle(
-                                      fontFamily: "Prompt2",
+                            Form(
+                              key: formstate,
+                              child: Visibility(
+                                visible: comment,
+                                child: Flexible(
+                                  child: TextFormField(
+                                    controller: commentField,
+                                    validator: (valid) {
+                                      if (valid!.isEmpty) {
+                                        return "Can't be empty";
+                                      }
+                                      if (valid.length < 4) {
+                                        return "Must be more than 3 letter";
+                                      }
+                                    },
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
+                                    cursorColor:
+                                        Color.fromARGB(255, 21, 157, 117),
+                                    decoration: InputDecoration(
+                                      hintText: "Add comment",
+                                      contentPadding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color.fromARGB(
+                                                255, 21, 157, 117)),
+                                      ),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color.fromARGB(
+                                                255, 21, 157, 117)),
+                                      ),
+                                      fillColor: Colors.black,
+                                      hintStyle: TextStyle(
+                                        fontFamily: "Prompt2",
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -304,7 +524,11 @@ class _DetialscreenState extends State<Detialscreen> {
                                     width: 10,
                                   ),
                                   InkWell(
-                                    onTap: () {},
+                                    onTap: () {
+                                      setState(() {
+                                        addComment();
+                                      });
+                                    },
                                     child: Icon(
                                       Icons.send,
                                       color: color,
@@ -326,7 +550,7 @@ class _DetialscreenState extends State<Detialscreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Request Details",
+                            "Quantity",
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
@@ -351,7 +575,9 @@ class _DetialscreenState extends State<Detialscreen> {
                                     onPressed: () {
                                       setState(() {
                                         count++;
-                                        total = price * count;
+                                        total =
+                                            double.parse(widget.list['price']) *
+                                                count;
                                       });
                                     },
                                     icon: Icon(Icons.add),
@@ -365,8 +591,12 @@ class _DetialscreenState extends State<Detialscreen> {
                                   IconButton(
                                     onPressed: () {
                                       setState(() {
-                                        count--;
-                                        total = price * count;
+                                        if (count != 1) {
+                                          count--;
+                                          total = double.parse(
+                                                  widget.list['price']) *
+                                              count;
+                                        }
                                       });
                                     },
                                     icon: Icon(
@@ -397,7 +627,7 @@ class _DetialscreenState extends State<Detialscreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Total: $total",
+                "Total:  $total \$",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               ElevatedButton.icon(
@@ -408,7 +638,7 @@ class _DetialscreenState extends State<Detialscreen> {
                 ),
                 onPressed: () {},
                 icon: Icon(
-                  Icons.shopping_cart_outlined,
+                  Icons.shopify,
                   color: Colors.black,
                 ),
                 label: Text(
@@ -422,6 +652,74 @@ class _DetialscreenState extends State<Detialscreen> {
               )
             ],
           ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Add to cart ?"),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        MaterialButton(
+                          color: Colors.amber,
+                          onPressed: () {
+                            addToCart();
+                            Navigator.pop(context);
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(Icons.check, color: Colors.black),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Yes",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ],
+                          ),
+                        ),
+                        MaterialButton(
+                          elevation: 0,
+                          color: Colors.white,
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Icon(Icons.close, color: Colors.black),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "No",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        backgroundColor: Colors.amber,
+        child: Icon(
+          Icons.shopping_cart_outlined,
+          color: Colors.black,
+          size: 30,
         ),
       ),
     );
@@ -465,5 +763,30 @@ class _DetialscreenState extends State<Detialscreen> {
       size: 28,
       color: Colors.amberAccent,
     );
+  }
+
+  showSuccessSnackBarMSG() {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: color.withOpacity(0.7),
+      content: Row(
+        children: [
+          Container(
+            margin: EdgeInsets.only(right: 15),
+            child: Icon(
+              Icons.check_circle_rounded,
+              color: Colors.white,
+              size: 35,
+            ),
+          ),
+          Text(
+            "Comment added,Thank you",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+      duration: Duration(seconds: 2),
+      margin: EdgeInsets.all(20),
+    ));
   }
 }

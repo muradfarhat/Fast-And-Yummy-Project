@@ -24,6 +24,7 @@ class _favoriteState extends State<favorite> {
     if (response['status'] == "suc") {
       setState(() {
         favList = response['data'];
+        // '2.35'
       });
       forLoopForProducts();
     }
@@ -169,7 +170,8 @@ class _favoriteState extends State<favorite> {
                                   children: [
                                     Container(
                                         margin: EdgeInsets.only(right: 3),
-                                        child: Text("${myFav[i]["rate"]}")),
+                                        child: Text(
+                                            "${myFav[i]["rate"].toString().substring(0, 3)}")),
                                     Icon(
                                       Icons.star,
                                       color: Colors.amberAccent,

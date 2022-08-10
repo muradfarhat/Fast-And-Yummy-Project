@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 class ContDFSP extends StatelessWidget {
   dynamic product;
   dynamic storeID;
-  ContDFSP(this.product, this.storeID, {Key? key}) : super(key: key);
+  dynamic cateID;
+  ContDFSP(this.product, this.storeID, this.cateID, {Key? key})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -16,7 +18,7 @@ class ContDFSP extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Detialscreen(product, storeID),
+            builder: (context) => Detialscreen(product, storeID,cateID),
           ),
         );
       },

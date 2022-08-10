@@ -75,6 +75,13 @@ const String editProductNameLink = "$linkServer/product/editProductName.php";
 const String bringProductLink = "$linkServer/product/BringProduct.php";
 const String editProductImageLink = "$linkServer/product/editProductImage.php";
 const String editInfo = "$linkServer/product/editProductInfo.php";
+const String commentLink = "$linkServer/product/comment.php";
+const String bringCommentLink = "$linkServer/product/bringComment.php";
+const String rateLink = "$linkServer/product/rate.php";
+const String bringRateLink = "$linkServer/product/bringRate.php";
+const String favLink = "$linkServer/product/bringIffav.php";
+const String setfavLink = "$linkServer/product/setFav.php";
+const String addToCartLink = "$linkServer/product/addToCart.php";
 //////////////////////////////
 /******************************* Delivery page api ***************** */
 const String bringDeliveryReadyOrders =
@@ -88,4 +95,4 @@ const String bringDeliveryInfo =
     "$linkServer/deliveryPHP/bringDeliveryManInfo.php";
 const String getDeliverName = "$linkServer/deliveryPHP/getDeliveryManName.php";
 /******************************* Delivery page api ***************** */
-const String coomentLink = "$linkServer/userPagePHP/cooment.php";
+

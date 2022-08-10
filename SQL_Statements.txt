@@ -69,7 +69,9 @@ CREATE TABLE `cateName` (
 
 ALTER TABLE `cateName` ADD FOREIGN KEY (`userID`) REFERENCES `store`(`storeID`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `cateName` ADD FOREIGN KEY (`storeName`) REFERENCES `store`(`storeName`) ON DELETE CASCADE ON UPDATE CASCADE;
-
+ALTER TABLE `cateName` ADD `description` TEXT NOT NULL AFTER `image`;
+ALTER TABLE `meats` ADD `content` VARCHAR(255) NOT NULL AFTER `description`;  
+ALTER TABLE `meats` ADD `#rate` INT NOT NULL AFTER `content`;
 //////////////// New Sql Statements from Murad //////////////////////////
 
 // Alert to myorders table
@@ -81,3 +83,23 @@ ALTER TABLE `store` ADD `latitude` VARCHAR(255) NOT NULL AFTER `feedBack`, ADD `
 // update my order table for location
 ALTER TABLE `myorders_table` ADD `latitude` VARCHAR(255) NOT NULL AFTER `time`, ADD `longitude` VARCHAR(255) NOT NULL AFTER `latitude`, ADD `cityLocation` VARCHAR(255) NOT NULL AFTER `longitude`; 
 //
+CREATE TABLE `feedback` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `storeID` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `productID` int(11) NOT NULL,
+  `userName` varchar(255) NOT NULL,
+  `comment` varchar(255) NOT NULL,
+  `cateID` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4
+
+CREATE TABLE `rating` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `productID` int(11) NOT NULL,
+  `cateID` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `storeID` int(11) NOT NULL,
+  `rate` double NOT NULL,
+  PRIMARY KEY (`id`),
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4
