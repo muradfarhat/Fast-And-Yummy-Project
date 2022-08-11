@@ -2,6 +2,7 @@
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/productPages/editProduct.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../main.dart';
 
@@ -19,6 +20,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
   @override
   void initState() {
     bringProduct();
+    bringComments();
     super.initState();
   }
 
@@ -110,30 +112,8 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
   bool showPriceSave = false;
   bool enableEdit = false;
 
-  List<Map> product = [
-    {
-      "image": "images/pizza.jpg",
-      "name": "Pizza",
-      "rate": "4.0",
-      "price": 8.99,
-      "description":
-          "a dish made typically of flattened bread dough spread with a savory mixture usually including tomatoes and cheese and often other toppings and baked"
-    }
-  ];
-  List<Map> productContent = [
-    {"name": "mushroom"},
-    {"name": "Onions"},
-    {"name": "Cheese"},
-  ];
-  List<Map> feedback = [
-    {"name": "Murad Farhat", "comment": "Good Pizza"},
-    {"name": "Ra'ed Khwayreh", "comment": "Nice one"},
-    {"name": "Murad Farhat", "comment": "Good Pizza"},
-    {"name": "Ra'ed Khwayreh", "comment": "Nice one"},
-    {"name": "Murad Farhat", "comment": "Good Pizza"},
-    {"name": "Ra'ed Khwayreh", "comment": "Nice one"},
-  ];
-
+  List feedback = [];
+  List feedback2 = [];
   GlobalKey<FormState> formStateForName =
       GlobalKey<FormState>(); // For Text Filed in name Info
 
@@ -162,6 +142,25 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
     }
   }
 
+  bool loading2 = false;
+  bringComments() async {
+    setState(() {
+      loading2 = true;
+    });
+    var resp = await api.postReq(bringCommentLink, {
+      "productID": widget.product['productID'],
+    });
+    setState(() {
+      loading2 = false;
+    });
+    if (resp['status'] == "suc") {
+      setState(() {
+        feedback2 = resp['data'];
+        feedback = feedback2;
+      });
+    } else {}
+  }
+
   bool EditDescriptionData() {
     var formDescData = formStateForDescription.currentState;
 
@@ -170,7 +169,6 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
 
       editDescContentPrice("description", newDesc!);
       bringProduct();
-      print("he");
 
       return true;
     } else {
@@ -276,7 +274,8 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                                   Container(
                                     margin: EdgeInsets.only(right: 5),
                                     child: Text(
-                                      "${list[0]['rate']}",
+                                      double.parse(list[0]['rate'])
+                                          .toStringAsFixed(2),
                                       // ignore: prefer_const_constructors
                                       style: TextStyle(
                                           color: Colors.white,
@@ -495,50 +494,53 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
                   /************************************ Start Feedback Section ********************************* */
                   Card(
                     // ignore: prefer_const_literals_to_create_immutables
-                    child: Column(children: [
-                      ListTile(
-                        title: Text(
-                          "Feedback",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Row(
-                          children: [
-                            starIcon("${product[0]["rate"]}", 1.0),
-                            starIcon("${product[0]["rate"]}", 2.0),
-                            starIcon("${product[0]["rate"]}", 3.0),
-                            starIcon("${product[0]["rate"]}", 4.0),
-                            starIcon("${product[0]["rate"]}", 5.0),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        height: 150,
-                        margin: EdgeInsets.symmetric(horizontal: 10),
-                        child: ListView.builder(
-                            itemCount: feedback.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                  title: Text("${feedback[index]["name"]}"),
-                                  subtitle:
-                                      Text("${feedback[index]["comment"]}"),
-                                  leading: Container(
-                                    padding: EdgeInsets.all(15),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(30),
-                                        color: basicColor),
-                                    child: Text("${index + 1}",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        )),
-                                  ));
-                            }),
-                      ),
-                    ]),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            title: Text(
+                              "Feedback",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 10),
+                            child: RatingBarIndicator(
+                              rating: double.parse(list[0]['rate']),
+                              itemSize: 35,
+                              itemBuilder: (context, _) => Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: 150,
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            child: ListView.builder(
+                                itemCount: feedback.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                      title: Text(
+                                          "${feedback[index]["userName"]}"),
+                                      subtitle:
+                                          Text("${feedback[index]["comment"]}"),
+                                      leading: Container(
+                                        padding: EdgeInsets.all(15),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                            color: basicColor),
+                                        child: Text("${index + 1}",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            )),
+                                      ));
+                                }),
+                          ),
+                        ]),
                   ),
                   /************************************ End Feedback Section ********************************* */
                   /************************************ Start Price Section ********************************* */
@@ -729,22 +731,6 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
             ],
           ));
     });
-  }
-
-  Icon starIcon(String rate, double num) {
-    if (double.parse(rate) >= num) {
-      return Icon(
-        Icons.star,
-        color: Colors.yellow[600],
-        size: 30,
-      );
-    } else {
-      return Icon(
-        Icons.star_border,
-        color: Colors.yellow[600],
-        size: 30,
-      );
-    }
   }
 
   showSuccessSnackBarMSG() {

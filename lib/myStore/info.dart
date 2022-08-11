@@ -2,6 +2,7 @@
 
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../productPages/ProductInsideStore.dart';
 import '../api/linkapi.dart';
@@ -352,34 +353,13 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                     "${productList[index]['price']} \$",
                     style: TextStyle(fontSize: 18),
                   ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star,
-                        size: 18,
-                        color: Colors.amberAccent,
-                      ),
-                      Icon(
-                        Icons.star,
-                        size: 18,
-                        color: Colors.amberAccent,
-                      ),
-                      Icon(
-                        Icons.star,
-                        size: 18,
-                        color: Colors.amberAccent,
-                      ),
-                      Icon(
-                        Icons.star,
-                        size: 18,
-                        color: Colors.amberAccent,
-                      ),
-                      Icon(
-                        Icons.star_border_outlined,
-                        size: 18,
-                        color: Colors.amberAccent,
-                      ),
-                    ],
+                  RatingBarIndicator(
+                    rating: double.parse(productList[index]['rate']),
+                    itemSize: 20,
+                    itemBuilder: (context, _) => Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
                   )
                 ],
               ),

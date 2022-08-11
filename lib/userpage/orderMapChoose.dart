@@ -7,20 +7,18 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class chooseLocation extends StatefulWidget {
-  String storeID;
-  String cateID;
-  String orderID;
-  String quantity;
-  chooseLocation(this.storeID, this.cateID, this.orderID, this.quantity,
+class ChooseLocation extends StatefulWidget {
+  dynamic list1;
+  dynamic list2;
+  ChooseLocation(this.list1, this.list2,
       {Key? key})
       : super(key: key);
 
   @override
-  State<chooseLocation> createState() => _chooseLocationState();
+  State<ChooseLocation> createState() => _ChooseLocationState();
 }
 
-class _chooseLocationState extends State<chooseLocation> {
+class _ChooseLocationState extends State<ChooseLocation> {
   Color basicColor = const Color.fromARGB(255, 37, 179, 136);
   Position? currentLocation;
   LatLng? newLocation;
@@ -28,7 +26,6 @@ class _chooseLocationState extends State<chooseLocation> {
   GoogleMapController? gmc;
   Map userInfo = {};
 
-  Api _api = Api();
   Set<Marker> myMark = {};
 
   setMark() {
@@ -66,6 +63,7 @@ class _chooseLocationState extends State<chooseLocation> {
     return per;
   }
 
+  final Api _api = Api();
   Future<void> getLatAndLong() async {
     Position cl = await Geolocator.getCurrentPosition().then((value) => value);
     _kGooglePlex = CameraPosition(
@@ -152,10 +150,8 @@ class _chooseLocationState extends State<chooseLocation> {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: ((context) {
                   return OneOrder(
-                      widget.storeID,
-                      widget.cateID,
-                      widget.orderID,
-                      widget.quantity,
+                      widget.list1,
+                      widget.list2,
                       double.parse(userInfo['latitude']),
                       double.parse(userInfo['longitude']),
                       userInfo['cityLocation']);
@@ -166,10 +162,8 @@ class _chooseLocationState extends State<chooseLocation> {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: ((context) {
                   return OneOrder(
-                      widget.storeID,
-                      widget.cateID,
-                      widget.orderID,
-                      widget.quantity,
+                      widget.list1,
+                      widget.list2,
                       newLocation!.latitude,
                       newLocation!.longitude,
                       placemarks[0].locality);

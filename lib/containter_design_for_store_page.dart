@@ -3,6 +3,7 @@
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/detialscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ContDFSP extends StatelessWidget {
   dynamic product;
@@ -18,7 +19,7 @@ class ContDFSP extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Detialscreen(product, storeID,cateID),
+            builder: (context) => Detialscreen(product, storeID, cateID),
           ),
         );
       },
@@ -61,15 +62,14 @@ class ContDFSP extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          Row(
-                            children: [
-                              iconDesign(1),
-                              iconDesign(1),
-                              iconDesign(1),
-                              iconDesign(0),
-                              iconDesign(0),
-                            ],
-                          ),
+                          RatingBarIndicator(
+                            rating: double.parse(product['rate']),
+                            itemSize: 20,
+                            itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -77,9 +77,8 @@ class ContDFSP extends StatelessWidget {
                       color: Colors.white,
                     ),
                     Text(
-                      "${product['price']}\$",
+                      "${product['price']} \$",
                       style: TextStyle(
-                        color: Color.fromARGB(255, 37, 179, 136),
                         fontSize: 18,
                       ),
                     )
@@ -90,14 +89,6 @@ class ContDFSP extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Icon iconDesign(int i) {
-    return Icon(
-      i == 1 ? Icons.star : Icons.star_border_outlined,
-      size: 18,
-      color: Colors.amberAccent,
     );
   }
 }

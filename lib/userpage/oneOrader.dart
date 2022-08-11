@@ -5,15 +5,13 @@
 import 'package:flutter/material.dart';
 
 class OneOrder extends StatefulWidget {
-  String storeID;
-  String cateID;
-  String orderID;
-  String quantity;
+  dynamic list1;
+  dynamic list2;
   double latitude; // .toString()
   double lonitude; // .toString()
   String? cityLocation;
-  OneOrder(this.storeID, this.cateID, this.orderID, this.quantity,
-      this.latitude, this.lonitude, this.cityLocation,
+  OneOrder(
+      this.list1, this.list2, this.latitude, this.lonitude, this.cityLocation,
       {Key? key})
       : super(key: key);
 
@@ -30,10 +28,10 @@ class _OneOrderState extends State<OneOrder> {
 
   @override
   void initState() {
-    print(widget.storeID);
-    print(widget.cateID);
-    print(widget.orderID);
-    print(widget.quantity);
+    print(widget.list1['userID']);
+    print(widget.list2['cateID']);
+    print(widget.list2['orderID']);
+    print(widget.list2['quantity']);
     print(widget.latitude);
     print(widget.lonitude);
     print(widget.cityLocation);

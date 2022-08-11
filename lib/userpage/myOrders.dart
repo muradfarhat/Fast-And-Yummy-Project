@@ -23,12 +23,13 @@ class _MyOrdersState extends State<MyOrders> {
   bringAllOrders() async {
     var respo = await api
         .postReq(bringUserMyOrdersProducts, {"id": sharedPref.getString("id")});
+
     if (respo['status'] == "suc") {
       setState(() {
         myOrderList = respo['data'];
       });
       forLoopForBringProduct();
-    }
+    } else {}
   }
 
   bringProductFromMyOrder(String cateID, String productID, String quantity,

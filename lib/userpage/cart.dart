@@ -253,15 +253,11 @@ class _CartState extends State<Cart> {
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                          builder: (context) => chooseLocation(
-                                                              cart[i]['userID']
-                                                                  .toString(),
-                                                              cart[i]['cateID']
-                                                                  .toString(),
-                                                              cart[i]['productID']
-                                                                  .toString(),
-                                                              cart[i][
-                                                                  "quantity"]), //OneOrder(),
+                                                          builder: (context) =>
+                                                              ChooseLocation(
+                                                                  myCart2[i],
+                                                                  cart[
+                                                                      i]), //OneOrder(),
                                                         ),
                                                       );
                                                     },
