@@ -81,9 +81,9 @@ class _MyOrdersState extends State<MyOrders> {
 
   int ifDelivery(String status) {
     int state = 0;
-    if (status == "on way") {
+    if (status == "In delivery") {
       state = 2;
-    } else if (status == "not") {
+    } else if (status == "In wait") {
       state = 0;
     } else if (status == "deliverd") {
       state = 1;

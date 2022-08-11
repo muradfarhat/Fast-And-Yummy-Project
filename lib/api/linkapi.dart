@@ -95,6 +95,9 @@ const String storeMapSetLocation =
 const String bringDeliveryInfo =
     "$linkServer/deliveryPHP/bringDeliveryManInfo.php";
 const String getDeliverName = "$linkServer/deliveryPHP/getDeliveryManName.php";
-const String newLiveLocation = "$linkServer/deliveryPHP/setLiveLocation.php";
+const String getDeliverActive = "$linkServer/deliveryPHP/getActiveDelivery.php";
+const String setDeliverActive = "$linkServer/deliveryPHP/setActiveDelivery.php";
+const String getAllDelivery = "$linkServer/deliveryPHP/bringAllDelivery.php";
+const String setManID = "$linkServer/deliveryPHP/setID.php";
 /******************************* Delivery page api ***************** */
 
