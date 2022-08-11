@@ -91,7 +91,7 @@ class _CartState extends State<Cart> {
                           )),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 150),
+                      margin: EdgeInsets.only(top: 150, bottom: 100),
                       child: ListView.builder(
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
@@ -259,7 +259,9 @@ class _CartState extends State<Cart> {
                                                                   cart[
                                                                       i]), //OneOrder(),
                                                         ),
-                                                      );
+                                                      ).then((value) {
+                                                        bringMyCart();
+                                                      });
                                                     },
                                                     child: Container(
                                                       padding:

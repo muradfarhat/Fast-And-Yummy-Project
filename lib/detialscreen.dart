@@ -2,6 +2,8 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:fast_and_yummy/api/api.dart';
+import 'package:fast_and_yummy/userpage/oneOrader.dart';
+import 'package:fast_and_yummy/userpage/orderMapChoose.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'api/linkapi.dart';
@@ -31,6 +33,8 @@ class _DetialscreenState extends State<Detialscreen> {
   dynamic feedBackList = [];
   double? productRate;
   bool? fav;
+
+  dynamic orderDetail = [];
   @override
   void initState() {
     total = double.parse(widget.list['price']) * count;
@@ -46,6 +50,15 @@ class _DetialscreenState extends State<Detialscreen> {
         widget.flag = true;
       });
     }
+    setState(() {
+      orderDetail.add({
+        "userID": sharedPref.getString('id'),
+        "storeID": widget.storeID,
+        "cateID": widget.cateID,
+        "orderID": widget.list['productID'],
+        "quantity": count.toString()
+      });
+    });
     super.initState();
   }
 
@@ -72,7 +85,8 @@ class _DetialscreenState extends State<Detialscreen> {
           comment = !comment;
         });
         bringComments();
-        showSuccessSnackBarMSG();
+        snackBarMSG(
+            "Comment added,Thank you", color, Icons.check_circle_outline, 2);
       } else {}
     }
   }
@@ -172,8 +186,19 @@ class _DetialscreenState extends State<Detialscreen> {
       "userID": sharedPref.getString("id"),
       "cateID": widget.cateID.toString(),
       "orderID": widget.list['productID'],
+      "storeID": widget.storeID.toString(),
       "quantity": count.toString()
     });
+    if (resp['status'] == "suc") {
+      snackBarMSG(
+          "This product already in cart,you can change quantity in your Cart Page",
+          Colors.orange,
+          Icons.cancel_outlined,
+          4);
+    } else {
+      snackBarMSG("Product added to your,Thank you", color,
+          Icons.check_circle_outline, 2);
+    }
   }
 
   List content = [];
@@ -626,7 +651,7 @@ class _DetialscreenState extends State<Detialscreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Total:  $total \$",
+                "Total:  ${total.toStringAsFixed(2)} \$",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               ElevatedButton.icon(
@@ -635,7 +660,25 @@ class _DetialscreenState extends State<Detialscreen> {
                       borderRadius: BorderRadius.circular(30)),
                   primary: Colors.amber,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    orderDetail.clear();
+                    orderDetail.add({
+                      "userID": sharedPref.getString('id'),
+                      "storeID": widget.storeID,
+                      "cateID": widget.cateID,
+                      "orderID": widget.list['productID'],
+                      "quantity": count.toString()
+                    });
+                  });
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChooseLocation(
+                          widget.list, orderDetail[0]), //OneOrder(),
+                    ),
+                  );
+                },
                 icon: Icon(
                   Icons.shopify,
                   color: Colors.black,
@@ -764,7 +807,7 @@ class _DetialscreenState extends State<Detialscreen> {
     );
   }
 
-  showSuccessSnackBarMSG() {
+  snackBarMSG(String text, Color color, IconData icon, int duration) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
       backgroundColor: color.withOpacity(0.7),
@@ -773,18 +816,21 @@ class _DetialscreenState extends State<Detialscreen> {
           Container(
             margin: EdgeInsets.only(right: 15),
             child: Icon(
-              Icons.check_circle_rounded,
+              icon,
               color: Colors.white,
               size: 35,
             ),
           ),
-          Text(
-            "Comment added,Thank you",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          Flexible(
+            child: Text(
+              text,
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
           )
         ],
       ),
-      duration: Duration(seconds: 2),
+      duration: Duration(seconds: duration),
       margin: EdgeInsets.all(20),
     ));
   }

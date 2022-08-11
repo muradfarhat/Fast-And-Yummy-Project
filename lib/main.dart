@@ -5,7 +5,6 @@ import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/deliverySection/deliveryHomePage.dart';
-import 'package:fast_and_yummy/deliverySection/mapAfterSignUp.dart';
 import 'package:fast_and_yummy/userpage/basic_user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

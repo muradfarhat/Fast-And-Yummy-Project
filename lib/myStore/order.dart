@@ -102,7 +102,12 @@ class _OrderMyStoreState extends State<OrderMyStore> {
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(
-                children: listGenerate(),
+                children: [
+                  ...listGenerate(),
+                  SizedBox(
+                    height: 80,
+                  )
+                ],
               ),
             ));
   }

@@ -12,8 +12,9 @@ for ($i = 0; $i < count($orders); $i++) {
     $stmt->execute();
     $cateName = $stmt->fetch(PDO::FETCH_ASSOC);
     $id3=$orders[$i]['storeID'];
+    $id4=$orders[$i]['orderID'];
     $cate=$cateName["cateName"];
-    $stmt = $con->prepare("SELECT * FROM `$cate` WHERE `userID` = $id3");
+    $stmt = $con->prepare("SELECT * FROM `$cate` WHERE `userID` = $id3 and `productID`= $id4");
     $stmt->execute();
     $proudct = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $cx=array_push($products,$proudct[0]);

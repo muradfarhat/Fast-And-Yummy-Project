@@ -1,17 +1,20 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, must_be_immutable
 
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 
+import '../api/api.dart';
+import '../api/linkapi.dart';
+
 class OneOrder extends StatefulWidget {
   dynamic list1;
   dynamic list2;
   double latitude; // .toString()
-  double lonitude; // .toString()
+  double longitude; // .toString()
   String? cityLocation;
   OneOrder(
-      this.list1, this.list2, this.latitude, this.lonitude, this.cityLocation,
+      this.list1, this.list2, this.latitude, this.longitude, this.cityLocation,
       {Key? key})
       : super(key: key);
 
@@ -23,25 +26,32 @@ class _OneOrderState extends State<OneOrder> {
   Color color = Color.fromARGB(255, 37, 179, 136);
   double price = 50;
   double quantity = 2;
-
   double? ratio;
+  Api api = Api();
+  addOrder() async {
+    var resp = await api.postReq(orderCompleteLink, {
+      "userID": widget.list2['userID'],
+      "cateID": widget.list2['cateID'],
+      "orderID": widget.list2['orderID'],
+      "storeID": widget.list2['storeID'],
+      "quantity": widget.list2['quantity'],
+      "latitude": widget.latitude.toString(),
+      "longitude": widget.longitude.toString(),
+      "cityLocation": widget.cityLocation,
+    });
+    if (resp['status'] == "suc") {
+      snackBarMSG("Added to orders", color, Icons.check_circle_outline, 2);
+    } else {}
+  }
 
   @override
   void initState() {
-    print(widget.list1['userID']);
-    print(widget.list2['cateID']);
-    print(widget.list2['orderID']);
-    print(widget.list2['quantity']);
-    print(widget.latitude);
-    print(widget.lonitude);
-    print(widget.cityLocation);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    double total = price * quantity;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -140,23 +150,40 @@ class _OneOrderState extends State<OneOrder> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          "FOOD NAME",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ),
                                         Column(
                                           children: [
                                             Text(
-                                              "Quantity",
+                                              "${widget.list1['productName']}",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                             Divider(
                                               height: 10,
                                               thickness: 5,
                                             ),
                                             Text(
-                                              "$quantity",
+                                              "Price : ${widget.list1['price']} \$",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          children: [
+                                            Text(
+                                              "Quantity",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Divider(
+                                              height: 10,
+                                              thickness: 5,
+                                            ),
+                                            Text(
+                                              "${widget.list2['quantity']}",
                                               style: TextStyle(fontSize: 16),
                                             )
                                           ],
@@ -165,12 +192,15 @@ class _OneOrderState extends State<OneOrder> {
                                           children: [
                                             Text(
                                               "Total price",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                             Divider(
                                               height: 10,
                                             ),
                                             Text(
-                                              "$total \$",
+                                              "${totalPrice(widget.list1['price'], widget.list2['quantity'])} \$",
                                               style: TextStyle(fontSize: 16),
                                             )
                                           ],
@@ -189,27 +219,6 @@ class _OneOrderState extends State<OneOrder> {
                     ),
                   ],
                 )),
-            Divider(
-              indent: 30,
-              endIndent: 30,
-              color: Color.fromARGB(255, 179, 179, 179),
-            ),
-            contDesign(
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Personal Info",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  rowDesgin("Name"),
-                  rowDesgin("Phone Number"),
-                  rowDesgin("City"),
-                  rowDesgin("Town"),
-                  rowDesgin("Street"),
-                ],
-              ),
-            ),
             Divider(
               indent: 30,
               endIndent: 30,
@@ -319,18 +328,74 @@ class _OneOrderState extends State<OneOrder> {
     return InkWell(
       onTap: () {
         if (bol == 0) {
-          Navigator.pop(context);
+          Navigator.popUntil(
+            context,
+            (route) => route.isFirst,
+          );
         } else {
           setState(() {
-            ratio = quantity * price * 0.2;
-          });
-          showDialog(
+            showDialog(
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: Text("App Ratio : $ratio"),
+                  title: Text("Are you sure of your data?"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          MaterialButton(
+                            color: color,
+                            onPressed: () {
+                              addOrder();
+                              Navigator.popUntil(
+                                context,
+                                (route) => route.isFirst,
+                              );
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(Icons.check, color: Colors.white),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "Yes",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                          MaterialButton(
+                            elevation: 0,
+                            color: Colors.white,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Icon(Icons.close, color: Colors.red),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "No",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 );
-              });
+              },
+            );
+          });
         }
       },
       child: Container(
@@ -345,5 +410,38 @@ class _OneOrderState extends State<OneOrder> {
         ),
       ),
     );
+  }
+
+  totalPrice(String quantity, String price) {
+    double total = double.parse(quantity) * double.parse(price);
+    return total;
+  }
+
+  snackBarMSG(String text, Color color, IconData icon, int duration) {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: color.withOpacity(0.7),
+      content: Row(
+        children: [
+          Container(
+            margin: EdgeInsets.only(right: 15),
+            child: Icon(
+              icon,
+              color: Colors.white,
+              size: 35,
+            ),
+          ),
+          Flexible(
+            child: Text(
+              text,
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          )
+        ],
+      ),
+      duration: Duration(seconds: duration),
+      margin: EdgeInsets.all(20),
+    ));
   }
 }

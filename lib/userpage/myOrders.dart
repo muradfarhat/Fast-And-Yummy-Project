@@ -51,7 +51,7 @@ class _MyOrdersState extends State<MyOrders> {
           "name": response['data'][0]['productName'],
           "store": response['data'][0]['storeName'],
           "rate": response['data'][0]['rate'],
-          "image": "php/images/${response['data'][0]['image']}",
+          "image": response['data'][0]['image'],
           "userID": response['data'][0]['userID'],
           "price": double.parse(response['data'][0]['price']),
           "totalBuy": response['data'][0]['totalBuy'],
@@ -162,7 +162,8 @@ class _MyOrdersState extends State<MyOrders> {
                           decoration: BoxDecoration(
                             image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: AssetImage("${myOrder[i]['image']}")),
+                                image: NetworkImage(
+                                    "$imageRoot/${myOrder[i]['image']}")),
                             border: Border.all(
                                 color: Color.fromARGB(255, 197, 197, 197),
                                 width: 1),

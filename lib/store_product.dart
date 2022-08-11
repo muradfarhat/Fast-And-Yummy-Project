@@ -207,7 +207,9 @@ class _StoreProductState extends State<StoreProduct> {
       return Container(
         width: size.width,
         child: Column(
-          children: [ContDFSP(productList[index], widget.storeData['storeID'],cateID)],
+          children: [
+            ContDFSP(productList[index], widget.storeData['storeID'], cateID)
+          ],
         ),
       );
     });

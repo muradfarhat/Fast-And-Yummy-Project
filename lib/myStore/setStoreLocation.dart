@@ -87,6 +87,7 @@ class _setStoreLocationState extends State<StoreLocation> {
 
   @override
   void initState() {
+
     getPosition();
     getLatAndLong();
     super.initState();

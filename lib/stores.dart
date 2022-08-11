@@ -102,7 +102,9 @@ class _StoresState extends State<Stores> {
                       MaterialPageRoute(
                         builder: (context) => StoreProduct(allStores[i]),
                       ),
-                    );
+                    ).then((value) {
+                      bringAllStores();
+                    });
                   },
                   child: Container(
                     margin: EdgeInsets.all(10),

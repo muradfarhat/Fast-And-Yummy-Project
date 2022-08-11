@@ -10,9 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class ChooseLocation extends StatefulWidget {
   dynamic list1;
   dynamic list2;
-  ChooseLocation(this.list1, this.list2,
-      {Key? key})
-      : super(key: key);
+  ChooseLocation(this.list1, this.list2, {Key? key}) : super(key: key);
 
   @override
   State<ChooseLocation> createState() => _ChooseLocationState();
