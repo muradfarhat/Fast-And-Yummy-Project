@@ -334,10 +334,13 @@ class _CartState extends State<Cart> {
                                                 IconButton(
                                                     onPressed: () {
                                                       setState(() {
-                                                        if (double.parse(cart[i]
-                                                                    [
-                                                                    "quantity"]) -
-                                                                1 >
+                                                        if ((double.parse(cart[
+                                                                            i][
+                                                                        "quantity"]) -
+                                                                    1) *
+                                                                double.parse(
+                                                                    myCart2[i][
+                                                                        "price"]) >=
                                                             double.parse(
                                                                 myCart2[i][
                                                                     "price"])) {
