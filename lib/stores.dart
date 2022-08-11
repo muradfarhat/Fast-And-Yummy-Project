@@ -155,15 +155,6 @@ class _StoresState extends State<Stores> {
                                   fontSize: 22,
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  iconDesign(1),
-                                  iconDesign(1),
-                                  iconDesign(1),
-                                  iconDesign(1),
-                                  iconDesign(0),
-                                ],
-                              ),
                             ],
                           ),
                         ),
