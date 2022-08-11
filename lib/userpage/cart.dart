@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/main.dart';
-import 'package:fast_and_yummy/userpage/oneOrader.dart';
 import 'package:fast_and_yummy/userpage/orderMapChoose.dart';
 import 'package:flutter/material.dart';
 import 'package:fast_and_yummy/api/api.dart';
@@ -339,12 +338,21 @@ class _CartState extends State<Cart> {
                                                 IconButton(
                                                     onPressed: () {
                                                       setState(() {
-                                                        cart[i]["quantity"] =
-                                                            (double.parse(cart[
-                                                                            i][
-                                                                        "quantity"]) -
-                                                                    1)
-                                                                .toString();
+                                                        if (double.parse(cart[i]
+                                                                    [
+                                                                    "quantity"]) -
+                                                                1 >
+                                                            double.parse(
+                                                                myCart2[i][
+                                                                    "price"])) {
+                                                          cart[i]["quantity"] =
+                                                              (double.parse(cart[
+                                                                              i]
+                                                                          [
+                                                                          "quantity"]) -
+                                                                      1)
+                                                                  .toString();
+                                                        }
                                                       });
                                                       updateCartTable(
                                                           cart[i]["id"]
@@ -398,12 +406,6 @@ class _CartState extends State<Cart> {
                   ),
                 ),
               ),
-              Positioned(
-                bottom: 0,
-                child: SizedBox(
-                  height: 500,
-                ),
-              )
             ],
           );
   }
