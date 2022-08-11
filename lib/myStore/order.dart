@@ -2,6 +2,7 @@
 
 import 'package:fast_and_yummy/main.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../api/api.dart';
 import '../api/linkapi.dart';
@@ -16,6 +17,8 @@ class OrderMyStore extends StatefulWidget {
 class _OrderMyStoreState extends State<OrderMyStore> {
   @override
   void initState() {
+    //getAllDeliveryMan();
+    bringStoreInfo();
     bringAllOrders();
     super.initState();
   }
@@ -23,6 +26,9 @@ class _OrderMyStoreState extends State<OrderMyStore> {
   Api api = Api();
   List<dynamic> myOrderList = [];
   List<dynamic> products = [];
+  Map storeInformation = {};
+  String? deliveryID;
+  bool getIDValue = true;
   bringAllOrders() async {
     var respo = await api
         .postReq(storeOrderLink, {"storeID": sharedPref.getString("id")});
@@ -46,6 +52,25 @@ class _OrderMyStoreState extends State<OrderMyStore> {
     if (respo['status'] == "suc") {
       bringAllOrders();
     } else {}
+  }
+
+  bringStoreInfo() async {
+    var respo =
+        await api.postReq(storeInfo, {"id": sharedPref.getString("id")});
+    if (respo['status'] == "suc") {
+      setState(() {
+        storeInformation = respo['data'];
+      });
+    }
+  }
+
+  setDeliveryManID(String id, String manID) async {
+    var respo = await api.postReq(setManID, {"id": id, "manID": manID});
+    if (respo['status'] == "suc") {
+      print("suc");
+    } else {
+      print("fild");
+    }
   }
 
   List<Map> myOrder = [
@@ -77,6 +102,7 @@ class _OrderMyStoreState extends State<OrderMyStore> {
 
   bool delevState = false;
   Color color = Colors.black;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -282,9 +308,36 @@ class _OrderMyStoreState extends State<OrderMyStore> {
                                 children: [
                                   MaterialButton(
                                     color: Color.fromARGB(255, 37, 179, 136),
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      String idForData = await getDeliverMan(
+                                          storeInformation["cityLocation"],
+                                          double.parse(
+                                              storeInformation["latitude"]),
+                                          double.parse(
+                                              storeInformation["longitude"]),
+                                          double.parse(
+                                              myOrderList[index]['latitude']),
+                                          double.parse(
+                                              myOrderList[index]['longitude']));
                                       setState(() {
-                                        changeState(myOrderList[index]['id']);
+                                        // here add algo
+
+                                        if (idForData == "no delivery in app") {
+                                          showFaildSnackBarMSG(
+                                              "No delivery in app");
+                                        } else if (idForData ==
+                                            "no delivery in the area right now") {
+                                          showFaildSnackBarMSG(
+                                              "No delivery in the area right now");
+                                        } else {
+                                          print(
+                                              "${myOrderList[index]['id']} + $idForData");
+                                          setDeliveryManID(
+                                              myOrderList[index]['id'],
+                                              idForData);
+                                          changeState(myOrderList[index]['id']);
+                                        }
+
                                         Navigator.pop(context);
                                       });
                                     },
@@ -344,7 +397,7 @@ class _OrderMyStoreState extends State<OrderMyStore> {
                         Icon(
                           Icons.circle,
                           color: myOrderList[index]["status"] == "In wait"
-                              ? Colors.yellow
+                              ? Colors.red
                               : myOrderList[index]["status"] == "In delivery"
                                   ? Colors.orange
                                   : Colors.green,
@@ -445,5 +498,156 @@ class _OrderMyStoreState extends State<OrderMyStore> {
         ],
       );
     });
+  }
+
+  showFaildSnackBarMSG(String msg) {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.red.withOpacity(0.7),
+      content: Row(
+        children: [
+          Container(
+            margin: EdgeInsets.only(right: 15),
+            child: Icon(
+              Icons.close,
+              color: Colors.white,
+              size: 35,
+            ),
+          ),
+          Text(
+            msg,
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          )
+        ],
+      ),
+      duration: Duration(seconds: 2),
+      margin: EdgeInsets.all(20),
+    ));
+  }
+
+  Future<String> getDeliverMan(String storeCity, double storeLat,
+      double storeLng, double orderLat, double orderLng) async {
+    double storeOrderDistance = 0.0;
+
+    // List<Map> allDelivery = [];
+    // List<Map> delivery = [];
+    // List<Map> delMan = [];
+    List<dynamic> allDelivery = [];
+    List<dynamic> delivery = [];
+    List<dynamic> delMan = [];
+
+    scale s = new scale();
+    storeOrderDistance =
+        s.calculateDistance(storeLat, storeLng, orderLat, orderLng);
+
+    var resp = await api.getReq(getAllDelivery);
+    if (resp['status'] == 'suc') {
+      allDelivery = resp['data'];
+    } else {
+      setState(() {
+        deliveryID = "no delivery in app";
+        getIDValue = false;
+      });
+      return "no delivery in app";
+    }
+
+    // if (allDelivery.isEmpty) return;
+    // print("All delivery $allDelivery");
+
+    for (int i = 0; i < allDelivery.length; i++) {
+      if (allDelivery[i]["have_store"] == "yes" &&
+          allDelivery[i]["cityLocation"] == storeCity) {
+        delivery.add(allDelivery[i]);
+      }
+    }
+
+    if (delivery.isEmpty) {
+      setState(() {
+        deliveryID = "no delivery in the area right now";
+        getIDValue = false;
+      });
+      return "no delivery in the area right now";
+    }
+    print("Delivery $delivery");
+
+    for (int i = 0; i < delivery.length; i++) {
+      var resp = await api
+          .postReq(bringDeliveryReadyOrders, {"id": delivery[i]["id"]});
+      double dis = s.calculateDistance(
+          storeLat,
+          storeLng,
+          double.parse(delivery[i]["latitude"]),
+          double.parse(delivery[i]["longitude"]));
+      if (resp["status"] == "suc") {
+        List<dynamic> ord = resp["data"];
+        int count = 0;
+        for (int j = 0; j < ord.length; j++) {
+          if (ord[j]['status'] == "In delivery") {
+            count++;
+          }
+        }
+        delMan.add({
+          "id": delivery[i]["id"],
+          "dis": dis,
+          "scale": 0.0,
+          "orderCount": count
+        });
+      } else {
+        delMan.add({
+          "id": delivery[i]["id"],
+          "dis": dis,
+          "scale": 0.0,
+          "orderCount": 0
+        });
+      }
+    }
+    for (int j = 0; j < delMan.length; j++) {
+      double scaleValue = s.calculateScale(
+          storeOrderDistance, delMan[j]["dis"], delMan[j]["orderCount"]);
+      delMan[j]["scale"] = scaleValue;
+    }
+    print(delMan);
+
+    String delID = delMan[0]['id'];
+    double ifScale = delMan[0]['scale'];
+    int orderC = delMan[0]['orderCount'];
+
+    for (int i = 0; i < delMan.length; i++) {
+      if (delMan[i]['scale'] < ifScale) {
+        ifScale = delMan[i]['scale'];
+        delID = delMan[i]['id'];
+        orderC = delMan[i]['orderCount'];
+      } else if (delMan[i]['scale'] == ifScale) {
+        if (delMan[i]['orderCount'] < orderC) {
+          ifScale = delMan[i]['scale'];
+          delID = delMan[i]['id'];
+          orderC = delMan[i]['orderCount'];
+        }
+      }
+    }
+    print(delID);
+    setState(() {
+      deliveryID = delID;
+      getIDValue = false;
+    });
+    return delID;
+  }
+}
+
+class scale {
+  calculateDistance(double fLat, double fLng, double sLat, double sLng) {
+    var distance = Geolocator.distanceBetween(fLat, fLng, sLat, sLng);
+    return distance / 1000;
+  }
+
+  calculateScale(double soDistance, double deliveryDistance, int ordersCount) {
+    double scaleNum = 0.0;
+    if (ordersCount == 0 || ordersCount == 1) {
+      scaleNum = soDistance + deliveryDistance;
+    } else {
+      ordersCount -= 1;
+      scaleNum = (soDistance + deliveryDistance) * (ordersCount.toDouble());
+    }
+    return scaleNum;
   }
 }

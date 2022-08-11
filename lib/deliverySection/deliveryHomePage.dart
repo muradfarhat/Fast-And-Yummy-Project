@@ -4,11 +4,15 @@ import 'package:fast_and_yummy/HomePage/homepage.dart';
 import 'package:fast_and_yummy/api/api.dart';
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/deliverySection/deliveredOrders.dart';
+import 'package:fast_and_yummy/deliverySection/disactiveAccount.dart';
 import 'package:fast_and_yummy/deliverySection/mapAfterSignUp.dart';
 import 'package:fast_and_yummy/deliverySection/orderMap.dart';
 import 'package:fast_and_yummy/deliverySection/readyOrders.dart';
+import 'package:fast_and_yummy/deliverySection/test.dart';
 import 'package:fast_and_yummy/main.dart';
+import 'package:fast_and_yummy/userpage/AboutPgae.dart';
 import 'package:fast_and_yummy/userpage/profile.dart';
+import 'package:fast_and_yummy/userpage/supportPage.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -21,6 +25,7 @@ class homePageDelivery extends StatefulWidget {
 }
 
 class _homePageDeliveryState extends State<homePageDelivery> {
+  Color color = const Color.fromARGB(255, 37, 179, 136);
   int selected = 1;
   List<Widget> pagesContent = [
     const Profile("delivery"),
@@ -29,6 +34,7 @@ class _homePageDeliveryState extends State<homePageDelivery> {
   ];
   dynamic lis;
   bool loading = false;
+  bool notAactive = true;
   Api api = Api();
   getDeliveryData() async {
     setState(() {
@@ -47,7 +53,7 @@ class _homePageDeliveryState extends State<homePageDelivery> {
   setDeliveryLocation(String lat, String lng) async {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(double.parse(lat), double.parse(lng));
-    var resp = await api.postReq(newLiveLocation, {
+    var resp = await api.postReq(userMapSetLocation, {
       "id": sharedPref.getString("id"),
       "lat": lat,
       "lng": lng,
@@ -55,10 +61,31 @@ class _homePageDeliveryState extends State<homePageDelivery> {
     });
   }
 
+  getDeliveryActive() async {
+    var resp =
+        await api.postReq(getDeliverActive, {"id": sharedPref.getString("id")});
+    if (resp['status'] == "suc") {
+      if (resp['data'] == "yes") {
+        notAactive = false;
+      } else {
+        notAactive = true;
+      }
+    }
+  }
+
+  setDeliveryActive(String active) async {
+    var resp = await api.postReq(
+        setDeliverActive, {"id": sharedPref.getString("id"), "active": active});
+    if (resp['status'] == "suc") {
+      getDeliveryActive();
+    }
+  }
+
   @override
   void initState() {
+    getDeliveryActive();
     getDeliveryData();
-    final LocationSettings locationSettings = LocationSettings(
+    final LocationSettings locationSettings = const LocationSettings(
       accuracy: LocationAccuracy.high,
       distanceFilter: 100,
     );
@@ -106,6 +133,40 @@ class _homePageDeliveryState extends State<homePageDelivery> {
                       accountName:
                           Text(lis?['first_name'] + " " + lis?['last_name']),
                       accountEmail: Text(lis?['email'])),
+                  Visibility(
+                    visible: !notAactive,
+                    child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => disActive()));
+                        },
+                        child: listTileDesgin(
+                          "Disactive Account",
+                          Icons.stop,
+                        )),
+                  ),
+                  InkWell(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => support()));
+                      },
+                      child: listTileDesgin(
+                        "Support",
+                        Icons.support,
+                      )),
+                  InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => aboutPage()));
+                      },
+                      child: listTileDesgin(
+                        "About",
+                        Icons.info,
+                      )),
                   InkWell(
                       onTap: () {
                         sharedPref.clear();
@@ -144,7 +205,35 @@ class _homePageDeliveryState extends State<homePageDelivery> {
             bottomNavDesign("Ready Orders", Icons.map_outlined),
             bottomNavDesign("Deliverd Orders", Icons.done),
           ]),
-      body: pagesContent.elementAt(selected), //deliveryProfile(),
+      body: notAactive
+          ? Column(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  margin: const EdgeInsets.all(20),
+                  child: const Text("Your account disactive.",
+                      style: TextStyle(fontSize: 20, color: Colors.grey)),
+                ),
+                MaterialButton(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                  onPressed: () {
+                    setDeliveryActive("yes");
+                    setState(() {});
+                  },
+                  color: color,
+                  child: const Text(
+                    "Active My Account",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            )
+          : pagesContent.elementAt(selected), //deliveryProfile(),
     );
   }
 
