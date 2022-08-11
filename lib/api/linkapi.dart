@@ -18,6 +18,7 @@ const String getInfoFromUsers = "$linkServer/userinfo/getFromUserTable.php";
 const String updatePers = "$linkServer/auth/updateprofiledata.php";
 const String updateNameLink = "$linkServer/auth/updateName.php";
 const String insertCreditCardInfo = "$linkServer/auth/insertCreditCard.php";
+const String userCartLink = "$linkServer/userinfo/userCart.php";
 const String personalDataAfterSignup =
     "$linkServer/auth/personalDataAfterSignup.php";
 const String deliveryPersonalDataAfterSignup =
