@@ -64,7 +64,6 @@ class _CateProductsState extends State<CateProducts> {
       appBar: AppBar(
         toolbarHeight: 65,
         title: TextFormField(
-          autofocus: true,
           onChanged: (value) {
             updateList(value);
           },
