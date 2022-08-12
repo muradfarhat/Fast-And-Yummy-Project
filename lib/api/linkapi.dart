@@ -85,6 +85,7 @@ const String bringRateLink = "$linkServer/product/bringRate.php";
 const String favLink = "$linkServer/product/bringIffav.php";
 const String setfavLink = "$linkServer/product/setFav.php";
 const String addToCartLink = "$linkServer/product/addToCart.php";
+const String selectCateLink = "$linkServer/product/selectCate.php";
 //////////////////////////////
 /******************************* Delivery page api ***************** */
 const String bringDeliveryReadyOrders =

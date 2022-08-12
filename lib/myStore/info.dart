@@ -92,12 +92,12 @@ class _InfoMyStoreState extends State<InfoMyStore> {
     } else {}
   }
 
-  bringProduct(String tabelName) async {
+  bringProduct(String tableName) async {
     setState(() {
       loading = true;
     });
     var resp = await api.postReq(bringProdectLink, {
-      "tableName": tabelName,
+      "tableName": tableName,
       "userID": sharedPref.getString("id"),
     });
     setState(() {

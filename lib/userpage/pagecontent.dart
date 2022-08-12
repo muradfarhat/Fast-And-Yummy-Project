@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, prefer_const_literals_to_create_immutables
 
+import 'package:fast_and_yummy/userpage/cateAllProducts.dart';
 import 'package:fast_and_yummy/userpage/viewAllOffers.dart';
 import 'package:fast_and_yummy/userpage/viewAllSugg.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,7 @@ class _PageContentState extends State<PageContent> {
   @override
   void initState() {
     getData();
+    getCate();
     super.initState();
   }
 
@@ -114,348 +116,368 @@ class _PageContentState extends State<PageContent> {
       "star5": 0
     }
   ];
+  dynamic cate;
+  getCate() async {
+    setState(() {
+      loading = true;
+    });
+    var resp = await api.postReq(bringAllCate, {});
+    setState(() {
+      loading = false;
+    });
+    if (resp['status'] == "suc") {
+      setState(() {
+        cate = resp['data'];
+      });
+    } else {}
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Column(
-        // ignore: prefer_const_literals_to_create_immutables
-        children: [
-          /*********************************** Start Categories Section ******************************* */
-          ListTile(
-            title: Text(
-              "Categories",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 5),
-            height: 130,
-            width: double.infinity,
-            child: ListView.builder(
-                itemCount: categories.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, i) {
-                  return MaterialButton(
-                    padding: EdgeInsets.all(8),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text("Test text"),
-                              actions: [Text("data")],
-                            );
-                          });
-                    },
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              // ignore: prefer_const_literals_to_create_immutables
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Color.fromARGB(255, 197, 197, 197),
-                                    blurRadius: 4)
-                              ],
-                              border: Border.all(
-                                  color: Color.fromARGB(255, 197, 197, 197),
-                                  width: 1),
-                              borderRadius: BorderRadius.circular(15),
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image:
-                                      AssetImage("${categories[i]['image']}"))),
-                          margin: EdgeInsets.only(bottom: 8),
-                          width: 80,
-                          height: 80,
-                        ),
-                        Text(
-                          "${categories[i]['name']}",
-                          style: TextStyle(fontSize: 12),
-                        )
-                      ],
-                    ),
-                  );
-                }),
-          ),
-          /*********************************** End Categories Section ******************************* */
-          /************************************* Start Offers Section **************************** */
-          ListTile(
-            title: Text(
-              "Offers",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            trailing: TextButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return viewAllOffers();
-                  }));
-                },
-                child: Text(
-                  "View All",
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 37, 179, 136), fontSize: 12),
-                )),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 5),
-            //color: Colors.red,
-            height: 140,
-            width: double.infinity,
-            child: ListView.builder(
-                itemCount: CountLength(offers.length),
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, i) {
-                  return MaterialButton(
-                    padding: EdgeInsets.all(8),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text("Test text"),
-                              actions: [Text("data")],
-                            );
-                          });
-                    },
-                    child: Container(
-                        padding: EdgeInsets.all(5),
-                        width: 250,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          // ignore: prefer_const_literals_to_create_immutables
-                          boxShadow: [
-                            BoxShadow(
-                                color: Color.fromARGB(255, 197, 197, 197),
-                                blurRadius: 4)
-                          ],
-                          color: Colors.white,
-
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 120,
-                              height: 110,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image:
-                                          AssetImage("${offers[i]['image']}"))),
-                            ),
-                            Container(
-                              width: 120,
-                              padding:
-                                  EdgeInsets.only(top: 15, left: 10, right: 10),
-                              child: Column(
-                                // ignore: prefer_const_literals_to_create_immutables
-                                children: [
-                                  Container(
-                                    width: double.infinity,
-                                    child: Text(
-                                      "${offers[i]['name']}",
-                                      overflow:
-                                          TextOverflow.clip, // For text wraping
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 5),
-                                    width: double.infinity,
-                                    child: Text(
-                                      "${offers[i]['store']}",
-                                      overflow:
-                                          TextOverflow.clip, // For text wraping
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                  Divider(
-                                    color: Colors.white,
-                                  ),
-                                  Row(
+    return loading
+        ? Center(
+            child: CircularProgressIndicator(
+                color: Color.fromARGB(255, 37, 179, 136)),
+          )
+        : SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              // ignore: prefer_const_literals_to_create_immutables
+              children: [
+                /*********************************** Start Categories Section ******************************* */
+                ListTile(
+                  title: Text(
+                    "Categories",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5),
+                  height: 130,
+                  width: double.infinity,
+                  child: ListView.builder(
+                      itemCount: categories.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, i) {
+                        return MaterialButton(
+                          padding: EdgeInsets.all(8),
+                          onPressed: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return CateProducts(cate[i]['cateName']);
+                            }));
+                          },
+                          child: Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
                                     // ignore: prefer_const_literals_to_create_immutables
-                                    children: [
-                                      Text(
-                                        "${offers[i]['newPrice']}  ",
-                                        style: TextStyle(
-                                          color:
-                                              Color.fromARGB(255, 37, 179, 136),
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      Text(
-                                        "${offers[i]['oldPrice']}",
-                                        style: TextStyle(
-                                          decoration:
-                                              TextDecoration.lineThrough,
-                                          color:
-                                              Color.fromARGB(255, 37, 179, 136),
-                                          fontSize: 10,
-                                        ),
-                                      )
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Color.fromARGB(
+                                              255, 197, 197, 197),
+                                          blurRadius: 4)
                                     ],
-                                  )
-                                ],
+                                    border: Border.all(
+                                        color:
+                                            Color.fromARGB(255, 197, 197, 197),
+                                        width: 1),
+                                    borderRadius: BorderRadius.circular(15),
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: AssetImage(
+                                            "${categories[i]['image']}"))),
+                                margin: EdgeInsets.only(bottom: 8),
+                                width: 80,
+                                height: 80,
                               ),
-                            )
-                          ],
-                        )),
-                  );
-                }),
-          ),
-          /************************************* End Offers Section **************************** */
-          /************************************* Start Suggestions Section **************************** */
-          ListTile(
-            title: Text(
-              "Suggestions you may like",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            trailing: TextButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return viewAllSugg();
-                  }));
-                },
-                child: Text(
-                  "View All",
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 37, 179, 136), fontSize: 12),
-                )),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 5),
-            //color: Colors.red,
-            height: 210,
-            width: double.infinity,
-            child: ListView.builder(
-                itemCount: CountLength(sugg.length),
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, i) {
-                  return MaterialButton(
-                    padding: EdgeInsets.all(8),
-                    onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) =>
-                      //           Detialscreen("${sugg[i]['image']}")),
-                      // );
-                    },
-                    child: Container(
-                        padding: EdgeInsets.all(5),
-                        width: 300,
-                        height: 190,
-                        decoration: BoxDecoration(
-                          // ignore: prefer_const_literals_to_create_immutables
-                          boxShadow: [
-                            BoxShadow(
-                                color: Color.fromARGB(255, 197, 197, 197),
-                                blurRadius: 4)
-                          ],
-                          color: Colors.white,
-
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 170,
-                              height: 180,
+                              Text(
+                                "${cate[i]['cateName']}",
+                                style: TextStyle(fontSize: 12),
+                              )
+                            ],
+                          ),
+                        );
+                      }),
+                ),
+                /*********************************** End Categories Section ******************************* */
+                /************************************* Start Offers Section **************************** */
+                ListTile(
+                  title: Text(
+                    "Offers",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  trailing: TextButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return viewAllOffers();
+                        }));
+                      },
+                      child: Text(
+                        "View All",
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 37, 179, 136),
+                            fontSize: 12),
+                      )),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5),
+                  //color: Colors.red,
+                  height: 140,
+                  width: double.infinity,
+                  child: ListView.builder(
+                      itemCount: CountLength(offers.length),
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, i) {
+                        return MaterialButton(
+                          padding: EdgeInsets.all(8),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Test text"),
+                                    actions: [Text("data")],
+                                  );
+                                });
+                          },
+                          child: Container(
+                              padding: EdgeInsets.all(5),
+                              width: 250,
+                              height: 120,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image:
-                                          AssetImage("${sugg[i]['image']}"))),
-                            ),
-                            Container(
-                              width: 120,
-                              padding:
-                                  EdgeInsets.only(top: 15, left: 10, right: 10),
-                              child: Column(
                                 // ignore: prefer_const_literals_to_create_immutables
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Color.fromARGB(255, 197, 197, 197),
+                                      blurRadius: 4)
+                                ],
+                                color: Colors.white,
+
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Row(
                                 children: [
                                   Container(
-                                    width: double.infinity,
-                                    child: Text(
-                                      "${sugg[i]['name']}",
-                                      overflow:
-                                          TextOverflow.clip, // For text wraping
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                                    width: 120,
+                                    height: 110,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: AssetImage(
+                                                "${offers[i]['image']}"))),
                                   ),
                                   Container(
-                                    margin: EdgeInsets.only(top: 5),
-                                    width: double.infinity,
-                                    child: Text(
-                                      "${sugg[i]['store']}",
-                                      overflow:
-                                          TextOverflow.clip, // For text wraping
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                  Divider(
-                                    color: Colors.white,
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    child: Text(
-                                      "${sugg[i]['price']}  ",
-                                      style: TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 37, 179, 136),
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                  Divider(
-                                    color: Colors.white,
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    child: Row(
+                                    width: 120,
+                                    padding: EdgeInsets.only(
+                                        top: 15, left: 10, right: 10),
+                                    child: Column(
                                       // ignore: prefer_const_literals_to_create_immutables
                                       children: [
-                                        iconStar(i, "star1"),
-                                        iconStar(i, "star2"),
-                                        iconStar(i, "star3"),
-                                        iconStar(i, "star4"),
-                                        iconStar(i, "star5"),
+                                        Container(
+                                          width: double.infinity,
+                                          child: Text(
+                                            "${offers[i]['name']}",
+                                            overflow: TextOverflow
+                                                .clip, // For text wraping
+                                            style: TextStyle(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(top: 5),
+                                          width: double.infinity,
+                                          child: Text(
+                                            "${offers[i]['store']}",
+                                            overflow: TextOverflow
+                                                .clip, // For text wraping
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                        Divider(
+                                          color: Colors.white,
+                                        ),
+                                        Row(
+                                          // ignore: prefer_const_literals_to_create_immutables
+                                          children: [
+                                            Text(
+                                              "${offers[i]['newPrice']}  ",
+                                              style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 37, 179, 136),
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                            Text(
+                                              "${offers[i]['oldPrice']}",
+                                              style: TextStyle(
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                                color: Color.fromARGB(
+                                                    255, 37, 179, 136),
+                                                fontSize: 10,
+                                              ),
+                                            )
+                                          ],
+                                        )
                                       ],
                                     ),
                                   )
                                 ],
+                              )),
+                        );
+                      }),
+                ),
+                /************************************* End Offers Section **************************** */
+                /************************************* Start Suggestions Section **************************** */
+                ListTile(
+                  title: Text(
+                    "Suggestions you may like",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  trailing: TextButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return viewAllSugg();
+                        }));
+                      },
+                      child: Text(
+                        "View All",
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 37, 179, 136),
+                            fontSize: 12),
+                      )),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 5),
+                  //color: Colors.red,
+                  height: 210,
+                  width: double.infinity,
+                  child: ListView.builder(
+                      itemCount: CountLength(sugg.length),
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, i) {
+                        return MaterialButton(
+                          padding: EdgeInsets.all(8),
+                          onPressed: () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) =>
+                            //           Detialscreen("${sugg[i]['image']}")),
+                            // );
+                          },
+                          child: Container(
+                              padding: EdgeInsets.all(5),
+                              width: 300,
+                              height: 190,
+                              decoration: BoxDecoration(
+                                // ignore: prefer_const_literals_to_create_immutables
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Color.fromARGB(255, 197, 197, 197),
+                                      blurRadius: 4)
+                                ],
+                                color: Colors.white,
+
+                                borderRadius: BorderRadius.circular(15),
                               ),
-                            )
-                          ],
-                        )),
-                  );
-                }),
-          ),
-          /************************************* End Suggestions Section **************************** */
-        ],
-      ),
-    );
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 170,
+                                    height: 180,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: AssetImage(
+                                                "${sugg[i]['image']}"))),
+                                  ),
+                                  Container(
+                                    width: 120,
+                                    padding: EdgeInsets.only(
+                                        top: 15, left: 10, right: 10),
+                                    child: Column(
+                                      // ignore: prefer_const_literals_to_create_immutables
+                                      children: [
+                                        Container(
+                                          width: double.infinity,
+                                          child: Text(
+                                            "${sugg[i]['name']}",
+                                            overflow: TextOverflow
+                                                .clip, // For text wraping
+                                            style: TextStyle(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(top: 5),
+                                          width: double.infinity,
+                                          child: Text(
+                                            "${sugg[i]['store']}",
+                                            overflow: TextOverflow
+                                                .clip, // For text wraping
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                        Divider(
+                                          color: Colors.white,
+                                        ),
+                                        Container(
+                                          width: double.infinity,
+                                          child: Text(
+                                            "${sugg[i]['price']}  ",
+                                            style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 37, 179, 136),
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                        ),
+                                        Divider(
+                                          color: Colors.white,
+                                        ),
+                                        Container(
+                                          width: double.infinity,
+                                          child: Row(
+                                            // ignore: prefer_const_literals_to_create_immutables
+                                            children: [
+                                              iconStar(i, "star1"),
+                                              iconStar(i, "star2"),
+                                              iconStar(i, "star3"),
+                                              iconStar(i, "star4"),
+                                              iconStar(i, "star5"),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              )),
+                        );
+                      }),
+                ),
+                /************************************* End Suggestions Section **************************** */
+              ],
+            ),
+          );
   }
 
 /**************************** Start Functions Section ********************************** */

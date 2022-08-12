@@ -8,7 +8,7 @@ import 'package:fast_and_yummy/deliverySection/disactiveAccount.dart';
 import 'package:fast_and_yummy/deliverySection/mapAfterSignUp.dart';
 import 'package:fast_and_yummy/deliverySection/orderMap.dart';
 import 'package:fast_and_yummy/deliverySection/readyOrders.dart';
-import 'package:fast_and_yummy/deliverySection/test.dart';
+// import 'package:fast_and_yummy/deliverySection/test.dart';
 import 'package:fast_and_yummy/main.dart';
 import 'package:fast_and_yummy/userpage/AboutPgae.dart';
 import 'package:fast_and_yummy/userpage/profile.dart';

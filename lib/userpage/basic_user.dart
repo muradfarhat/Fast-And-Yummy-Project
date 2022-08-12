@@ -11,6 +11,7 @@ import 'package:fast_and_yummy/userpage/profile.dart';
 import 'package:fast_and_yummy/userpage/favorite.dart';
 import 'package:fast_and_yummy/userpage/cart.dart';
 import 'package:fast_and_yummy/userpage/myOrders.dart';
+import 'package:fast_and_yummy/userpage/search.dart';
 import 'package:fast_and_yummy/userpage/supportPage.dart';
 import 'package:flutter/material.dart';
 
@@ -28,8 +29,11 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   dynamic lis;
   dynamic lis2;
+  dynamic lis3;
   bool loading = false;
   Api api = Api();
+  List<dynamic> cate = [];
+
   getData() async {
     setState(() {
       loading = true;
@@ -66,38 +70,55 @@ class _UserPageState extends State<UserPage> {
     super.initState();
   }
 
+  bool boolx = false;
   bool showAppBar = true;
 /********************************* Start Appbar ******************************* */
   appBarDesign() {
     if (showAppBar) {
       return AppBar(
         toolbarHeight: 65,
-        title: TextFormField(
-          onEditingComplete: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text(searchValue.text),
-                  );
+        title: InkWell(
+          onTap: () {
+            setState(() {
+              boolx = true;
+              Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Search()))
+                  .then((value) {
+                setState(() {
+                  boolx = false;
                 });
+              });
+            });
           },
+          child: TextFormField(
+            enabled: boolx,
 
-          controller:
-              searchValue, // take text value and store it in searchValue variable
-          textInputAction: TextInputAction.go,
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 1),
-            prefixIcon: Icon(
-              Icons.search,
-              color: Colors.grey,
+            onEditingComplete: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text(searchValue.text),
+                    );
+                  });
+            },
+
+            controller:
+                searchValue, // take text value and store it in searchValue variable
+            textInputAction: TextInputAction.go,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 1),
+              prefixIcon: Icon(
+                Icons.search,
+                color: Colors.grey,
+              ),
+              filled: true,
+              fillColor: Colors.white,
+              hintText: "Search",
+              focusedBorder: outLDesign(),
+              enabledBorder: outLDesign(),
+              disabledBorder: outLDesign(),
             ),
-            filled: true,
-            fillColor: Colors.white,
-            hintText: "Search",
-            focusedBorder: outLDesign(),
-            enabledBorder: outLDesign(),
-            disabledBorder: outLDesign(),
           ),
         ),
         backgroundColor: Color.fromARGB(255, 37, 179, 136),

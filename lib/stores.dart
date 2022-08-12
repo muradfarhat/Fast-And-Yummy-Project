@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'api/api.dart';
 import 'api/linkapi.dart';
-import 'main.dart';
 
 class Stores extends StatefulWidget {
   const Stores({Key? key}) : super(key: key);
@@ -54,6 +53,17 @@ class _StoresState extends State<Stores> {
       "icon": Icon(Icons.favorite_border_outlined),
     }
   ];
+
+  List storesDisplay = [];
+  void updateList(String value) {
+    setState(() {
+      storesDisplay = allStores
+          .where((element) =>
+              element['storeName'].toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+
   bool loading = false;
   List<dynamic> allStores = [];
   Api api = Api();
@@ -65,6 +75,7 @@ class _StoresState extends State<Stores> {
 
     if (respo['status'] == "suc") {
       allStores = respo['data'];
+      storesDisplay = List.from(allStores);
       setState(() {
         loading = false;
       });
@@ -92,7 +103,7 @@ class _StoresState extends State<Stores> {
               ),
             )
           : ListView.builder(
-              itemCount: allStores.length,
+              itemCount: storesDisplay.length,
               scrollDirection: Axis.vertical,
               itemBuilder: (context, i) {
                 return MaterialButton(
@@ -100,7 +111,7 @@ class _StoresState extends State<Stores> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => StoreProduct(allStores[i]),
+                        builder: (context) => StoreProduct(storesDisplay[i]),
                       ),
                     ).then((value) {
                       bringAllStores();
@@ -139,7 +150,7 @@ class _StoresState extends State<Stores> {
                                         topRight: Radius.circular(15)),
                                     image: DecorationImage(
                                         image: NetworkImage(
-                                            "$imageRoot/${allStores[i]['storeImage']}"),
+                                            "$imageRoot/${storesDisplay[i]['storeImage']}"),
                                         fit: BoxFit.cover)),
                               ),
                             ],
@@ -151,7 +162,7 @@ class _StoresState extends State<Stores> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "${allStores[i]['storeName']}",
+                                "${storesDisplay[i]['storeName']}",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 22,
@@ -167,14 +178,14 @@ class _StoresState extends State<Stores> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "${allStores[i]['numberOfProducts']} Products",
+                                "${storesDisplay[i]['numberOfProducts']} Products",
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w400,
                                 ),
                               ),
                               Text(
-                                "${allStores[i]['feedBack']} Feed Back",
+                                "${storesDisplay[i]['feedBack']} Feed Back",
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w400,
@@ -200,52 +211,39 @@ class _StoresState extends State<Stores> {
   }
 
   appBarDesign() {
-    if (showAppBar) {
-      return AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back),
-        ),
-        toolbarHeight: 65,
-        title: TextFormField(
-          onEditingComplete: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text(searchValue.text),
-                  );
-                });
-          },
+    return AppBar(
+      leading: IconButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        icon: Icon(Icons.arrow_back),
+      ),
+      toolbarHeight: 65,
+      title: TextFormField(
+        onChanged: (value) {
+          updateList(value);
+        },
 
-          controller:
-              searchValue, // take text value and store it in searchValue variable
-          textInputAction: TextInputAction.go,
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 1),
-            prefixIcon: Icon(
-              Icons.search,
-              color: Colors.grey,
-            ),
-            filled: true,
-            fillColor: Color.fromARGB(255, 231, 231, 231),
-            hintText: "Search",
-            focusedBorder: outLDesign(),
-            enabledBorder: outLDesign(),
-            disabledBorder: outLDesign(),
+        controller:
+            searchValue, // take text value and store it in searchValue variable
+        textInputAction: TextInputAction.go,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(vertical: 1),
+          prefixIcon: Icon(
+            Icons.search,
+            color: Colors.grey,
           ),
+          filled: true,
+          fillColor: Color.fromARGB(255, 231, 231, 231),
+          hintText: "Search",
+          focusedBorder: outLDesign(),
+          enabledBorder: outLDesign(),
+          disabledBorder: outLDesign(),
         ),
-        backgroundColor: Color.fromARGB(255, 37, 179, 136),
-        elevation: 0,
-      );
-    } else {
-      return AppBar(
-        toolbarHeight: 0,
-        backgroundColor: Color.fromARGB(255, 37, 179, 136),
-      );
-    }
+      ),
+      backgroundColor: Color.fromARGB(255, 37, 179, 136),
+      elevation: 0,
+    );
   }
 
   OutlineInputBorder outLDesign() {

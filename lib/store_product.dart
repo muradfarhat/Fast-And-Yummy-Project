@@ -30,9 +30,8 @@ class _StoreProductState extends State<StoreProduct> {
   ];
   dynamic lis2;
   String? cateNAME;
-  dynamic productList;
+  List productList = [];
   Api api = Api();
-  dynamic choice = [];
   bool loading = false;
   bool find = false;
   Color color = Color.fromARGB(255, 37, 179, 136);
@@ -67,13 +66,24 @@ class _StoreProductState extends State<StoreProduct> {
       setState(() {
         find = false;
         productList = resp['data'];
-        choice = productList;
+        productListDisplay = List.from(productList);
       });
     } else {
       setState(() {
         find = true;
       });
     }
+  }
+
+  List productListDisplay = [];
+  void updateList(String value) {
+    setState(() {
+      productListDisplay = productList
+          .where((element) => element['productName']
+              .toLowerCase()
+              .contains(value.toLowerCase()))
+          .toList();
+    });
   }
 
   @override
@@ -118,6 +128,38 @@ class _StoreProductState extends State<StoreProduct> {
                     height: 10,
                   ),
                   listTileDesign("Categories", context),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color.fromARGB(255, 180, 180, 180),
+                          blurRadius: 4,
+                        )
+                      ],
+                    ),
+                    margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
+                    child: TextFormField(
+                      autofocus: false,
+                      onChanged: (value) {
+                        updateList(value);
+                      },
+                      textInputAction: TextInputAction.go,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.grey,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: "Search",
+                        focusedBorder: outLDesign(),
+                        enabledBorder: outLDesign(),
+                        disabledBorder: outLDesign(),
+                      ),
+                    ),
+                  ),
                   SizedBox(
                     height: 130,
                     width: double.infinity,
@@ -203,15 +245,23 @@ class _StoreProductState extends State<StoreProduct> {
 
   listGenerate() {
     Size size = MediaQuery.of(context).size;
-    return List.generate(choice.length, (index) {
+    return List.generate(productListDisplay.length, (index) {
       return Container(
         width: size.width,
         child: Column(
           children: [
-            ContDFSP(productList[index], widget.storeData['storeID'], cateID)
+            ContDFSP(
+                productListDisplay[index], widget.storeData['storeID'], cateID)
           ],
         ),
       );
     });
+  }
+
+  OutlineInputBorder outLDesign() {
+    return OutlineInputBorder(
+        gapPadding: 10,
+        borderRadius: BorderRadius.circular(30),
+        borderSide: BorderSide(color: Colors.white, width: 1));
   }
 }
