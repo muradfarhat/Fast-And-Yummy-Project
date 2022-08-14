@@ -156,7 +156,7 @@ class _PageContentState extends State<PageContent> {
                         color: Color.fromARGB(255, 37, 179, 136)),
                   )
                 : ListView.builder(
-                    itemCount: categories.length,
+                    itemCount: cate.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, i) {
                       return MaterialButton(
