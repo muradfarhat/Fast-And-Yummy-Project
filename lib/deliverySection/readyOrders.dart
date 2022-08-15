@@ -41,7 +41,8 @@ class _readyOrderState extends State<readyOrder> {
 
   getReadyOrders() {
     for (int i = 0; i < OrderData.length; i++) {
-      if (OrderData[i]['status'] == 'on way') {
+      if (OrderData[i]['status'] == 'In delivery') {
+        // on way
         setState(() {
           ready.add(OrderData[i]);
           Color? c = Colors.yellow[600];
