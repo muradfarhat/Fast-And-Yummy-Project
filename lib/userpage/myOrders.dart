@@ -45,6 +45,7 @@ class _MyOrdersState extends State<MyOrders> {
     var response = await api
         .postReq(bringProducts, {"id": productID, "cateName": cateName});
     if (response['status'] == "suc") {
+      double qun = double.parse(quantity);
       setState(() {
         myOrder.add({
           "productID": response['data'][0]['productID'],
@@ -55,7 +56,7 @@ class _MyOrdersState extends State<MyOrders> {
           "userID": response['data'][0]['userID'],
           "price": double.parse(response['data'][0]['price']),
           "totalBuy": response['data'][0]['totalBuy'],
-          "number": int.parse(quantity),
+          "number": qun.toInt(), //int.parse(quantity),
           "time": time,
           "cancel": false,
           "delivery": delivery

@@ -34,6 +34,8 @@ class _myOrderMapState extends State<myOrderMap> {
 
   String? deliveryManName;
   String? phone;
+  double? deliveryManLatitude;
+  double? deliveryManLongitude;
 
   /********* For Line ***** */
   Map<PolylineId, Polyline> polylines = {};
@@ -83,6 +85,15 @@ class _myOrderMapState extends State<myOrderMap> {
             infoWindow: const InfoWindow(title: "Order Location"),
             position: LatLng(
                 double.parse(widget.orderLat), double.parse(widget.orderLng))),
+      );
+      orderMark.add(
+        Marker(
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+            //Icon(Icons.location_on_outlined,color: basicColor,),
+            markerId: const MarkerId("delivery"),
+            infoWindow: const InfoWindow(title: "Delivery Man Location"),
+            position: LatLng(deliveryManLatitude!, deliveryManLongitude!)),
       );
       loading = false;
     });
@@ -154,6 +165,8 @@ class _myOrderMapState extends State<myOrderMap> {
         deliveryManName =
             "${response['data'][0]["first_name"]} ${response['data'][0]["last_name"]}";
         phone = response['data'][0]["phone"];
+        deliveryManLatitude = double.parse(response['data'][0]["latitude"]);
+        deliveryManLongitude = double.parse(response['data'][0]["longitude"]);
       });
     }
   }

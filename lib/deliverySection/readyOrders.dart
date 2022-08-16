@@ -155,7 +155,7 @@ class _readyOrderState extends State<readyOrder> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                              "From : ${productsInfo.isEmpty ? "Null" : productsInfo[index]['storeName']}  - ${storesLocation.isEmpty ? "No Location" : storesLocation.elementAt(index)}",
+                              "From : ${productsInfo.isEmpty ? "Null" : productsInfo[index]['storeName']}",
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18)),
                           Text(

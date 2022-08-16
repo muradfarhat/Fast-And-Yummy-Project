@@ -336,6 +336,8 @@ class _OrderMyStoreState extends State<OrderMyStore> {
                                               myOrderList[index]['id'],
                                               idForData);
                                           changeState(myOrderList[index]['id']);
+                                          showFaildSnackBarMSG(
+                                              "The delivery man ID $idForData");
                                         }
 
                                         Navigator.pop(context);
