@@ -86,15 +86,19 @@ class _myOrderMapState extends State<myOrderMap> {
             position: LatLng(
                 double.parse(widget.orderLat), double.parse(widget.orderLng))),
       );
-      orderMark.add(
-        Marker(
-            icon:
-                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-            //Icon(Icons.location_on_outlined,color: basicColor,),
-            markerId: const MarkerId("delivery"),
-            infoWindow: const InfoWindow(title: "Delivery Man Location"),
-            position: LatLng(deliveryManLatitude!, deliveryManLongitude!)),
-      );
+      print(deliveryManLatitude);
+      print(deliveryManLongitude);
+      if (deliveryManLatitude != null) {
+        orderMark.add(
+          Marker(
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                  BitmapDescriptor.hueBlue),
+              //Icon(Icons.location_on_outlined,color: basicColor,),
+              markerId: const MarkerId("delivery"),
+              infoWindow: const InfoWindow(title: "Delivery Man Location"),
+              position: LatLng(deliveryManLatitude!, deliveryManLongitude!)),
+        );
+      }
       loading = false;
     });
   }

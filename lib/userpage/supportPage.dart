@@ -13,6 +13,7 @@ class support extends StatefulWidget {
 class _supportState extends State<support> {
   Color basicColor = const Color.fromARGB(255, 37, 179, 136);
   String? questionString;
+  bool loading = true;
 
   List<dynamic> questions = [];
   /******************** Start Api Functions *********************** */
@@ -25,15 +26,26 @@ class _supportState extends State<support> {
         questions = response['data'];
       });
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   addQuestion(String ques) async {
+    setState(() {
+      loading = true;
+    });
     var response = await api.postReq(addSupportQuestion,
         {"id": sharedPref.getString("id"), "question": ques});
+    bringAllSupport();
   }
 
   deleteQuestion(String id) async {
+    setState(() {
+      loading = true;
+    });
     var response = await api.postReq(deleteSupportQues, {"id": id});
+    bringAllSupport();
   }
 
   /******************** End Api Functions *********************** */
@@ -45,6 +57,7 @@ class _supportState extends State<support> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     GlobalKey<FormState> textFormState = GlobalKey<FormState>();
 
     bool sendQuestion() {
@@ -68,100 +81,114 @@ class _supportState extends State<support> {
         titleTextStyle:
             const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
       ),
-      body: SingleChildScrollView(
-          child: Form(
-        key: textFormState,
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-              child: const Text(
-                "This section is for inquiries and complaints about the application and how to use it",
-                textAlign: TextAlign.center,
+      body: loading
+          ? SizedBox(
+              height: size.height,
+              width: size.width,
+              child: Center(
+                child: CircularProgressIndicator(color: basicColor),
               ),
-            ),
-            const Divider(),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: TextFormField(
-                validator: ((value) {
-                  if (value!.isEmpty) {
-                    return "You cannot send empty question !";
-                  } else if (value.length < 10) {
-                    return "invalid Question !";
-                  } else {
-                    return null;
-                  }
-                }),
-                onSaved: (value) {
-                  questionString = value;
-                },
-                maxLines: 5,
-                maxLength: 250,
-                cursorColor: basicColor,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(width: 1, color: basicColor)),
-                  focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 1, color: basicColor)),
-                  labelText: "Ask your question",
-                  labelStyle: TextStyle(color: basicColor),
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-              alignment: Alignment.centerLeft,
-              child: MaterialButton(
-                color: basicColor,
-                onPressed: () {
-                  if (sendQuestion()) {
-                    setState(() {
-                      showSuccessSnackBarMSG("Send");
-                    });
-                  } else {
-                    showFaildSnackBarMSG();
-                  }
-                },
-                child: const Text(
-                  "Send",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-            const Divider(),
-            ListTile(
-              trailing: Icon(
-                Icons.question_mark,
-                color: basicColor,
-              ),
-              title: const Text("My Questions"),
-            ),
-            ...List.generate(
-                questions.length,
-                (index) => ListTile(
-                      trailing: IconButton(
-                        icon: const Icon(
-                          Icons.delete_outline_outlined,
-                          color: Colors.red,
-                        ),
-                        onPressed: () {
-                          deleteQuestion(questions[index]["questionID"]);
+            )
+          : SingleChildScrollView(
+              child: Form(
+              key: textFormState,
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 30),
+                    child: const Text(
+                      "This section is for inquiries and complaints about the application and how to use it",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const Divider(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: TextFormField(
+                      validator: ((value) {
+                        if (value!.isEmpty) {
+                          return "You cannot send empty question !";
+                        } else if (value.length < 10) {
+                          return "invalid Question !";
+                        } else {
+                          return null;
+                        }
+                      }),
+                      onSaved: (value) {
+                        questionString = value;
+                      },
+                      maxLines: 5,
+                      maxLength: 250,
+                      cursorColor: basicColor,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 1, color: basicColor)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 1, color: basicColor)),
+                        labelText: "Ask your question",
+                        labelStyle: TextStyle(color: basicColor),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                    alignment: Alignment.centerLeft,
+                    child: MaterialButton(
+                      color: basicColor,
+                      onPressed: () {
+                        if (sendQuestion()) {
                           setState(() {
-                            showSuccessSnackBarMSG("Deleted");
+                            showSuccessSnackBarMSG("Send");
                           });
-                        },
+                        } else {
+                          showFaildSnackBarMSG();
+                        }
+                      },
+                      child: const Text(
+                        "Send",
+                        style: TextStyle(color: Colors.white),
                       ),
-                      leading: Icon(
-                        Icons.question_answer,
-                        color: basicColor,
-                      ),
-                      title: Text(questions[index]["question"]),
-                      subtitle: Text("Answer: ${questions[index]["answer"]}"),
-                    ))
-          ],
-        ),
-      )),
+                    ),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    trailing: Icon(
+                      Icons.question_mark,
+                      color: basicColor,
+                    ),
+                    title: const Text("My Questions"),
+                  ),
+                  ...List.generate(
+                      questions.length,
+                      (index) => ListTile(
+                            trailing: IconButton(
+                              icon: const Icon(
+                                Icons.delete_outline_outlined,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                deleteQuestion(questions[index]["questionID"]);
+                                setState(() {
+                                  showSuccessSnackBarMSG("Deleted");
+                                });
+                              },
+                            ),
+                            leading: Icon(
+                              Icons.question_answer,
+                              color: basicColor,
+                            ),
+                            title: Text(questions[index]["question"]),
+                            subtitle:
+                                Text("Answer: ${questions[index]["answer"]}"),
+                          ))
+                ],
+              ),
+            )),
     );
   }
 
