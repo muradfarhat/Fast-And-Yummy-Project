@@ -153,7 +153,7 @@ class _StoreProductState extends State<StoreProduct> {
                         ),
                         filled: true,
                         fillColor: Colors.white,
-                        hintText: "Search",
+                        hintText: "Select catagory before search",
                         focusedBorder: outLDesign(),
                         enabledBorder: outLDesign(),
                         disabledBorder: outLDesign(),

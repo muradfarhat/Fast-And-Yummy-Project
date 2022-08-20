@@ -37,10 +37,25 @@ class _PageContentState extends State<PageContent> {
     } else {}
   }
 
+  dynamic recommended = [];
+  recommend() async {
+    setState(() {
+      loading = true;
+    });
+    var resp = await api
+        .postReq(recommendedULink, {"userID": sharedPref.getString("id")});
+    setState(() {
+      loading = false;
+    });
+    recommended = resp['Recommendation'];
+    print(recommended.length);
+  }
+
   @override
   void initState() {
     getData();
     getCate();
+    recommend();
     super.initState();
   }
 
@@ -228,7 +243,7 @@ class _PageContentState extends State<PageContent> {
             height: 140,
             width: double.infinity,
             child: ListView.builder(
-                itemCount: CountLength(offers.length),
+                itemCount: 3,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, i) {
                   return MaterialButton(
@@ -248,14 +263,12 @@ class _PageContentState extends State<PageContent> {
                         width: 250,
                         height: 120,
                         decoration: BoxDecoration(
-                          // ignore: prefer_const_literals_to_create_immutables
                           boxShadow: [
                             BoxShadow(
                                 color: Color.fromARGB(255, 197, 197, 197),
                                 blurRadius: 4)
                           ],
                           color: Colors.white,
-
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: Row(
@@ -275,7 +288,6 @@ class _PageContentState extends State<PageContent> {
                               padding:
                                   EdgeInsets.only(top: 15, left: 10, right: 10),
                               child: Column(
-                                // ignore: prefer_const_literals_to_create_immutables
                                 children: [
                                   Container(
                                     width: double.infinity,
@@ -338,7 +350,7 @@ class _PageContentState extends State<PageContent> {
           /************************************* Start Suggestions Section **************************** */
           ListTile(
             title: Text(
-              "Suggestions you may like",
+              "Recommended",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -363,7 +375,7 @@ class _PageContentState extends State<PageContent> {
             height: 210,
             width: double.infinity,
             child: ListView.builder(
-                itemCount: CountLength(sugg.length),
+                itemCount: recommended.length > 4 ? 4 : recommended.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, i) {
                   return MaterialButton(
@@ -400,8 +412,8 @@ class _PageContentState extends State<PageContent> {
                                   borderRadius: BorderRadius.circular(15),
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image:
-                                          AssetImage("${sugg[i]['image']}"))),
+                                      image: NetworkImage(
+                                          "$imageRoot/${recommended[i]['image']}"))),
                             ),
                             Container(
                               width: 120,
@@ -413,7 +425,7 @@ class _PageContentState extends State<PageContent> {
                                   Container(
                                     width: double.infinity,
                                     child: Text(
-                                      "${sugg[i]['name']}",
+                                      "${recommended[i]['productName']}",
                                       overflow:
                                           TextOverflow.clip, // For text wraping
                                       style: TextStyle(
@@ -425,7 +437,7 @@ class _PageContentState extends State<PageContent> {
                                     margin: EdgeInsets.only(top: 5),
                                     width: double.infinity,
                                     child: Text(
-                                      "${sugg[i]['store']}",
+                                      "${recommended[i]['storeName']}",
                                       overflow:
                                           TextOverflow.clip, // For text wraping
                                       style: TextStyle(
@@ -439,7 +451,7 @@ class _PageContentState extends State<PageContent> {
                                   Container(
                                     width: double.infinity,
                                     child: Text(
-                                      "${sugg[i]['price']}  ",
+                                      "${recommended[i]['price']}  ",
                                       style: TextStyle(
                                         color:
                                             Color.fromARGB(255, 37, 179, 136),
@@ -454,13 +466,7 @@ class _PageContentState extends State<PageContent> {
                                     width: double.infinity,
                                     child: Row(
                                       // ignore: prefer_const_literals_to_create_immutables
-                                      children: [
-                                        iconStar(i, "star1"),
-                                        iconStar(i, "star2"),
-                                        iconStar(i, "star3"),
-                                        iconStar(i, "star4"),
-                                        iconStar(i, "star5"),
-                                      ],
+                                      children: [],
                                     ),
                                   )
                                 ],
@@ -476,23 +482,4 @@ class _PageContentState extends State<PageContent> {
       ),
     );
   }
-
-/**************************** Start Functions Section ********************************** */
-  Icon iconStar(int index, String star) {
-    return Icon(
-      sugg[index][star] == 1 ? Icons.star : Icons.star_border_outlined,
-      //Icons.star,
-      size: 20,
-      color: Colors.amberAccent,
-    );
-  }
-
-  int CountLength(int length) {
-    if (length < 4) {
-      return length;
-    } else {
-      return 4;
-    }
-  }
-  /**************************** End Functions Section ********************************** */
 }

@@ -86,7 +86,7 @@ class _AddPageState extends State<AddPage> {
               "userID": sharedPref.getString("id"),
               "price": price.text,
               "description": description.text,
-              "content": s.toString()
+              "content": s.toString(),
             },
             file!);
         content.clear();

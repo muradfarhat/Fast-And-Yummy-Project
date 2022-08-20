@@ -104,3 +104,5 @@ const String getAllDelivery = "$linkServer/deliveryPHP/bringAllDelivery.php";
 const String setManID = "$linkServer/deliveryPHP/setID.php";
 /******************************* Delivery page api ***************** */
 
+const String recommendedULink =
+    "$linkServer/recommendation/recommendedFromUsers.php";

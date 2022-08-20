@@ -259,8 +259,10 @@ class _CartState extends State<Cart> {
                                                                   cart[
                                                                       i]), //OneOrder(),
                                                         ),
-                                                      ).then((value) {
-                                                        bringMyCart();
+                                                      ).then((value) async {
+                                                        setState(() {
+                                                          bringMyCart();
+                                                        });
                                                       });
                                                     },
                                                     child: Container(

@@ -5,6 +5,8 @@ import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:fast_and_yummy/main.dart';
 import 'package:flutter/material.dart';
 
+import '../detialscreen.dart';
+
 class favorite extends StatefulWidget {
   favorite({Key? key}) : super(key: key);
 
@@ -15,6 +17,8 @@ class favorite extends StatefulWidget {
 class _favoriteState extends State<favorite> {
   List<dynamic> myFav = [];
   List<dynamic> favList = [];
+  dynamic product = [];
+
 /********************** Start Api Functions ********************************* */
   Api api = Api(); // Create API SELECT SCOPE_IDENTITY()
 
@@ -48,9 +52,10 @@ class _favoriteState extends State<favorite> {
         .postReq(bringProducts, {"id": productID, "cateName": cateName});
     if (response['status'] == "suc") {
       setState(() {
+        product = response['data'];
         myFav.add({
           "productID": response['data'][0]['productID'],
-          "foodName": response['data'][0]['productName'],
+          "productName": response['data'][0]['productName'],
           "storeName": response['data'][0]['storeName'],
           "rate": response['data'][0]['rate'],
           "image": response['data'][0]['image'],
@@ -127,7 +132,15 @@ class _favoriteState extends State<favorite> {
                       itemCount: myFav.length,
                       itemBuilder: (context, i) {
                         return MaterialButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Detialscreen(product[i],
+                                    product[i]['userID'], product[i]['cateID']),
+                              ),
+                            );
+                          },
                           child: Container(
                             padding: EdgeInsets.all(5),
                             margin: EdgeInsets.only(bottom: 10, top: 10),
@@ -174,7 +187,7 @@ class _favoriteState extends State<favorite> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "${myFav[i]["foodName"]}",
+                                        "${myFav[i]["productName"]}",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20),

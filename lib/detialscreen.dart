@@ -11,6 +11,7 @@ import 'main.dart';
 
 class Detialscreen extends StatefulWidget {
   dynamic list;
+
   bool flag = false;
   dynamic storeID;
   dynamic cateID;
@@ -25,7 +26,7 @@ class _DetialscreenState extends State<Detialscreen> {
   double count = 1.00;
   double total = 1.00;
   bool comment = false;
-
+  bool textf = true;
   List feedback = [];
   bool enableRating = true;
   double rate = 0.0;
@@ -501,6 +502,11 @@ class _DetialscreenState extends State<Detialscreen> {
                                 visible: comment,
                                 child: Flexible(
                                   child: TextFormField(
+                                    onTap: () {
+                                      setState(() {
+                                        textf = false;
+                                      });
+                                    },
                                     controller: commentField,
                                     validator: (valid) {
                                       if (valid!.isEmpty) {
@@ -548,6 +554,7 @@ class _DetialscreenState extends State<Detialscreen> {
                                     onTap: () {
                                       setState(() {
                                         addComment();
+                                        textf = true;
                                       });
                                     },
                                     child: Icon(
@@ -696,72 +703,75 @@ class _DetialscreenState extends State<Detialscreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text("Add to cart ?"),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        MaterialButton(
-                          color: Colors.amber,
-                          onPressed: () {
-                            addToCart();
-                            Navigator.pop(context);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(Icons.check, color: Colors.black),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "Yes",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ],
+      floatingActionButton: Visibility(
+        visible: textf,
+        child: FloatingActionButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("Add to cart ?"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          MaterialButton(
+                            color: Colors.amber,
+                            onPressed: () {
+                              addToCart();
+                              Navigator.pop(context);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(Icons.check, color: Colors.black),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "Yes",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        MaterialButton(
-                          elevation: 0,
-                          color: Colors.white,
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Icon(Icons.close, color: Colors.black),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "No",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ],
+                          MaterialButton(
+                            elevation: 0,
+                            color: Colors.white,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Icon(Icons.close, color: Colors.black),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "No",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-        backgroundColor: Colors.amber,
-        child: Icon(
-          Icons.shopping_cart_outlined,
-          color: Colors.black,
-          size: 30,
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+          backgroundColor: Colors.amber,
+          child: Icon(
+            Icons.shopping_cart_outlined,
+            color: Colors.black,
+            size: 30,
+          ),
         ),
       ),
     );
