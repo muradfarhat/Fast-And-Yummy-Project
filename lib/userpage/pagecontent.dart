@@ -86,7 +86,11 @@ class _PageContentState extends State<PageContent> {
     setState(() {
       loading = false;
     });
-    last = resp;
+    if (resp['last'] == "empty") {
+      last = [];
+    } else {
+      last = resp["last"];
+    }
   }
 
   @override
@@ -631,7 +635,7 @@ class _PageContentState extends State<PageContent> {
               height: 140,
               width: double.infinity,
               child: ListView.builder(
-                  itemCount: 1,
+                  itemCount: last.isEmpty ? 0 : 1,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, i) {
                     return MaterialButton(
