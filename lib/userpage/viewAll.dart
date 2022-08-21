@@ -1,28 +1,37 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:flutter/material.dart';
 
-class viewAllOffers extends StatefulWidget {
-  viewAllOffers({Key? key}) : super(key: key);
+class ViewAll extends StatefulWidget {
+  dynamic list;
+  ViewAll(this.list, {Key? key}) : super(key: key);
 
   @override
-  State<viewAllOffers> createState() => _viewAllOffersState();
+  State<ViewAll> createState() => _ViewAllState();
 }
 
-class _viewAllOffersState extends State<viewAllOffers> {
-  TextEditingController searchValue =
-      new TextEditingController(); // variable to store text field value in it
+class _ViewAllState extends State<ViewAll> {
+  List productList = [];
 
-  List<Map> offers = [
-    {
-      "image": "images/burger.jpg",
-      "name": "Food Name",
-      "store": "Store Name",
-      "newPrice": "\$ 8.99",
-      "oldPrice": "\$ 10.00",
-      "rate": "4.0"
-    },
-  ];
+  List productListDisplay = [];
+  @override
+  void initState() {
+    productList = widget.list;
+    productListDisplay = List.from(productList);
+    super.initState();
+  }
+
+  void updateList(String value) {
+    setState(() {
+      productListDisplay = productList
+          .where((element) => element['productName']
+              .toLowerCase()
+              .contains(value.toLowerCase()))
+          .toList();
+     
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,18 +39,10 @@ class _viewAllOffersState extends State<viewAllOffers> {
       appBar: AppBar(
         toolbarHeight: 65,
         title: TextFormField(
-          onEditingComplete: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text(searchValue.text),
-                  );
-                });
+          onChanged: (value) {
+            updateList(value);
           },
-
-          controller:
-              searchValue, // take text value and store it in searchValue variable
+          // take text value and store it in searchValue variable
           textInputAction: TextInputAction.go,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(vertical: 1),
@@ -61,7 +62,7 @@ class _viewAllOffersState extends State<viewAllOffers> {
         backgroundColor: Color.fromARGB(255, 37, 179, 136),
       ),
       body: ListView.builder(
-          itemCount: offers.length,
+          itemCount: productListDisplay.length,
           scrollDirection: Axis.vertical,
           itemBuilder: (context, i) {
             return MaterialButton(
@@ -100,7 +101,8 @@ class _viewAllOffersState extends State<viewAllOffers> {
                             borderRadius: BorderRadius.circular(15),
                             image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: AssetImage("${offers[i]['image']}"))),
+                                image: NetworkImage(
+                                    "$imageRoot/${productListDisplay[i]['image']}"))),
                       ),
                       Container(
                         width: 120,
@@ -112,7 +114,7 @@ class _viewAllOffersState extends State<viewAllOffers> {
                             Container(
                               width: double.infinity,
                               child: Text(
-                                "${offers[i]['name']}",
+                                "${productListDisplay[i]['productName']}",
                                 overflow: TextOverflow.clip, // For text wraping
                                 // ignore: prefer_const_constructors
                                 style: TextStyle(
@@ -123,7 +125,7 @@ class _viewAllOffersState extends State<viewAllOffers> {
                               margin: EdgeInsets.only(top: 5),
                               width: double.infinity,
                               child: Text(
-                                "${offers[i]['store']}",
+                                "${productListDisplay[i]['storeName']}",
                                 overflow: TextOverflow.clip, // For text wraping
                                 // ignore: prefer_const_constructors
                                 style: TextStyle(
@@ -140,7 +142,9 @@ class _viewAllOffersState extends State<viewAllOffers> {
                               child: Row(children: [
                                 Container(
                                   margin: EdgeInsets.only(right: 5),
-                                  child: Text("${offers[i]["rate"]}"),
+                                  child: Text(
+                                      double.parse(widget.list[i]["rate"])
+                                          .toStringAsFixed(2)),
                                 ),
                                 Icon(
                                   Icons.star,
@@ -155,20 +159,12 @@ class _viewAllOffersState extends State<viewAllOffers> {
                         // ignore: prefer_const_literals_to_create_immutables
                         children: [
                           Text(
-                            "${offers[i]['newPrice']}  ",
+                            "${productListDisplay[i]['price']}  ",
                             style: TextStyle(
                               color: Color.fromARGB(255, 37, 179, 136),
                               fontSize: 18,
                             ),
                           ),
-                          Text(
-                            "${offers[i]['oldPrice']}",
-                            style: TextStyle(
-                              decoration: TextDecoration.lineThrough,
-                              color: Color.fromARGB(255, 37, 179, 136),
-                              fontSize: 10,
-                            ),
-                          )
                         ],
                       )
                     ],

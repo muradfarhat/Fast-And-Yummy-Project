@@ -1,10 +1,11 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, prefer_const_literals_to_create_immutables
 
 import 'package:fast_and_yummy/userpage/cateAllProducts.dart';
-import 'package:fast_and_yummy/userpage/viewAllOffers.dart';
+import 'package:fast_and_yummy/userpage/viewAll.dart';
 import 'package:fast_and_yummy/userpage/viewAllSugg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../api/api.dart';
 import '../api/linkapi.dart';
@@ -48,7 +49,44 @@ class _PageContentState extends State<PageContent> {
       loading = false;
     });
     recommended = resp['Recommendation'];
-    print(recommended.length);
+  }
+
+  dynamic populerList = [];
+  populer() async {
+    setState(() {
+      loading = true;
+    });
+    var resp = await api.getReq(populerLink);
+    setState(() {
+      loading = false;
+    });
+    populerList = resp['populer'];
+  }
+
+  dynamic likedList = [];
+  liked() async {
+    setState(() {
+      loading = true;
+    });
+    var resp =
+        await api.postReq(likedLink, {"userID": sharedPref.getString("id")});
+    setState(() {
+      loading = false;
+    });
+    likedList = resp['Liked'];
+  }
+
+  dynamic last = [];
+  lastPurchase() async {
+    setState(() {
+      loading = true;
+    });
+    var resp =
+        await api.postReq(lastLink, {"userID": sharedPref.getString("id")});
+    setState(() {
+      loading = false;
+    });
+    last = resp;
   }
 
   @override
@@ -56,6 +94,9 @@ class _PageContentState extends State<PageContent> {
     getData();
     getCate();
     recommend();
+    populer();
+    liked();
+    lastPurchase();
     super.initState();
   }
 
@@ -65,71 +106,6 @@ class _PageContentState extends State<PageContent> {
     {"image": "images/food.jpg", "name": "Cate. Name"},
     {"image": "images/food.jpg", "name": "Cate. Name"},
     {"image": "images/food.jpg", "name": "Cate. Name"}
-  ];
-  List<Map> offers = [
-    {
-      "image": "images/burger.jpg",
-      "name": "Food Name",
-      "store": "Store Name",
-      "newPrice": "\$ 8.99",
-      "oldPrice": "\$ 10.00"
-    },
-    {
-      "image": "images/burger.jpg",
-      "name": "Food Name",
-      "store": "Store Name",
-      "newPrice": "\$ 8.99",
-      "oldPrice": "\$ 10.00"
-    },
-    {
-      "image": "images/burger.jpg",
-      "name": "Food Name",
-      "store": "Store Name",
-      "newPrice": "\$ 8.99",
-      "oldPrice": "\$ 10.00"
-    },
-    {
-      "image": "images/burger.jpg",
-      "name": "Food Name",
-      "store": "Store Name",
-      "newPrice": "\$ 8.99",
-      "oldPrice": "\$ 10.00"
-    }
-  ];
-  List<Map> sugg = [
-    {
-      "image": "images/pizza.jpg",
-      "name": "Food Name",
-      "store": "Store Name",
-      "price": "\$ 8.99",
-      "star1": 1,
-      "star2": 1,
-      "star3": 1,
-      "star4": 1,
-      "star5": 1
-    },
-    {
-      "image": "images/makloba.jpg",
-      "name": "Food Name",
-      "store": "Store Name",
-      "price": "\$ 8.99",
-      "star1": 1,
-      "star2": 0,
-      "star3": 0,
-      "star4": 0,
-      "star5": 0
-    },
-    {
-      "image": "images/burger.jpg",
-      "name": "Food Name",
-      "store": "Store Name",
-      "price": "\$ 8.99",
-      "star1": 1,
-      "star2": 1,
-      "star3": 1,
-      "star4": 0,
-      "star5": 0
-    }
   ];
   dynamic cate = [];
   getCate() async {
@@ -218,7 +194,7 @@ class _PageContentState extends State<PageContent> {
           /************************************* Start Offers Section **************************** */
           ListTile(
             title: Text(
-              "Offers",
+              "Populer",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -228,7 +204,7 @@ class _PageContentState extends State<PageContent> {
                 onPressed: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return viewAllOffers();
+                    return ViewAll(populerList);
                   }));
                 },
                 child: Text(
@@ -243,24 +219,25 @@ class _PageContentState extends State<PageContent> {
             height: 140,
             width: double.infinity,
             child: ListView.builder(
-                itemCount: 3,
+                itemCount: populerList.length > 4 ? 4 : populerList.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, i) {
                   return MaterialButton(
                     padding: EdgeInsets.all(8),
                     onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text("Test text"),
-                              actions: [Text("data")],
-                            );
-                          });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Detialscreen(
+                              populerList[i],
+                              populerList[i]['userID'],
+                              populerList[i]['cateID']),
+                        ),
+                      );
                     },
                     child: Container(
                         padding: EdgeInsets.all(5),
-                        width: 250,
+                        width: 300,
                         height: 120,
                         decoration: BoxDecoration(
                           boxShadow: [
@@ -280,11 +257,11 @@ class _PageContentState extends State<PageContent> {
                                   borderRadius: BorderRadius.circular(15),
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image:
-                                          AssetImage("${offers[i]['image']}"))),
+                                      image: NetworkImage(
+                                          "$imageRoot/${populerList[i]['image']}"))),
                             ),
                             Container(
-                              width: 120,
+                              width: 170,
                               padding:
                                   EdgeInsets.only(top: 15, left: 10, right: 10),
                               child: Column(
@@ -292,7 +269,7 @@ class _PageContentState extends State<PageContent> {
                                   Container(
                                     width: double.infinity,
                                     child: Text(
-                                      "${offers[i]['name']}",
+                                      "${populerList[i]['productName']}",
                                       overflow:
                                           TextOverflow.clip, // For text wraping
                                       style: TextStyle(
@@ -304,7 +281,7 @@ class _PageContentState extends State<PageContent> {
                                     margin: EdgeInsets.only(top: 5),
                                     width: double.infinity,
                                     child: Text(
-                                      "${offers[i]['store']}",
+                                      "${populerList[i]['storeName']}",
                                       overflow:
                                           TextOverflow.clip, // For text wraping
                                       style: TextStyle(
@@ -319,23 +296,32 @@ class _PageContentState extends State<PageContent> {
                                     // ignore: prefer_const_literals_to_create_immutables
                                     children: [
                                       Text(
-                                        "${offers[i]['newPrice']}  ",
+                                        "${populerList[i]['price']} \$",
                                         style: TextStyle(
                                           color:
                                               Color.fromARGB(255, 37, 179, 136),
                                           fontSize: 18,
                                         ),
                                       ),
-                                      Text(
-                                        "${offers[i]['oldPrice']}",
-                                        style: TextStyle(
-                                          decoration:
-                                              TextDecoration.lineThrough,
-                                          color:
-                                              Color.fromARGB(255, 37, 179, 136),
-                                          fontSize: 10,
-                                        ),
-                                      )
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            double.parse(populerList[i]["rate"])
+                                                .toStringAsFixed(2),
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          Icon(
+                                            Icons.star,
+                                            color: Colors.yellow[600],
+                                            size: 18,
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   )
                                 ],
@@ -350,7 +336,7 @@ class _PageContentState extends State<PageContent> {
           /************************************* Start Suggestions Section **************************** */
           ListTile(
             title: Text(
-              "Recommended",
+              "Recommended for you",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -360,7 +346,7 @@ class _PageContentState extends State<PageContent> {
                 onPressed: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return viewAllSugg();
+                    return ViewAll(recommended);
                   }));
                 },
                 child: Text(
@@ -381,12 +367,15 @@ class _PageContentState extends State<PageContent> {
                   return MaterialButton(
                     padding: EdgeInsets.all(8),
                     onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) =>
-                      //           Detialscreen("${sugg[i]['image']}")),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Detialscreen(
+                              recommended[i],
+                              recommended[i]['userID'],
+                              recommended[i]['cateID']),
+                        ),
+                      );
                     },
                     child: Container(
                         padding: EdgeInsets.all(5),
@@ -451,7 +440,7 @@ class _PageContentState extends State<PageContent> {
                                   Container(
                                     width: double.infinity,
                                     child: Text(
-                                      "${recommended[i]['price']}  ",
+                                      "${recommended[i]['price']} \$",
                                       style: TextStyle(
                                         color:
                                             Color.fromARGB(255, 37, 179, 136),
@@ -463,12 +452,16 @@ class _PageContentState extends State<PageContent> {
                                     color: Colors.white,
                                   ),
                                   Container(
-                                    width: double.infinity,
-                                    child: Row(
-                                      // ignore: prefer_const_literals_to_create_immutables
-                                      children: [],
-                                    ),
-                                  )
+                                      width: double.infinity,
+                                      child: RatingBarIndicator(
+                                        rating: double.parse(
+                                            recommended[i]['rate']),
+                                        itemSize: 20,
+                                        itemBuilder: (context, _) => Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                      ))
                                 ],
                               ),
                             )
@@ -478,6 +471,278 @@ class _PageContentState extends State<PageContent> {
                 }),
           ),
           /************************************* End Suggestions Section **************************** */
+          Visibility(
+            visible: likedList.isEmpty ? false : true,
+            child: ListTile(
+              title: Text(
+                "Products we notice you liked it",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              subtitle: Text(
+                "We suggest it, because maybe you want to buy it again",
+                style: TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+            ),
+          ),
+          Visibility(
+            visible: likedList.isEmpty ? false : true,
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 5),
+              //color: Colors.red,
+              height: 140,
+              width: double.infinity,
+              child: ListView.builder(
+                  itemCount: likedList.length > 4 ? 4 : likedList.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, i) {
+                    return MaterialButton(
+                      padding: EdgeInsets.all(8),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Detialscreen(likedList[i],
+                                likedList[i]['userID'], likedList[i]['cateID']),
+                          ),
+                        );
+                      },
+                      child: Container(
+                          padding: EdgeInsets.all(5),
+                          width: 300,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Color.fromARGB(255, 197, 197, 197),
+                                  blurRadius: 4)
+                            ],
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 110,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage(
+                                            "$imageRoot/${likedList[i]['image']}"))),
+                              ),
+                              Container(
+                                width: 170,
+                                padding: EdgeInsets.only(
+                                    top: 15, left: 10, right: 10),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      child: Text(
+                                        "${likedList[i]['productName']}",
+                                        overflow: TextOverflow
+                                            .clip, // For text wraping
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(top: 5),
+                                      width: double.infinity,
+                                      child: Text(
+                                        "${likedList[i]['storeName']}",
+                                        overflow: TextOverflow
+                                            .clip, // For text wraping
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Divider(
+                                      color: Colors.white,
+                                    ),
+                                    Row(
+                                      // ignore: prefer_const_literals_to_create_immutables
+                                      children: [
+                                        Text(
+                                          "${likedList[i]['price']} \$",
+                                          style: TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 37, 179, 136),
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              double.parse(likedList[i]["rate"])
+                                                  .toStringAsFixed(2),
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            Icon(
+                                              Icons.star,
+                                              color: Colors.yellow[600],
+                                              size: 18,
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          )),
+                    );
+                  }),
+            ),
+          ),
+          Visibility(
+            visible: last.isEmpty ? false : true,
+            child: ListTile(
+              title: Text(
+                "Last product you bought",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              subtitle: Text(
+                "We suggest it, because maybe you want to buy it again",
+                style: TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+            ),
+          ),
+          Visibility(
+            visible: last.isEmpty ? false : true,
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 5),
+              //color: Colors.red,
+              height: 140,
+              width: double.infinity,
+              child: ListView.builder(
+                  itemCount: 1,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, i) {
+                    return MaterialButton(
+                      padding: EdgeInsets.all(8),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Detialscreen(
+                                last, last['userID'], last['cateID']),
+                          ),
+                        );
+                      },
+                      child: Container(
+                          padding: EdgeInsets.all(5),
+                          width: 300,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Color.fromARGB(255, 197, 197, 197),
+                                  blurRadius: 4)
+                            ],
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 120,
+                                height: 110,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage(
+                                            "$imageRoot/${last['image']}"))),
+                              ),
+                              Container(
+                                width: 170,
+                                padding: EdgeInsets.only(
+                                    top: 15, left: 10, right: 10),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      child: Text(
+                                        "${last['productName']}",
+                                        overflow: TextOverflow
+                                            .clip, // For text wraping
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(top: 5),
+                                      width: double.infinity,
+                                      child: Text(
+                                        "${last['storeName']}",
+                                        overflow: TextOverflow
+                                            .clip, // For text wraping
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                    Divider(
+                                      color: Colors.white,
+                                    ),
+                                    Row(
+                                      // ignore: prefer_const_literals_to_create_immutables
+                                      children: [
+                                        Text(
+                                          "${last['price']} \$",
+                                          style: TextStyle(
+                                            color: Color.fromARGB(
+                                                255, 37, 179, 136),
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              double.parse(last["rate"])
+                                                  .toStringAsFixed(2),
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            Icon(
+                                              Icons.star,
+                                              color: Colors.yellow[600],
+                                              size: 18,
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          )),
+                    );
+                  }),
+            ),
+          ),
         ],
       ),
     );

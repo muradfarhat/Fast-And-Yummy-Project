@@ -1,7 +1,7 @@
 <?php
 include "../connect.php";
-$id = filtterreq("storeID");
-$stmt = $con->prepare("SELECT * FROM `myorders_table` WHERE `storeID` = $id");
+$storeID = filtterreq("storeID");
+$stmt = $con->prepare("SELECT * FROM `myorders_table` WHERE `storeID` = $storeID");
 $stmt->execute();
 $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $count = $stmt->rowCount();
@@ -16,8 +16,8 @@ for ($i = 0; $i < count($orders); $i++) {
     $cate=$cateName["cateName"];
     $stmt = $con->prepare("SELECT * FROM `$cate` WHERE `userID` = $id3 and `productID`= $id4");
     $stmt->execute();
-    $proudct = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $cx=array_push($products,$proudct[0]);
+    $proudct = $stmt->fetch(PDO::FETCH_ASSOC);
+    $cx=array_push($products,$proudct);
 }
 
 

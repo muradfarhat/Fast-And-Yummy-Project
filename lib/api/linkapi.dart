@@ -106,3 +106,8 @@ const String setManID = "$linkServer/deliveryPHP/setID.php";
 
 const String recommendedULink =
     "$linkServer/recommendation/recommendedFromUsers.php";
+const String populerLink = "$linkServer/recommendation/populer.php";
+
+const String likedLink = "$linkServer/recommendation/recommendOnLike.php";
+
+const String lastLink = "$linkServer/recommendation/lastPurchase.php";

@@ -73,33 +73,6 @@ class _OrderMyStoreState extends State<OrderMyStore> {
     }
   }
 
-  List<Map> myOrder = [
-    {
-      "name": "Chicken Fingers",
-      "image": "images/chk/chf.jpg",
-      "price": 8.99,
-      "number": 1,
-      "time": "1-2 PM,Wen",
-      "ready": false,
-    },
-    {
-      "name": "Crispy",
-      "image": "images/chk/cris.jpg",
-      "price": 10.99,
-      "number": 2,
-      "time": "6-7 PM,Today",
-      "ready": false,
-    },
-    {
-      "name": "Broasted fillet-fish",
-      "image": "images/chk/fele.jpeg",
-      "price": 7.99,
-      "number": 3,
-      "time": "Now",
-      "ready": false,
-    }
-  ];
-
   bool delevState = false;
   Color color = Colors.black;
 
