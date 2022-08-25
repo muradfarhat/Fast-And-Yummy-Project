@@ -224,26 +224,6 @@ class _OneOrderState extends State<OneOrder> {
               endIndent: 30,
               color: Color.fromARGB(255, 179, 179, 179),
             ),
-            contDesign(Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Credit Card Info",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                rowDesgin("Card Number"),
-                rowDesgin("Card Name"),
-                Row(
-                  children: [
-                    Flexible(child: rowDesgin("Date")),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Flexible(child: rowDesgin("CVV"))
-                  ],
-                )
-              ],
-            )),
             SizedBox(
               height: 20,
             ),
@@ -254,7 +234,7 @@ class _OneOrderState extends State<OneOrder> {
                 children: [
                   inkDesign(
                       Color.fromARGB(255, 255, 255, 255), color, "Cancel", 0),
-                  inkDesign(color, Colors.white, "Apply", 1),
+                  inkDesign(color, Colors.white, "Submit", 1),
                 ],
               ),
             ),

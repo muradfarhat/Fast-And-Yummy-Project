@@ -190,7 +190,7 @@ class _favoriteState extends State<favorite> {
                                         "${myFav[i]["productName"]}",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 20),
+                                            fontSize: 16),
                                       ),
                                       Container(
                                         //margin: EdgeInsets.only(top: 5, bottom: 5),

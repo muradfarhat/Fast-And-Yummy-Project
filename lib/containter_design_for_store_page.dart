@@ -53,18 +53,19 @@ class ContDFSP extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      child: Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             product['productName'],
                             overflow: TextOverflow.clip, // For text wraping
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                                fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           RatingBarIndicator(
                             rating: double.parse(product['rate']),
-                            itemSize: 20,
+                            itemSize: 25,
                             itemBuilder: (context, _) => Icon(
                               Icons.star,
                               color: Colors.amber,
@@ -73,8 +74,8 @@ class ContDFSP extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Divider(
-                      color: Colors.white,
+                    SizedBox(
+                      height: 5,
                     ),
                     Text(
                       "${product['price']} \$",

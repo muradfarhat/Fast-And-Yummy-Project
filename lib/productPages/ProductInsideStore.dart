@@ -149,6 +149,7 @@ class _ProductInsideStoreState extends State<ProductInsideStore> {
     });
     var resp = await api.postReq(bringCommentLink, {
       "productID": widget.product['productID'],
+      "cateID": widget.product['cateID'],
     });
     setState(() {
       loading2 = false;

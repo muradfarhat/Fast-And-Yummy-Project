@@ -23,6 +23,7 @@ class _PageContentState extends State<PageContent> {
   bool loading = false;
   dynamic lis;
   Api api = Api();
+  bool recomm = false;
   getData() async {
     setState(() {
       loading = true;
@@ -48,7 +49,17 @@ class _PageContentState extends State<PageContent> {
     setState(() {
       loading = false;
     });
-    recommended = resp['Recommendation'];
+    if (resp['stat'] == "suc") {
+      setState(() {
+        recomm = true;
+        recommended = resp['Recommendation'];
+      });
+    } else if (resp['stat'] == "fail") {
+      setState(() {
+        recomm = false;
+        recommended = [];
+      });
+    }
   }
 
   dynamic populerList = [];
@@ -104,13 +115,6 @@ class _PageContentState extends State<PageContent> {
     super.initState();
   }
 
-  List<Map> categories = [
-    {"image": "images/food.jpg", "name": "Cate. Name"},
-    {"image": "images/food.jpg", "name": "Cate. Name"},
-    {"image": "images/food.jpg", "name": "Cate. Name"},
-    {"image": "images/food.jpg", "name": "Cate. Name"},
-    {"image": "images/food.jpg", "name": "Cate. Name"}
-  ];
   dynamic cate = [];
   getCate() async {
     setState(() {
@@ -166,7 +170,6 @@ class _PageContentState extends State<PageContent> {
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                  // ignore: prefer_const_literals_to_create_immutables
                                   boxShadow: [
                                     BoxShadow(
                                         color:
@@ -179,8 +182,8 @@ class _PageContentState extends State<PageContent> {
                                   borderRadius: BorderRadius.circular(15),
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: AssetImage(
-                                          "${categories[i]['image']}"))),
+                                      image: NetworkImage(
+                                          "$imageRoot/${cate[i]['cateImage']}"))),
                               margin: EdgeInsets.only(bottom: 8),
                               width: 80,
                               height: 80,
@@ -277,7 +280,7 @@ class _PageContentState extends State<PageContent> {
                                       overflow:
                                           TextOverflow.clip, // For text wraping
                                       style: TextStyle(
-                                          fontSize: 17,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -338,142 +341,153 @@ class _PageContentState extends State<PageContent> {
           ),
           /************************************* End Offers Section **************************** */
           /************************************* Start Suggestions Section **************************** */
-          ListTile(
-            title: Text(
-              "Recommended for you",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            trailing: TextButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return ViewAll(recommended);
-                  }));
-                },
-                child: Text(
-                  "View All",
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 37, 179, 136), fontSize: 12),
-                )),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 5),
-            //color: Colors.red,
-            height: 210,
-            width: double.infinity,
-            child: ListView.builder(
-                itemCount: recommended.length > 4 ? 4 : recommended.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, i) {
-                  return MaterialButton(
-                    padding: EdgeInsets.all(8),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Detialscreen(
-                              recommended[i],
-                              recommended[i]['userID'],
-                              recommended[i]['cateID']),
-                        ),
-                      );
-                    },
-                    child: Container(
-                        padding: EdgeInsets.all(5),
-                        width: 300,
-                        height: 190,
-                        decoration: BoxDecoration(
-                          // ignore: prefer_const_literals_to_create_immutables
-                          boxShadow: [
-                            BoxShadow(
-                                color: Color.fromARGB(255, 197, 197, 197),
-                                blurRadius: 4)
-                          ],
-                          color: Colors.white,
-
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 170,
-                              height: 180,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(
-                                          "$imageRoot/${recommended[i]['image']}"))),
-                            ),
-                            Container(
-                              width: 120,
-                              padding:
-                                  EdgeInsets.only(top: 15, left: 10, right: 10),
-                              child: Column(
-                                // ignore: prefer_const_literals_to_create_immutables
-                                children: [
-                                  Container(
-                                    width: double.infinity,
-                                    child: Text(
-                                      "${recommended[i]['productName']}",
-                                      overflow:
-                                          TextOverflow.clip, // For text wraping
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 5),
-                                    width: double.infinity,
-                                    child: Text(
-                                      "${recommended[i]['storeName']}",
-                                      overflow:
-                                          TextOverflow.clip, // For text wraping
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                  Divider(
-                                    color: Colors.white,
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    child: Text(
-                                      "${recommended[i]['price']} \$",
-                                      style: TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 37, 179, 136),
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                  Divider(
-                                    color: Colors.white,
-                                  ),
-                                  Container(
-                                      width: double.infinity,
-                                      child: RatingBarIndicator(
-                                        rating: double.parse(
-                                            recommended[i]['rate']),
-                                        itemSize: 20,
-                                        itemBuilder: (context, _) => Icon(
-                                          Icons.star,
-                                          color: Colors.amber,
-                                        ),
-                                      ))
-                                ],
-                              ),
-                            )
-                          ],
+          Visibility(
+              visible: recomm,
+              child: Column(
+                children: [
+                  ListTile(
+                    title: Text(
+                      "Recommended for you",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                    trailing: TextButton(
+                        onPressed: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return ViewAll(recommended);
+                          }));
+                        },
+                        child: Text(
+                          "View All",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 37, 179, 136),
+                              fontSize: 12),
                         )),
-                  );
-                }),
-          ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    //color: Colors.red,
+                    height: 210,
+                    width: double.infinity,
+                    child: ListView.builder(
+                        itemCount:
+                            recommended.length > 4 ? 4 : recommended.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, i) {
+                          return MaterialButton(
+                            padding: EdgeInsets.all(8),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Detialscreen(
+                                      recommended[i],
+                                      recommended[i]['userID'],
+                                      recommended[i]['cateID']),
+                                ),
+                              );
+                            },
+                            child: Container(
+                                padding: EdgeInsets.all(5),
+                                width: 300,
+                                height: 190,
+                                decoration: BoxDecoration(
+                                  // ignore: prefer_const_literals_to_create_immutables
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color:
+                                            Color.fromARGB(255, 197, 197, 197),
+                                        blurRadius: 4)
+                                  ],
+                                  color: Colors.white,
+
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 170,
+                                      height: 180,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(
+                                                  "$imageRoot/${recommended[i]['image']}"))),
+                                    ),
+                                    Container(
+                                      width: 120,
+                                      padding: EdgeInsets.only(
+                                          top: 15, left: 10, right: 10),
+                                      child: Column(
+                                        // ignore: prefer_const_literals_to_create_immutables
+                                        children: [
+                                          Container(
+                                            width: double.infinity,
+                                            child: Text(
+                                              "${recommended[i]['productName']}",
+                                              overflow: TextOverflow
+                                                  .clip, // For text wraping
+                                              style: TextStyle(
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(top: 5),
+                                            width: double.infinity,
+                                            child: Text(
+                                              "${recommended[i]['storeName']}",
+                                              overflow: TextOverflow
+                                                  .clip, // For text wraping
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ),
+                                          Divider(
+                                            color: Colors.white,
+                                          ),
+                                          Container(
+                                            width: double.infinity,
+                                            child: Text(
+                                              "${recommended[i]['price']} \$",
+                                              style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 37, 179, 136),
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                          ),
+                                          Divider(
+                                            color: Colors.white,
+                                          ),
+                                          Container(
+                                              width: double.infinity,
+                                              child: RatingBarIndicator(
+                                                rating: double.parse(
+                                                    recommended[i]['rate']),
+                                                itemSize: 20,
+                                                itemBuilder: (context, _) =>
+                                                    Icon(
+                                                  Icons.star,
+                                                  color: Colors.amber,
+                                                ),
+                                              ))
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
+                          );
+                        }),
+                  ),
+                ],
+              )),
           /************************************* End Suggestions Section **************************** */
           Visibility(
             visible: likedList.isEmpty ? false : true,

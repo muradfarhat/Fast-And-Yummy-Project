@@ -3,6 +3,8 @@
 import 'package:fast_and_yummy/api/linkapi.dart';
 import 'package:flutter/material.dart';
 
+import '../detialscreen.dart';
+
 class ViewAll extends StatefulWidget {
   dynamic list;
   ViewAll(this.list, {Key? key}) : super(key: key);
@@ -29,7 +31,6 @@ class _ViewAllState extends State<ViewAll> {
               .toLowerCase()
               .contains(value.toLowerCase()))
           .toList();
-     
     });
   }
 
@@ -68,14 +69,15 @@ class _ViewAllState extends State<ViewAll> {
             return MaterialButton(
               padding: EdgeInsets.all(8),
               onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text("Test text"),
-                        actions: [Text("data")],
-                      );
-                    });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Detialscreen(
+                        productListDisplay[i],
+                        productListDisplay[i]['userID'],
+                        productListDisplay[i]['cateID']),
+                  ),
+                );
               },
               child: Container(
                   padding: EdgeInsets.all(5),
@@ -118,7 +120,7 @@ class _ViewAllState extends State<ViewAll> {
                                 overflow: TextOverflow.clip, // For text wraping
                                 // ignore: prefer_const_constructors
                                 style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.bold),
+                                    fontSize: 14, fontWeight: FontWeight.bold),
                               ),
                             ),
                             Container(
@@ -127,7 +129,6 @@ class _ViewAllState extends State<ViewAll> {
                               child: Text(
                                 "${productListDisplay[i]['storeName']}",
                                 overflow: TextOverflow.clip, // For text wraping
-                                // ignore: prefer_const_constructors
                                 style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 12,
@@ -155,14 +156,31 @@ class _ViewAllState extends State<ViewAll> {
                           ],
                         ),
                       ),
-                      Row(
-                        // ignore: prefer_const_literals_to_create_immutables
+                      SizedBox(
+                        width: 25,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Row(
+                            // ignore: prefer_const_literals_to_create_immutables
+                            children: [
+                              Text(
+                                "${productListDisplay[i]['price']} \$",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 37, 179, 136),
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
                           Text(
-                            "${productListDisplay[i]['price']}  ",
+                            "Number of buyers: ${productListDisplay[i]['totalBuy']}",
                             style: TextStyle(
-                              color: Color.fromARGB(255, 37, 179, 136),
-                              fontSize: 18,
+                              fontSize: 10,
                             ),
                           ),
                         ],

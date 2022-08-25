@@ -114,8 +114,10 @@ class _CateProductsState extends State<CateProducts> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => Detialscreen(productList[index],
-                  productList[index]['userID'], productList[index]['cateID']),
+              builder: (context) => Detialscreen(
+                  productListDisplay[index],
+                  productListDisplay[index]['userID'],
+                  productListDisplay[index]['cateID']),
             ),
           );
         },
@@ -159,7 +161,7 @@ class _CateProductsState extends State<CateProducts> {
                           overflow: TextOverflow.clip, // For text wraping
                           // ignore: prefer_const_constructors
                           style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.bold),
+                              fontSize: 14, fontWeight: FontWeight.bold),
                         ),
                       ),
                       Container(
@@ -175,10 +177,7 @@ class _CateProductsState extends State<CateProducts> {
                           ),
                         ),
                       ),
-                      // ignore: prefer_const_constructors
-                      Divider(
-                        color: Colors.white,
-                      ),
+                      // igno
                       Row(children: [
                         Container(
                           margin: EdgeInsets.only(right: 5),

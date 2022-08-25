@@ -17,7 +17,7 @@ class _MyOrdersState extends State<MyOrders> {
   Color basicColor = const Color.fromARGB(255, 37, 179, 136);
   List<dynamic> myOrder = [];
   List<dynamic> myOrderList = [];
-
+  Color color = Color.fromARGB(255, 37, 179, 136);
   /********************** Start Api Functions ********************************* */
   Api api = Api(); // Create API SELECT SCOPE_IDENTITY()
   bringAllOrders() async {
@@ -32,8 +32,19 @@ class _MyOrdersState extends State<MyOrders> {
     } else {}
   }
 
-  bringProductFromMyOrder(String cateID, String productID, String quantity,
-      String time, int delivery) async {
+  setEarnings(String id, String storeID, String earn) async {
+    var respo = await api
+        .postReq(earnLink, {"id": id, "storeID": storeID, "earn": earn});
+
+    if (respo['status'] == "suc") {
+      setState(() {
+        print("Nice");
+      });
+    } else {}
+  }
+
+  bringProductFromMyOrder(
+      String cateID, String productID, String quantity, int delivery) async {
     var resp = await api.postReq(bringNameOfCate, {"cateID": cateID});
 
     String? cateName;
@@ -57,7 +68,6 @@ class _MyOrdersState extends State<MyOrders> {
           "price": double.parse(response['data'][0]['price']),
           "totalBuy": response['data'][0]['totalBuy'],
           "number": qun.toInt(), //int.parse(quantity),
-          "time": time,
           "cancel": false,
           "delivery": delivery
         });
@@ -71,7 +81,6 @@ class _MyOrdersState extends State<MyOrders> {
           myOrderList[i]['cateID'],
           myOrderList[i]['orderID'],
           myOrderList[i]['quantity'],
-          myOrderList[i]["time"],
           ifDelivery(myOrderList[i]['status']));
     }
   }
@@ -174,84 +183,166 @@ class _MyOrdersState extends State<MyOrders> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            InkWell(
-                              onTap: () {
-                                if (myOrder[i]["delivery"] == 1 ||
-                                    myOrder[i]["delivery"] == 2) {
-                                  cancelOrderMSG(
-                                      "Cannot Cancel deliverd order");
-                                } else {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: Text(
-                                              "Are you sure you want to cancel this order?"),
-                                          content: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Divider(),
-                                              Text(myOrder[i]["name"]),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                      "\$ ${clacEachOrderPrice(myOrder[i]["price"], myOrder[i]["number"]).toStringAsFixed(2)}"),
-                                                  Text(
-                                                      "  |  Quantity: ${myOrder[i]["number"]}"),
-                                                ],
-                                              ),
-                                              Text("At ${myOrder[i]["time"]}"),
-                                              Divider()
-                                            ],
-                                          ),
-                                          actions: [
-                                            MaterialButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  deleteFromMyOrder(
-                                                      myOrderList[i]['id']);
-                                                  myOrder[i]["cancel"] = true;
-                                                  myOrder.removeAt(i);
-                                                });
-                                                Navigator.of(context).pop();
-                                                cancelOrderMSG("Canceled");
-                                              },
-                                              color: Colors.red,
-                                              child: Text(
-                                                "Yes",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                            TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text(
-                                                  "No",
-                                                  style: TextStyle(
-                                                      color: Colors.red),
-                                                ))
-                                          ],
-                                        );
-                                      });
-                                }
-                              },
-                              child: Container(
-                                  margin: EdgeInsets.only(left: 40, top: 15),
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red[600],
-                                    borderRadius: BorderRadius.circular(15),
+                            Column(
+                              children: [
+                                Visibility(
+                                  visible:
+                                      myOrderList[i]['status'] == "deliverd" &&
+                                              myOrderList[i]['receipt'] == "no"
+                                          ? true
+                                          : false,
+                                  child: InkWell(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title:
+                                                  Text("Has it been received?"),
+                                              actions: [
+                                                MaterialButton(
+                                                  onPressed: () {
+                                                    setEarnings(
+                                                        myOrderList[i]["id"],
+                                                        myOrderList[i]
+                                                            ["storeID"],
+                                                        myOrder[i]["price"]
+                                                            .toString());
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  color: color,
+                                                  child: Text(
+                                                    "Yes",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: Text(
+                                                      "No",
+                                                      style: TextStyle(
+                                                          color: Colors.red),
+                                                    ))
+                                              ],
+                                            );
+                                          });
+                                    },
+                                    child: Container(
+                                        margin:
+                                            EdgeInsets.only(left: 40, top: 15),
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: color,
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: Text(
+                                          "It was received",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        )),
                                   ),
-                                  child: Text(
-                                    "Cancel Order",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )),
+                                ),
+                                Visibility(
+                                  visible:
+                                      myOrderList[i]['status'] == "deliverd"
+                                          ? false
+                                          : true,
+                                  child: InkWell(
+                                    onTap: () {
+                                      if (myOrder[i]["delivery"] == 1 ||
+                                          myOrder[i]["delivery"] == 2) {
+                                        cancelOrderMSG(
+                                            "Cannot Cancel deliverd order");
+                                      } else {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title: Text(
+                                                    "Are you sure you want to cancel this order?"),
+                                                content: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Divider(),
+                                                    Text(myOrder[i]["name"]),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                            "\$ ${clacEachOrderPrice(myOrder[i]["price"], myOrder[i]["number"]).toStringAsFixed(2)}"),
+                                                        Text(
+                                                            "  |  Quantity: ${myOrder[i]["number"]}"),
+                                                      ],
+                                                    ),
+                                                    Text(
+                                                        "At ${myOrder[i]["time"]}"),
+                                                    Divider()
+                                                  ],
+                                                ),
+                                                actions: [
+                                                  MaterialButton(
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        deleteFromMyOrder(
+                                                            myOrderList[i]
+                                                                ['id']);
+                                                        myOrder[i]["cancel"] =
+                                                            true;
+                                                        myOrder.removeAt(i);
+                                                      });
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      cancelOrderMSG(
+                                                          "Canceled");
+                                                    },
+                                                    color: Colors.red,
+                                                    child: Text(
+                                                      "Yes",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: Text(
+                                                        "No",
+                                                        style: TextStyle(
+                                                            color: Colors.red),
+                                                      ))
+                                                ],
+                                              );
+                                            });
+                                      }
+                                    },
+                                    child: Container(
+                                        margin:
+                                            EdgeInsets.only(left: 40, top: 15),
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red[600],
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: Text(
+                                          "Cancel Order",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                  ),
+                                ),
+                              ],
                             ),
                             Container(
                                 margin: EdgeInsets.only(right: 40, top: 15),
@@ -347,23 +438,6 @@ class _MyOrdersState extends State<MyOrders> {
                                             Text("${myOrder[i]["number"]}"),
                                           ],
                                         ),
-                                        Container(
-                                          alignment: Alignment.center,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Text(
-                                                "Order Time",
-                                                style: TextStyle(
-                                                    color: Colors.green[800]),
-                                              ),
-                                              Text("${myOrder[i]["time"]}",
-                                                  style: TextStyle(
-                                                      color: Colors.green[800]))
-                                            ],
-                                          ),
-                                        )
                                       ],
                                     ),
                                   )),

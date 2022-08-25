@@ -188,8 +188,10 @@ class _SearchState extends State<Search> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => Detialscreen(productList[index],
-                  productList[index]['userID'], productList[index]['cateID']),
+              builder: (context) => Detialscreen(
+                  productListDisplay[index],
+                  productListDisplay[index]['userID'],
+                  productListDisplay[index]['cateID']),
             ),
           );
         },
@@ -233,7 +235,7 @@ class _SearchState extends State<Search> {
                           overflow: TextOverflow.clip, // For text wraping
                           // ignore: prefer_const_constructors
                           style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.bold),
+                              fontSize: 15, fontWeight: FontWeight.bold),
                         ),
                       ),
                       Container(

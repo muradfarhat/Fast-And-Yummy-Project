@@ -170,6 +170,7 @@ class _DetialscreenState extends State<Detialscreen> {
     });
     var resp = await api.postReq(bringCommentLink, {
       "productID": widget.list['productID'],
+      "cateID": widget.cateID.toString(),
     });
     setState(() {
       loading3 = false;
@@ -262,20 +263,32 @@ class _DetialscreenState extends State<Detialscreen> {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              margin: EdgeInsets.only(right: 5),
-                              child: Text(
-                                "$productRate",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
+                            Row(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(right: 5),
+                                  child: Text(
+                                    "$productRate",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.star,
+                                  color: Colors.yellow[600],
+                                )
+                              ],
                             ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.yellow[600],
+                            Text(
+                              "Number of rater : ${widget.list['#rate']}",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white,
+                              ),
                             )
                           ],
                         ),
@@ -429,7 +442,7 @@ class _DetialscreenState extends State<Detialscreen> {
                         child: feedback.isEmpty
                             ? Center(
                                 child: Text(
-                                  "No comment",
+                                  "No comments",
                                   style: TextStyle(
                                       fontSize: 18, color: Colors.grey),
                                 ),

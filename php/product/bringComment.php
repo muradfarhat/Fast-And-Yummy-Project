@@ -1,8 +1,9 @@
 <?php
 include "../connect.php";
 $productID = filtterreq("productID");
-$stmt =$con ->prepare("SELECT * FROM `feedBack` WHERE productID = ?");
-$stmt->execute(array($productID)); 
+$cateID = filtterreq("cateID");
+$stmt =$con ->prepare("SELECT * FROM `feedBack` WHERE `productID` = ? and `cateID` = ?");
+$stmt->execute(array($productID,$cateID)); 
 $data = $stmt->fetchAll(PDO::FETCH_ASSOC); 
 $count=$stmt->rowCount();
 

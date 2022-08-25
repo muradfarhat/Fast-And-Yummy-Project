@@ -69,6 +69,7 @@ const String deleteStoreLink = "$linkServer/store/deleteStore.php";
 const String storeOrderLink = "$linkServer/store/storeOrder.php";
 const String rejectOrderLink = "$linkServer/store/rejectOrder.php";
 const String orderStateLink = "$linkServer/store/orderState.php";
+const String readyOrderLink = "$linkServer/store/readyOrder.php";
 /////////////endstore///////////////////////
 ///////////product///////////
 const String bringProdectLink = "$linkServer/product/bringProdect.php";
@@ -86,6 +87,9 @@ const String favLink = "$linkServer/product/bringIffav.php";
 const String setfavLink = "$linkServer/product/setFav.php";
 const String addToCartLink = "$linkServer/product/addToCart.php";
 const String selectCateLink = "$linkServer/product/selectCate.php";
+const String promotionLink = "$linkServer/product/promotion.php";
+
+const String addPromotionLink = "$linkServer/product/addPromotion.php";
 //////////////////////////////
 /******************************* Delivery page api ***************** */
 const String bringDeliveryReadyOrders =
@@ -111,3 +115,5 @@ const String populerLink = "$linkServer/recommendation/populer.php";
 const String likedLink = "$linkServer/recommendation/recommendOnLike.php";
 
 const String lastLink = "$linkServer/recommendation/lastPurchase.php";
+
+const String earnLink = "$linkServer/userinfo/earnings.php";

@@ -1,7 +1,7 @@
 <?php
 include "../connect.php";
 
-$stmt =$con ->prepare("SELECT `cateID`, `cateName` FROM `category_table`");
+$stmt =$con ->prepare("SELECT * FROM `category_table`");
 $stmt->execute();     
 $user = $stmt->fetchAll(PDO::FETCH_ASSOC); 
 $count=$stmt->rowCount();

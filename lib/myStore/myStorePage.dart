@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:fast_and_yummy/myStore/info.dart';
 import 'package:fast_and_yummy/myStore/order.dart';
+import 'package:fast_and_yummy/myStore/productPromotion.dart';
+import 'package:fast_and_yummy/myStore/readyOrder.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -22,13 +24,14 @@ class MyStorePage extends StatefulWidget {
 
 class _MyStorePageState extends State<MyStorePage> {
   Color color = Color.fromARGB(255, 37, 179, 136);
-  bool switchB = true;
+  String switchB = "info";
   bool orderpage = true;
   dynamic lis;
   dynamic lis2;
   bool loading = false;
   Api api = Api();
   File? file;
+  bool pay = false;
   getStoreData() async {
     setState(() {
       loading = true;
@@ -82,6 +85,7 @@ class _MyStorePageState extends State<MyStorePage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: color,
         toolbarHeight: 0,
@@ -170,14 +174,14 @@ class _MyStorePageState extends State<MyStorePage> {
                         InkWell(
                           onTap: () {
                             setState(() {
-                              switchB = true;
+                              switchB = "info";
                               orderpage = true;
                             });
                           },
                           child: Text(
                             "INFO",
                             style: TextStyle(
-                              color: switchB
+                              color: switchB == "info"
                                   ? Color.fromARGB(255, 37, 179, 136)
                                   : Colors.black,
                               fontSize: 20,
@@ -189,13 +193,31 @@ class _MyStorePageState extends State<MyStorePage> {
                           onTap: () {
                             setState(() {
                               orderpage = false;
-                              switchB = false;
+                              switchB = "order";
                             });
                           },
                           child: Text(
-                            "ORDER",
+                            "ORDERS",
                             style: TextStyle(
-                              color: !switchB
+                              color: switchB == "order"
+                                  ? Color.fromARGB(255, 37, 179, 136)
+                                  : Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              orderpage = false;
+                              switchB = "Rorder";
+                            });
+                          },
+                          child: Text(
+                            "Deliverd Orders",
+                            style: TextStyle(
+                              color: switchB == "Rorder"
                                   ? Color.fromARGB(255, 37, 179, 136)
                                   : Colors.black,
                               fontSize: 20,
@@ -206,7 +228,12 @@ class _MyStorePageState extends State<MyStorePage> {
                       ],
                     ),
                   ),
-                  switchB ? InfoMyStore(lis2) : OrderMyStore(),
+                  if (switchB == "info")
+                    InfoMyStore(lis2)
+                  else if (switchB == "order")
+                    OrderMyStore()
+                  else if (switchB == "Rorder")
+                    ReadyOrder(),
                 ],
               ),
       ),

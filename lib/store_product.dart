@@ -193,8 +193,8 @@ class _StoreProductState extends State<StoreProduct> {
                                       borderRadius: BorderRadius.circular(15),
                                       image: DecorationImage(
                                           fit: BoxFit.cover,
-                                          image: AssetImage(
-                                              "${categories[i]['image']}"))),
+                                          image: NetworkImage(
+                                              "$imageRoot/${lis2[i]['cateImage']}"))),
                                   margin: EdgeInsets.only(bottom: 8),
                                   width: 80,
                                   height: 80,

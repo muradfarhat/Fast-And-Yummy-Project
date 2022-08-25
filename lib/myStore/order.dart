@@ -24,8 +24,9 @@ class _OrderMyStoreState extends State<OrderMyStore> {
   }
 
   Api api = Api();
-  List<dynamic> myOrderList = [];
-  List<dynamic> products = [];
+  List myOrderList = [];
+  List products = [];
+  List productListDisplay = [];
   Map storeInformation = {};
   String? deliveryID;
   bool getIDValue = true;
@@ -36,8 +37,19 @@ class _OrderMyStoreState extends State<OrderMyStore> {
       setState(() {
         myOrderList = respo['data'];
         products = respo['products'];
+        productListDisplay = List.from(products);
       });
     } else {}
+  }
+
+  void updateList(String value) {
+    setState(() {
+      productListDisplay = products
+          .where((element) => element['productName']
+              .toLowerCase()
+              .contains(value.toLowerCase()))
+          .toList();
+    });
   }
 
   reject(String orderN) async {
@@ -93,26 +105,62 @@ class _OrderMyStoreState extends State<OrderMyStore> {
               ],
             ),
           )
-        : Container(
-            padding: EdgeInsets.all(20),
-            color: Color.fromARGB(255, 247, 247, 247),
-            width: size.width,
-            height: 500,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  ...listGenerate(),
-                  SizedBox(
-                    height: 80,
-                  )
-                ],
+        : Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromARGB(255, 180, 180, 180),
+                      blurRadius: 4,
+                    )
+                  ],
+                ),
+                margin: EdgeInsets.fromLTRB(20, 5, 20, 15),
+                child: TextFormField(
+                  autofocus: false,
+                  onChanged: (value) {
+                    updateList(value);
+                  },
+                  textInputAction: TextInputAction.go,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(vertical: 1),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Colors.grey,
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: "Search in orders",
+                    focusedBorder: outLDesign(),
+                    enabledBorder: outLDesign(),
+                    disabledBorder: outLDesign(),
+                  ),
+                ),
               ),
-            ));
+              Container(
+                  padding: EdgeInsets.all(20),
+                  color: Colors.white,
+                  width: size.width,
+                  height: 500,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      children: [
+                        ...listGenerate(),
+                        SizedBox(
+                          height: 150,
+                        )
+                      ],
+                    ),
+                  )),
+            ],
+          );
   }
 
   listGenerate() {
-    return List.generate(myOrderList.length, (index) {
+    return List.generate(productListDisplay.length, (index) {
       return Stack(
         children: [
           Container(
@@ -122,8 +170,8 @@ class _OrderMyStoreState extends State<OrderMyStore> {
             decoration: BoxDecoration(
               image: DecorationImage(
                   fit: BoxFit.cover,
-                  image:
-                      NetworkImage("$imageRoot/${products[index]['image']}")),
+                  image: NetworkImage(
+                      "$imageRoot/${productListDisplay[index]['image']}")),
               border: Border.all(
                   color: Color.fromARGB(255, 197, 197, 197), width: 1),
               borderRadius: BorderRadius.circular(15),
@@ -153,58 +201,6 @@ class _OrderMyStoreState extends State<OrderMyStore> {
                                           "In delivery") {
                                         reject(myOrderList[index]['id']);
                                         Navigator.pop(context);
-                                      } else {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title: Text(
-                                                "You can't reject it, it's in delivery",
-                                                style: TextStyle(fontSize: 18),
-                                              ),
-                                              content: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: [
-                                                      MaterialButton(
-                                                        color: Colors.orange,
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            Navigator.pop(
-                                                                context);
-                                                          });
-                                                        },
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Icon(Icons.check,
-                                                                color: Colors
-                                                                    .white),
-                                                            SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            Text(
-                                                              "Ok",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        );
                                       }
                                     });
                                   },
@@ -251,22 +247,27 @@ class _OrderMyStoreState extends State<OrderMyStore> {
                     },
                   );
                 },
-                child: Container(
-                    margin: EdgeInsets.only(left: 40, top: 15),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Text(
-                      "Reject",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    )),
+                child: Visibility(
+                  visible:
+                      myOrderList[index]['status'] == "In wait" ? true : false,
+                  child: Container(
+                      margin: EdgeInsets.only(left: 40, top: 15),
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Text(
+                        "Reject",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      )),
+                ),
               ),
               InkWell(
                 onTap: () {
-                  if (myOrderList[index]['status'] != "In delivery") {
+                  if (myOrderList[index]['status'] != "In delivery" &&
+                      myOrderList[index]['status'] != "Deliverd") {
                     showDialog(
                       context: context,
                       builder: (context) {
@@ -411,7 +412,7 @@ class _OrderMyStoreState extends State<OrderMyStore> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Text(
-                          products[index]['productName'],
+                          productListDisplay[index]['productName'],
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20),
                         ),
@@ -439,7 +440,7 @@ class _OrderMyStoreState extends State<OrderMyStore> {
                             width: double.infinity,
                             alignment: Alignment.center,
                             child: Text(
-                              "${products[index]['price']} \$",
+                              "${productListDisplay[index]['price']} \$",
                               style: TextStyle(fontSize: 22),
                             ),
                           ),
@@ -606,6 +607,13 @@ class _OrderMyStoreState extends State<OrderMyStore> {
       getIDValue = false;
     });
     return delID;
+  }
+
+  OutlineInputBorder outLDesign() {
+    return OutlineInputBorder(
+        gapPadding: 10,
+        borderRadius: BorderRadius.circular(30),
+        borderSide: BorderSide(color: Colors.white, width: 1));
   }
 }
 

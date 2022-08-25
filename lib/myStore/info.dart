@@ -7,6 +7,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../productPages/ProductInsideStore.dart';
 import '../api/linkapi.dart';
 import '../main.dart';
+import 'productPromotion.dart';
 
 class InfoMyStore extends StatefulWidget {
   dynamic lis;
@@ -71,9 +72,9 @@ class _InfoMyStoreState extends State<InfoMyStore> {
   }
 
   dynamic lis2;
-  dynamic productList;
+  List productList = [];
   Api api = Api();
-  dynamic choice = [];
+  List choice = [];
   bool loading = false;
   bool find = false;
   Color color = Color.fromARGB(255, 37, 179, 136);
@@ -107,7 +108,7 @@ class _InfoMyStoreState extends State<InfoMyStore> {
       setState(() {
         find = false;
         productList = resp['data'];
-        choice = productList;
+        choice = List.from(productList);
       });
     } else {
       setState(() {
@@ -116,13 +117,23 @@ class _InfoMyStoreState extends State<InfoMyStore> {
     }
   }
 
+  void updateList(String value) {
+    setState(() {
+      choice = productList
+          .where((element) => element['productName']
+              .toLowerCase()
+              .contains(value.toLowerCase()))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     String toSend = "";
     Size size = MediaQuery.of(context).size;
     return Container(
       padding: EdgeInsets.all(20),
-      color: Color.fromARGB(255, 247, 247, 247),
+      color: Colors.white,
       width: size.width,
       child: loading
           ? SizedBox(
@@ -242,6 +253,38 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color.fromARGB(255, 180, 180, 180),
+                        blurRadius: 4,
+                      )
+                    ],
+                  ),
+                  margin: EdgeInsets.fromLTRB(15, 5, 15, 15),
+                  child: TextFormField(
+                    autofocus: false,
+                    onChanged: (value) {
+                      updateList(value);
+                    },
+                    textInputAction: TextInputAction.go,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(vertical: 1),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Search",
+                      focusedBorder: outLDesign(),
+                      enabledBorder: outLDesign(),
+                      disabledBorder: outLDesign(),
+                    ),
+                  ),
+                ),
                 SizedBox(
                   height: 130,
                   width: double.infinity,
@@ -274,8 +317,8 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                                     borderRadius: BorderRadius.circular(15),
                                     image: DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: AssetImage(
-                                            "${categories[i]['image']}"))),
+                                        image: NetworkImage(
+                                            "$imageRoot/${lis2[i]['cateImage']}"))),
                                 margin: EdgeInsets.only(bottom: 8),
                                 width: 80,
                                 height: 80,
@@ -334,7 +377,7 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                   image: DecorationImage(
                       fit: BoxFit.cover,
                       image: NetworkImage(
-                          "$imageRoot/${productList[index]['image']}"))),
+                          "$imageRoot/${choice[index]['image']}"))),
             ),
             SizedBox(
               width: 10,
@@ -346,15 +389,15 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    productList[index]["productName"],
+                    choice[index]["productName"],
                     style: TextStyle(fontSize: 18),
                   ),
                   Text(
-                    "${productList[index]['price']} \$",
+                    "${choice[index]['price']} \$",
                     style: TextStyle(fontSize: 18),
                   ),
                   RatingBarIndicator(
-                    rating: double.parse(productList[index]['rate']),
+                    rating: double.parse(choice[index]['rate']),
                     itemSize: 20,
                     itemBuilder: (context, _) => Icon(
                       Icons.star,
@@ -373,12 +416,32 @@ class _InfoMyStoreState extends State<InfoMyStore> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ProductInsideStore(
-                              productList?[index], cateNAME!)),
+                              productList[index], cateNAME!)),
                     );
                   },
                   child: Icon(
                     Icons.edit,
                   ),
+                ),
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ProductPromotion(productList[index]),
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        Icons.payment,
+                        color: color,
+                        size: 30,
+                      ),
+                    ),
+                  ],
                 ),
                 InkWell(
                   onTap: () {
@@ -461,5 +524,12 @@ class _InfoMyStoreState extends State<InfoMyStore> {
         ),
       );
     });
+  }
+
+  OutlineInputBorder outLDesign() {
+    return OutlineInputBorder(
+        gapPadding: 10,
+        borderRadius: BorderRadius.circular(30),
+        borderSide: BorderSide(color: Colors.white, width: 1));
   }
 }

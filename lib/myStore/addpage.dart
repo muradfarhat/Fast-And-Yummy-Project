@@ -359,7 +359,7 @@ class _AddPageState extends State<AddPage> {
                                       }
                                     }),
                                     maxLines: 5,
-                                    maxLength: 150,
+                                    maxLength: 250,
                                     decoration: InputDecoration(
                                       icon: Icon(
                                         Icons.description,
@@ -621,9 +621,6 @@ class _AddPageState extends State<AddPage> {
           {
             if (val.length < min) {
               return "$min letters at least";
-            }
-            if (val.length > max) {
-              return "more than $max letters";
             }
           }
         }
