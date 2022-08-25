@@ -517,7 +517,7 @@ class scale {
     if (ordersCount == 0 || ordersCount == 1) {
       scaleNum = soDistance + deliveryDistance;
     } else {
-      ordersCount -= 1;
+      //ordersCount -= 1;
       scaleNum = (soDistance + deliveryDistance) * (ordersCount.toDouble());
     }
     return scaleNum;
