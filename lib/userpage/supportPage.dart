@@ -55,10 +55,10 @@ class _supportState extends State<support> {
     super.initState();
   }
 
+  GlobalKey<FormState> textFormState = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    GlobalKey<FormState> textFormState = GlobalKey<FormState>();
 
     bool sendQuestion() {
       var formData = textFormState.currentState;
@@ -89,10 +89,10 @@ class _supportState extends State<support> {
                 child: CircularProgressIndicator(color: basicColor),
               ),
             )
-          : SingleChildScrollView(
-              child: Form(
+          : Form(
               key: textFormState,
-              child: Column(
+              child: SingleChildScrollView(
+                  child: Column(
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -187,8 +187,8 @@ class _supportState extends State<support> {
                                 Text("Answer: ${questions[index]["answer"]}"),
                           ))
                 ],
-              ),
-            )),
+              )),
+            ),
     );
   }
 

@@ -87,7 +87,7 @@ class _OrderMyStoreState extends State<OrderMyStore> {
 
   bool delevState = false;
   Color color = Colors.black;
-
+  Color bcolor = Color.fromARGB(255, 37, 179, 136);
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -298,11 +298,12 @@ class _OrderMyStoreState extends State<OrderMyStore> {
 
                                         if (idForData == "no delivery in app") {
                                           showFaildSnackBarMSG(
-                                              "No delivery in app");
+                                              "No delivery in app", Colors.red);
                                         } else if (idForData ==
                                             "no delivery in the area right now") {
                                           showFaildSnackBarMSG(
-                                              "No delivery in the area right now");
+                                              "No delivery in the area right now",
+                                              Colors.red);
                                         } else {
                                           print(
                                               "${myOrderList[index]['id']} + $idForData");
@@ -311,7 +312,8 @@ class _OrderMyStoreState extends State<OrderMyStore> {
                                               idForData);
                                           changeState(myOrderList[index]['id']);
                                           showFaildSnackBarMSG(
-                                              "The delivery man ID $idForData");
+                                              "The delivery man ID $idForData",
+                                              bcolor);
                                         }
 
                                         Navigator.pop(context);
@@ -476,16 +478,16 @@ class _OrderMyStoreState extends State<OrderMyStore> {
     });
   }
 
-  showFaildSnackBarMSG(String msg) {
+  showFaildSnackBarMSG(String msg, Color color) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
-      backgroundColor: Colors.red.withOpacity(0.7),
+      backgroundColor: color.withOpacity(0.7),
       content: Row(
         children: [
           Container(
             margin: EdgeInsets.only(right: 15),
             child: Icon(
-              Icons.close,
+              color == this.bcolor ? Icons.check : Icons.close,
               color: Colors.white,
               size: 35,
             ),
