@@ -9,9 +9,9 @@ $latitude = filtterreq('latitude');
 $longitude =filtterreq('longitude');
 $cityLocation =filtterreq('cityLocation');
 
-$stmt = $con->prepare("INSERT INTO `myorders_table`(`orderID`, `cateID`, `userID`,`storeID`, `quantity` ,`status`,`latitude`,`longitude`,`cityLocation`) 
-VALUES (?,?,?,?,?,?,?,?,?)");
-$stmt->execute(array($orderID,$cateID,$userID,$storeID,$quantity,"In wait",$latitude,$longitude,$cityLocation));
+$stmt = $con->prepare("INSERT INTO `myorders_table`(`orderID`, `cateID`, `userID`,`storeID`, `quantity` ,`status`,`latitude`,`longitude`,`cityLocation`,`receipt`) 
+VALUES (?,?,?,?,?,?,?,?,?,?)");
+$stmt->execute(array($orderID,$cateID,$userID,$storeID,$quantity,"In wait",$latitude,$longitude,$cityLocation,"no"));
 $count = $stmt->rowCount();
 if ($count > 0) {
     $stmt = $con->prepare("DELETE FROM `cart_table` WHERE `orderID`= ? and `userID`=? AND `cateID`=?");
