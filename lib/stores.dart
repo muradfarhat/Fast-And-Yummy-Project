@@ -21,7 +21,7 @@ class _StoresState extends State<Stores> {
   Color color = Colors.black;
   List<Map> stores = [
     {
-      "image": "images/90.jpg",
+      "image": "images/90.jpg",eddsad
       "store": "90-s Burgar",
       "product": "19 Product",
       "feedback": "58 Feed Back",
