@@ -1,16 +1,6 @@
-# fast_and_yummy
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Abstract: 
+The project is an application that enables users to start their own businesses and sell food they have prepared at home without really having a physical store. They can even sign up on the application as employees and distribute food using their own vehicles.
+This program is crucial for those who lack the physical ability or available space to create a store physically, since it enables them to launch an online business, which will appeal to the broadest audience.
+The user can open his own store, view the foods he sells, and explore the foods sold by other stores in the first area.
+The project will use artificial intelligence and machine learning to provide cooking recommendations to the user. In addition, it will include a map showing the route of the order, the estimated time of arrival, and the identity of the person who will make the delivery. Flutter, PHP Rest API, and MySQL are the languages used in the front end and backend of the application, respectively.
+There are several similar apps like Uber Eats, but they don't allow people to sell their own food, which isn't available in Palestine, and they only show food from neighboring restaurants with their own menus.
