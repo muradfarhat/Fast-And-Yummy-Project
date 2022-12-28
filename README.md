@@ -7,7 +7,7 @@ There are several similar apps like Uber Eats, but they don't allow people to se
 
 Here is splash screen, signin and signup page 
 
-<img height=360 width=865 src="https://user-images.githubusercontent.com/78206754/209877663-c764674f-fede-4c93-8cfb-99f7d00175ef.jpg"/>
+<img height=510 width=865 src="https://user-images.githubusercontent.com/78206754/209877663-c764674f-fede-4c93-8cfb-99f7d00175ef.jpg"/>
 
 we have used Regular expression to check fields if its vaild
 
@@ -19,6 +19,7 @@ When you login the app check if you are customer or delivery employee
 
 if you're customer you'll go to home screen
 
+## Customer
 there is bottom nav bar to move between 5 pages 
 
 <img height=328 width=865 src="https://user-images.githubusercontent.com/78206754/209878835-3f66c886-550e-4e6b-bbce-8afa8ba4fbbd.jpg"/>
@@ -48,6 +49,6 @@ In delivery page the employee can see the orders that he'll deliver, the orders 
 
 and he can also open the map and see his location 
 
-<img height=360 width=865 src="https://user-images.githubusercontent.com/78206754/209881519-aac66bf0-5cc9-485d-b364-cfcd4a496cd0.jpg" />
+<img height=510 width=865 src="https://user-images.githubusercontent.com/78206754/209881519-aac66bf0-5cc9-485d-b364-cfcd4a496cd0.jpg" />
 
 
