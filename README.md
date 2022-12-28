@@ -7,16 +7,17 @@ There are several similar apps like Uber Eats, but they don't allow people to se
 
 Here is splash screen, signin and signup page 
 
+<img height=360 width=865 src="https://user-images.githubusercontent.com/78206754/209877663-c764674f-fede-4c93-8cfb-99f7d00175ef.jpg"/>
+
 we have used Regular expression to check fields if its vaild
 
 this expression (r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+) to check email
 and this to check phone number (r"[05][69][23456789][0-9]{6}$") you can use only mobile start 059 and 056 because I have limited the app for Palestine
 
-<img height=328 width=865 src="https://user-images.githubusercontent.com/78206754/209877663-c764674f-fede-4c93-8cfb-99f7d00175ef.jpg"/>
 
 When you login the app check if you are customer or delivery employee 
 
-if you're customer you'll go to home screen 
+if you're customer you'll go to home screen
 
 there is bottom nav bar to move between 5 pages 
 
@@ -24,7 +25,7 @@ there is bottom nav bar to move between 5 pages
 
 In home page you can search, see categories, see populer products, see recommendations
 
-### How recommendation work 
+### How recommendation system work 
 
 After you sign up in the app there will be no recommendations 
 
@@ -33,4 +34,20 @@ when you're start buying and rating proudcuts the app use collaborative filters 
 ### Order page 
 From order page you can traking your order and see the delivery who will deliver your order 
 
-<img height=328 width=158 src="https://user-images.githubusercontent.com/78206754/209880608-2bc9591e-2273-4f15-9666-7b61fe99f08f.jpg"/>
+<img height=328 width=158 src="https://user-images.githubusercontent.com/78206754/209880608-2bc9591e-2273-4f15-9666-7b61fe99f08f.jpg" />
+
+## Your store page
+From your store page you can see how many orders in your store, your total earings,edit store name and image, and you can add, remove, edit, and promote products
+
+Promotion : A method that you use when you want to suggest one of your products to users and you can select promotion duration.
+
+<img height=350 width=865 src="https://user-images.githubusercontent.com/78206754/209881079-9efae3b4-799e-45cf-8ee7-754592065138.jpg" />
+
+## Delivery employee
+In delivery page the employee can see the orders that he'll deliver, the orders that he already deliverd and he can edit his profile
+
+and he can also open the map and see his location 
+
+<img height=360 width=865 src="https://user-images.githubusercontent.com/78206754/209881519-aac66bf0-5cc9-485d-b364-cfcd4a496cd0.jpg" />
+
+
