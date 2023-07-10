@@ -1,4 +1,4 @@
-Abstract: 
+## Abstract
 The project is an application that enables users to start their own businesses and sell food they have prepared at home without really having a physical store. They can even sign up on the application as employees and distribute food using their own vehicles.
 This program is crucial for those who lack the physical ability or available space to create a store physically, since it enables them to launch an online business, which will appeal to the broadest audience.
 The user can open his own store, view the foods he sells, and explore the foods sold by other stores in the first area.
